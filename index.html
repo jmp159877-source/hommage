@@ -276,6 +276,27 @@
         .streak { font-size: 1rem; opacity: 0.9; }
         .wx-sub { font-size: 1.05rem; }
         @media (max-width: 768px) { .logo-wrap { max-width: 220px; } .brand-explain { font-size: 1.4rem; } }
+
+        /* ── 색: 로고의 초록·금빛. 글씨 대비는 4.5:1 이상 유지 ── */
+        :root { --gold: #E3B04B; --leaf: #19B46B; --leaf-deep: #0D7A47; }
+        html { font-size: 17px; }
+        .category-label { color: var(--dark-green); border-bottom: 2px solid var(--dark-green); }
+        .greeting-card.t0 { background: var(--dark-green); }
+        .greeting-card.t1 { background: var(--leaf-deep); } .greeting-card.t1 q { color: var(--ivory); }
+        .greeting-card.t2 { background: var(--gold); border: 0; } .greeting-card.t2 q { color: var(--black); }
+        button.banner-block.mint { background: linear-gradient(135deg, var(--dark-green), #1C7A52); }
+        .mint .banner-content h3 { color: var(--gold); } .mint .banner-content p { color: var(--ivory); } .mint .more { color: var(--ivory); }
+        .cat::after { background: linear-gradient(to top, rgba(15,74,53,0.92), rgba(15,74,53,0.05) 70%); }
+        .cat-text span { color: var(--gold); border-color: var(--gold); }
+        .picks button[aria-pressed="true"] { border-color: var(--gold); }
+        .picks button { color: #555; }
+        .poll button i { background: rgba(25,180,107,0.22); } .poll button[aria-pressed="true"] { border-color: var(--leaf); border-width: 2px; }
+        .solid, .opts button.ok { background: var(--leaf-deep); border-color: var(--leaf-deep); color: #fff; }
+        .stamp { background: var(--gold); color: var(--black); border: 0; }
+        .rowline b, .linkbtn, .rowline a, .wx-temp, .say, .wx-say { color: var(--dark-green); }
+        .rowline p, .dsec p, .panel p, .article-block p { color: #333; }
+        .note, .hint, .wx-sub, .rowline span, .cat-text p { color: #4a4a4a; } .cat-text p { color: var(--ivory); }
+        .right-content { background: #F7F4ED; }
     </style>
 </head>
 <body>
