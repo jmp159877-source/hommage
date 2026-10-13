@@ -18,7 +18,7 @@
         body { margin: 0; background-color: var(--ivory); color: var(--black); font-family: 'Noto Sans KR', sans-serif; }
         h1, h2, h3, .serif-text { font-family: 'Nanum Myeongjo', serif; font-weight: 400; }
         
-        /* 텍스트 방점 세팅 (오, 마, 주 글자 위 정밀 타겟팅) */
+        /* 텍스트 방점 세팅 */
         .spot-wrap { display: inline-block; position: relative; }
         .spot-wrap::before {
             content: "●";
@@ -32,13 +32,21 @@
 
         .layout-wrapper { display: flex; min-height: 100vh; }
         
-        /* 좌측: 감성 배경 (현재 하드코딩 되어있으나 향후 날씨 API와 연동됨) */
+        /* 좌측: 감성 배경 */
         .left-hero { width: 45%; position: sticky; top: 0; height: 100vh; background: #ccc center/cover; display: flex; flex-direction: column; justify-content: space-between; padding: 60px; box-sizing: border-box; }
         .left-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(15, 74, 53, 0.85) 0%, rgba(0,0,0,0.3) 100%); }
         
-        /* 메인 로고 영역: 편법 제거 및 순수 이미지 출력 */
         .hero-text { position: relative; z-index: 1; color: var(--ivory); }
-        .main-logo { width: 100%; max-width: 350px; display: block; margin-bottom: 25px; }
+        
+        /* ★ 수정된 부분: 투명 여백이 너무 넓은 로고를 강제 확대 (scale 적용) */
+        .main-logo { 
+            width: 100%; 
+            max-width: 350px; 
+            display: block; 
+            margin-bottom: 25px; 
+            transform: scale(2.6); /* 투명 여백을 무시하고 알맹이를 2.6배 확대 */
+            transform-origin: left center; /* 왼쪽 기준으로 확대하여 위치 유지 */
+        }
         
         .brand-explain { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 0 0 20px 0; line-height: 1.4; color: #fff; font-weight: 300; }
         .hero-text p { font-size: 1.15rem; font-weight: 300; opacity: 0.9; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 20px; }
@@ -46,19 +54,23 @@
         /* 우측 콘텐츠 영역 */
         .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; background-color: var(--ivory); }
         .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; display: flex; align-items: center; }
-        .category-label:first-child { margin-top: 0; } /* 첫 번째 카테고리 상단 여백 제거 */
-        .category-icon { height: 40px; margin-right: 12px; vertical-align: middle; }
+        .category-label:first-child { margin-top: 0; }
         
-        /* 카테고리별 콘텐츠 임시 박스 */
+        /* ★ 수정된 부분: 카테고리 미니 로고도 동일하게 확대 */
+        .category-icon { 
+            height: 40px; 
+            margin-right: -10px; /* 너무 넓은 투명 여백 때문에 글씨와 멀어지는 현상 방지 */
+            vertical-align: middle; 
+            transform: scale(3.5); /* 아이콘 크기 3.5배 강제 확대 */
+        }
+        
         .content-box { background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 40px; }
     </style>
 </head>
 <body>
     <div id="main-page" class="layout-wrapper">
         <div class="left-hero" id="greeting-card" style="background-image: url('spring.jfif');">
-            <!-- 날씨 연동 스크립트 영역 -->
             <div class="hero-text">
-                <!-- 투명 PNG 로고(logo.png)로 출력 -->
                 <img src="logo.png" alt="오마주 로고" class="main-logo">
                 <div class="brand-explain">
                     <span class="spot-wrap">오</span>늘도 
@@ -74,7 +86,7 @@
                 <img src="logo.png" class="category-icon" alt="로고"> [오늘의 날씨]
             </div>
             <div class="content-box">
-                <!-- 날씨 정보 콘텐츠가 들어갈 자리입니다. -->
+                <!-- 날씨 정보 콘텐츠 자리 -->
             </div>
 
             <!-- [복구 완료] 2. 오늘의 인사말 카테고리 -->
@@ -82,10 +94,8 @@
                 <img src="logo.png" class="category-icon" alt="로고"> [오늘의 인사말]
             </div>
             <div class="content-box">
-                <!-- 인사말 콘텐츠가 들어갈 자리입니다. -->
+                <!-- 인사말 콘텐츠 자리 -->
             </div>
-            
-            <!-- 추가 카테고리가 있다면 아래에 동일한 형식으로 추가 -->
         </div>
     </div>
 </body>
