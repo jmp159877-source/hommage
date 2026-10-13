@@ -39,43 +39,33 @@
         .weather-widget { position: relative; z-index: 1; color: rgba(255,255,255,0.95); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .weather-icon { font-size: 1.5rem; }
 
-        /* 좌측 메인 로고 영역 (완전 개편: 초대형 확대 및 투명화 마법) */
+        /* 좌측 메인 로고 영역 - 큼지막하게, 그리고 "흰색"을 완벽하게 투명화 */
         .hero-text { position: relative; z-index: 1; color: var(--ivory); }
         .main-logo-wrap {
             display: block;
             width: 100%;
-            max-width: 450px; /* 로고 폭풍 확대 */
-            margin-bottom: 30px;
-            position: relative;
-        }
-        /* 숲 배경에서 초록색 로고가 잘 보이도록 은은한 빛 무리(후광) 추가 */
-        .main-logo-wrap::before {
-            content: '';
-            position: absolute;
-            top: -15%; left: -15%; right: -15%; bottom: -15%;
-            background: radial-gradient(circle, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 70%);
-            z-index: -1;
-            border-radius: 50%;
+            max-width: 350px; /* 로고 크기 대형화 */
+            margin-bottom: 25px;
         }
         .main-logo {
             width: 100%;
             height: auto;
             display: block;
-            mix-blend-mode: multiply; /* JPG의 흰색 배경을 투명하게 증발시킴 */
-            filter: contrast(1.1) saturate(1.1);
+            mix-blend-mode: multiply; /* 하얀색 배경을 숲 배경에 완전히 투명하게 스며들게 하는 마법 */
+            filter: contrast(1.15) brightness(0.95);
         }
         
         .brand-explain { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 0 0 20px 0; line-height: 1.4; color: #fff; font-weight: 300; }
         .hero-text p { font-size: 1.15rem; font-weight: 300; opacity: 0.9; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 20px; }
         
         /* 우측 콘텐츠 영역 */
-        .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; }
+        .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; background-color: var(--ivory); }
         .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; display: flex; align-items: center; }
         .category-label:first-child { margin-top: 0; }
         
-        /* 카테고리 앞 로고 아이콘 (흰 배경 싹 날리고 정렬) */
+        /* 카테고리 앞 로고 아이콘 - 투명화 완벽 적용 */
         .category-icon {
-            height: 45px;
+            height: 40px;
             margin-right: 12px;
             mix-blend-mode: multiply; /* 투명화 */
             vertical-align: middle;
@@ -125,6 +115,19 @@
             .weather-widget { font-size: 1rem; }
         }
     </style>
+    <script>
+        // 파일명이 .jfif든 .jpg든 에러 없이 띄우기 위한 스크립트
+        function handleImgError(img) {
+            const currentSrc = img.src;
+            if (currentSrc.includes("logo.png.jfif")) {
+                img.src = "logo.jpg.jfif";
+            } else if (currentSrc.includes("logo.jpg.jfif")) {
+                img.src = "logo.jpg";
+            } else if (currentSrc.includes("logo.jpg")) {
+                img.src = "logo.png";
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -141,7 +144,7 @@
             
             <div class="hero-text">
                 <div class="main-logo-wrap">
-                    <img src="logo.jpg.jfif" alt="오마주 로고" class="main-logo">
+                    <img src="logo.png.jfif" onerror="handleImgError(this)" alt="오마주 로고" class="main-logo">
                 </div>
                 
                 <div class="brand-explain">
@@ -156,7 +159,7 @@
 
         <div class="right-content">
             <div class="category-label serif-text">
-                <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 그해 오늘
+                <img src="logo.png.jfif" onerror="handleImgError(this)" class="category-icon" alt="오마주 로고"> 그해 오늘
             </div>
             <div class="banner-block" style="background-image: url('history.jfif');" onclick="openDetail('history')">
                 <div class="banner-content">
@@ -166,7 +169,7 @@
             </div>
 
             <div class="category-label serif-text">
-                <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘의 질문 & 퀴즈
+                <img src="logo.png.jfif" onerror="handleImgError(this)" class="category-icon" alt="오마주 로고"> 오늘의 질문 & 퀴즈
             </div>
             <div class="banner-block" style="background-image: url('culture.jfif');" onclick="openDetail('quiz')">
                 <div class="banner-content">
@@ -176,7 +179,7 @@
             </div>
 
             <div class="category-label serif-text">
-                <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘의 한 끼
+                <img src="logo.png.jfif" onerror="handleImgError(this)" class="category-icon" alt="오마주 로고"> 오늘의 한 끼
             </div>
             <div class="list-container">
                 <div class="list-block" onclick="openDetail('food')">
@@ -189,7 +192,7 @@
             </div>
 
             <div class="category-label serif-text" style="margin-top: 50px;">
-                <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘 한 판
+                <img src="logo.png.jfif" onerror="handleImgError(this)" class="category-icon" alt="오마주 로고"> 오늘 한 판
             </div>
             <div class="game-grid">
                 <a href="https://v6.netb.co.kr/janggi" target="_blank" class="game-btn">장기 한 판 <span>지혜와 집중력 향상</span></a>
