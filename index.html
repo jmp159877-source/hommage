@@ -48,7 +48,7 @@
         /* 좌측 고정 (아침 인사) */
         .left-hero {
             width: 45%; position: sticky; top: 0; height: 100vh;
-            background: #0F4A35 url('img/autumn.jpg') center/cover;
+            background: #0F4A35 url('img/hero.jpg') 50% center/cover;
             display: flex; align-items: flex-end; padding: 60px; box-sizing: border-box;
         }
         .left-hero::after {
@@ -252,17 +252,41 @@
         button.banner-block.mint, .greeting-card { border-radius: 12px; }
         .poll button { border-radius: 10px; }
         @media (max-width: 768px) { .hero-desc br { display: none; } .main-logo { max-width: 220px; } .brand-explain { font-size: 1.5rem; } .hero-text p.hero-desc { font-size: 1rem; } .weather-widget { font-size: 0.95rem; } }
+
+        /* ── 다듬기 ── */
+        .category-label { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; }
+        .cat-text h3, .banner-content h3, .list-text h3, #detail-title, .lede, .say, .wx-say, .greeting-card q, .subhead, .picks button, .category-tag { font-weight: 700; }
+        .weather-widget { background: none; box-shadow: none; backdrop-filter: none; padding: 0; border-radius: 0; font-size: 1rem; letter-spacing: 0.04em; font-weight: 300; white-space: pre; }
+        .weather-widget[hidden] { display: none; }
+        .main-logo { max-width: 270px; margin: 0 0 26px -10px; }
+        .brand-explain { font-weight: 400; }
+        .stamp { background: var(--ivory); color: var(--dark-green); font-weight: 500; }
+        .stamp:hover { background: #fff; }
+        .stamp:disabled { background: none; color: var(--ivory); }
+        .solid { border-radius: 30px; }
+
+        /* ── 로고 아래 한글, 문구 강조, 안내 글씨 ── */
+        .logo-wrap { position: relative; width: 100%; max-width: 270px; margin: 0 0 26px -10px; }
+        .main-logo { max-width: none; margin: 0; }
+        .logo-kr { position: absolute; left: 54%; top: 71%; transform: translateX(-50%); font-family: 'Nanum Myeongjo', serif; font-size: 1.05rem; letter-spacing: 0.45em; margin-right: -0.45em; color: var(--ivory); white-space: nowrap; }
+        .brand-explain { font-size: 1.7rem; line-height: 1.5; margin-top: 6px; }
+        .spot-wrap { font-size: 1.45em; font-weight: 700; margin: 0 0.02em; }
+        .spot-wrap::before { top: -0.45em; font-size: 10px; }
+        .note, .hint { font-size: 1.05rem; color: #555; line-height: 1.7; }
+        .streak { font-size: 1rem; opacity: 0.9; }
+        .wx-sub { font-size: 1.05rem; }
+        @media (max-width: 768px) { .logo-wrap { max-width: 220px; } .brand-explain { font-size: 1.4rem; } }
     </style>
 </head>
 <body>
     <div id="main-page" class="layout-wrapper">
         <div class="left-hero">
             <div class="hero-top">
-                <div class="weather-widget"><span class="weather-icon" id="w-icon">🍀</span><span id="w-text">오늘의 오마주</span></div>
+                <div class="weather-widget" id="w-pill" hidden><span id="w-text"></span></div><span></span>
                 <button type="button" class="ghost" id="sizer">글자 크게</button>
             </div>
             <div class="hero-text">
-                <img src="logo-light.png" alt="오마주 Omaju" class="main-logo">
+                <div class="logo-wrap"><img src="logo-light.png" alt="Omaju" class="main-logo"><span class="logo-kr">오마주</span></div>
                 <div class="brand-explain"><span class="spot-wrap">오</span>늘도 <span class="spot-wrap">마</span>음은 <span class="spot-wrap">주</span>니어.</div>
                 <p class="hero-desc">당신의 두 번째 청춘을 응원하는 감성 라이프스타일 매거진.<br><strong>오마주와 함께 매일매일,</strong> 새로운 하루를 기분 좋게 열어보세요.</p>
                 <div class="hero-foot">
@@ -299,7 +323,7 @@
 
             <div class="category-label"><img src="leaf.png" alt="">오늘의 한 판</div><button type="button" class="cat" data-open="quiz" style="background-image:url('img/culture.jpg')"><div class="cat-text"><div><h3>오늘의 사자성어</h3><p>가볍게 풀어 보는 오늘의 한 문제</p></div><span>풀어 보기</span></div></button>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 사연</div><button type="button" class="cat" data-open="story" style="background-image:url('img/hero.jpg')"><div class="cat-text"><div><h3>서랍 속 카세트테이프</h3><p>책장을 넘기듯 읽는 오늘의 이야기</p></div><span>읽어 보기</span></div></button>
+            <div class="category-label"><img src="leaf.png" alt="">오늘의 사연</div><button type="button" class="cat" data-open="story" style="background-image:url('img/detail_music.jpg')"><div class="cat-text"><div><h3>서랍 속 카세트테이프</h3><p>책장을 넘기듯 읽는 오늘의 이야기</p></div><span>읽어 보기</span></div></button>
 
             <div class="category-label"><img src="leaf.png" alt="">오늘의 질문</div>
             <p class="lede">학창 시절 도시락, 가장 반가웠던 반찬은?</p>
@@ -363,12 +387,12 @@ function renderStamp(){const s=store.get('stamp',{last:'',n:0}),done=s.last===ke
 $('stamp').onclick=()=>{const s=store.get('stamp',{last:'',n:0}),y=new Date(now);y.setDate(D-1);s.n=(s.last===key(y))?s.n+1:1;s.last=key(now);store.set('stamp',s);renderStamp();toast('도장을 찍었습니다.')};renderStamp();
 
 const SEASON=M<2||M===11?'winter':M<5?'spring':M<8?'summer':'autumn';
-document.querySelector('.left-hero').style.backgroundImage="url('img/"+SEASON+".jpg')";
-const WX_KEY='8d3434682025110bf00e4fb804191d84';
-function wxSay(t,main){if(main==='Rain'||main==='Drizzle'||main==='Thunderstorm')return '비 소식이 있습니다. 우산 챙기시고, 빗소리 좋은 창가에서 차 한 잔 어떠세요.';if(main==='Snow')return '눈이 옵니다. 길이 미끄러우니 천천히, 풍경은 넉넉히 즐기세요.';if(t>=28)return '더운 날입니다. 물 자주 드시고 한낮 볕은 잠시 피하세요.';if(t>=18)return '걷기 딱 좋은 날씨입니다. 가까운 길이라도 한 바퀴 돌고 오세요.';if(t>=8)return '아침저녁으로 쌀쌀합니다. 겉옷 하나 걸치고 나서세요.';return '날이 찹니다. 목도리 두르고, 따뜻한 국물로 속부터 데우세요.'}
-async function loadWx(lat,lon,label){try{const r=await fetch('https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid='+WX_KEY+'&units=metric&lang=kr');const d=await r.json();if(!d.main)throw 0;const t=Math.round(d.main.temp);$('wx-temp').textContent=t+'°';$('wx-desc').textContent=d.weather[0].description;$('wx-sub').textContent=(label||d.name)+' · 체감 '+Math.round(d.main.feels_like)+'° · 습도 '+d.main.humidity+'%';$('wx-say').textContent=wxSay(t,d.weather[0].main);const mn=d.weather[0].main;$('w-icon').textContent=mn==='Rain'||mn==='Drizzle'||mn==='Thunderstorm'?'🌧️':mn==='Snow'?'❄️':mn==='Clouds'?'☁️':mn==='Clear'?'☀️':'🌤️';$('w-text').textContent=d.weather[0].description+' | '+t+'°C ('+(label||d.name)+')'}catch(e){$('wx-temp').textContent='';$('wx-desc').textContent='지금은 날씨를 불러오지 못했습니다.';$('wx-say').textContent='오늘도 좋은 하루 보내세요.'}}
+
+const WMO={0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',45:'안개',48:'안개',51:'이슬비',53:'이슬비',55:'이슬비',56:'이슬비',57:'이슬비',61:'약한 비',63:'비',65:'강한 비',66:'진눈깨비',67:'진눈깨비',71:'약한 눈',73:'눈',75:'많은 눈',77:'싸락눈',80:'소나기',81:'소나기',82:'강한 소나기',85:'눈',86:'많은 눈',95:'천둥번개',96:'천둥번개',99:'천둥번개'};
+function wxSay(t,c){if((c>=51&&c<=67)||(c>=80&&c<=82)||c>=95)return '비 소식이 있습니다. 우산 챙기시고, 빗소리 좋은 창가에서 차 한 잔 어떠세요.';if((c>=71&&c<=77)||c===85||c===86)return '눈이 옵니다. 길이 미끄러우니 천천히, 풍경은 넉넉히 즐기세요.';if(t>=28)return '더운 날입니다. 물 자주 드시고 한낮 볕은 잠시 피하세요.';if(t>=18)return '걷기 딱 좋은 날씨입니다. 가까운 길이라도 한 바퀴 돌고 오세요.';if(t>=8)return '아침저녁으로 쌀쌀합니다. 겉옷 하나 걸치고 나서세요.';return '날이 찹니다. 목도리 두르고, 따뜻한 국물로 속부터 데우세요.'}
+async function loadWx(lat,lon,label){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=auto');const d=await r.json();const c=d.current;if(!c)throw 0;const t=Math.round(c.temperature_2m),desc=WMO[c.weather_code]||'';$('wx-temp').textContent=t+'°';$('wx-desc').textContent=desc;$('wx-sub').textContent=label+' · 체감 '+Math.round(c.apparent_temperature)+'° · 습도 '+Math.round(c.relative_humidity_2m)+'%';$('wx-say').textContent=wxSay(t,c.weather_code);$('w-text').textContent=label+'  ·  '+desc+'  '+t+'°';$('w-pill').hidden=false}catch(e){$('wx-temp').textContent='';$('wx-desc').textContent='지금은 날씨를 불러오지 못했습니다.';$('wx-say').textContent='오늘도 좋은 하루 보내세요.'}}
 loadWx(37.5665,126.978,'서울');
-$('wx-here').onclick=()=>{if(!navigator.geolocation)return toast('이 기기에서는 위치를 알 수 없습니다.');navigator.geolocation.getCurrentPosition(p=>loadWx(p.coords.latitude,p.coords.longitude,''),()=>toast('위치 허용이 필요합니다.'))};
+$('wx-here').onclick=()=>{if(!navigator.geolocation)return toast('이 기기에서는 위치를 알 수 없습니다.');navigator.geolocation.getCurrentPosition(p=>loadWx(p.coords.latitude,p.coords.longitude,'내 동네'),()=>toast('위치 허용이 필요합니다.'))};
 const ZO=[['쥐','미뤄 둔 연락을 먼저 해 보세요. 반가운 답이 돌아옵니다.'],['소','서두르지 않아도 되는 날입니다. 평소 속도가 가장 좋습니다.'],['호랑이','하고 싶은 말은 오전에 하세요. 듣는 사람 마음이 열려 있습니다.'],['토끼','작은 지출이 큰 기분 전환이 됩니다. 좋아하는 것 하나를 고르세요.'],['용','오래된 물건을 정리하면 뜻밖의 것을 찾습니다.'],['뱀','한 걸음 물러서서 보면 답이 보이는 날입니다.'],['말','몸을 움직이면 생각이 가벼워집니다. 가까운 길을 걸어 보세요.'],['양','누군가 당신의 한마디를 기다립니다. 칭찬을 아끼지 마세요.'],['원숭이','새로운 것을 하나 배워 보기 좋은 날입니다.'],['닭','약속 시간보다 조금 일찍 나서면 하루가 여유롭습니다.'],['개','오랜 친구 생각이 나면 그게 신호입니다. 안부를 물어 보세요.'],['돼지','맛있는 한 끼가 오늘의 복입니다. 천천히 드세요.']];
 let myZ=store.get('zodiac',null);
 function renderZ(){$('zodiac').innerHTML=ZO.map((z,i)=>'<button type="button" data-z="'+i+'" aria-pressed="'+(myZ===i)+'">'+z[0]+'</button>').join('');$('fortune').textContent=myZ==null?'띠를 고르면 오늘의 한마디가 나옵니다.':ZO[myZ][1]}
@@ -397,7 +421,7 @@ function renderEra(){
   $('songs').innerHTML='<p class="note" style="margin:30px 0 0">노래 듣기를 누르면 유튜브에서 바로 찾아 줍니다.</p><div class="rows">'+e.songs.map(s=>'<div class="rowline"><p><strong>'+esc(s[0])+'</strong><span>'+esc(s[1])+'</span></p><a href="https://www.youtube.com/results?search_query='+encodeURIComponent(s[1]+' '+s[0])+'" target="_blank" rel="noopener">노래 듣기</a></div>').join('')+'</div>';
   if(cur)setTitle();
 }
-const DET={history:['detail_history','그해 오늘',()=>(Y-ago)+'년,<br>그해 오늘'],music:['detail_music','그 시절 노래',()=>(Y-ago)+'년,<br>그해 사랑받은 노래'],food:['detail_food','오늘의 한 끼',()=>'정갈하게 담아낸<br>두부 버섯 덮밥'],quiz:['detail_culture','오늘의 한 판',()=>'오늘의 사자성어'],story:['hero','오늘의 사연',()=>'서랍 속<br>카세트테이프']};
+const DET={history:['detail_history','그해 오늘',()=>(Y-ago)+'년,<br>그해 오늘'],music:['detail_music','그 시절 노래',()=>(Y-ago)+'년,<br>그해 사랑받은 노래'],food:['detail_food','오늘의 한 끼',()=>'정갈하게 담아낸<br>두부 버섯 덮밥'],quiz:['detail_culture','오늘의 한 판',()=>'오늘의 사자성어'],story:['detail_music','오늘의 사연',()=>'서랍 속<br>카세트테이프']};
 let cur=null;
 function setTitle(){$('detail-title').innerHTML=DET[cur][2]()}
 function route(){const k=location.hash.slice(1);cur=DET[k]?k:null;document.body.classList.toggle('in-detail',!!cur);if(cur){$('detail-bg').style.backgroundImage="url('img/"+DET[cur][0]+".jpg')";$('detail-tag').textContent=DET[cur][1];setTitle();document.querySelectorAll('.dsec').forEach(s=>s.classList.toggle('on',s.dataset.k===cur));window.scrollTo(0,0)}else if(route.y!=null)window.scrollTo(0,route.y)}
