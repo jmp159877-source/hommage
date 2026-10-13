@@ -18,7 +18,7 @@
         body { margin: 0; background-color: var(--ivory); color: var(--black); font-family: 'Noto Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, .serif-text { font-family: 'Nanum Myeongjo', serif; font-weight: 400; }
         
-        /* 텍스트 방점 세팅 (서브타이틀용) */
+        /* 텍스트 방점 세팅 */
         .spot-wrap { display: inline-block; position: relative; }
         .spot-wrap::before {
             content: "●";
@@ -32,21 +32,16 @@
 
         .layout-wrapper { display: flex; min-height: 100vh; }
         
-        /* 좌측: 감성 배경 및 날씨 */
+        /* 좌측: 감성 배경 */
         .left-hero { width: 45%; position: sticky; top: 0; height: 100vh; background: #ccc center/cover; display: flex; flex-direction: column; justify-content: space-between; padding: 60px; box-sizing: border-box; transition: background-image 1s ease-in-out; }
         .left-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(15, 74, 53, 0.85) 0%, rgba(0,0,0,0.3) 100%); }
         
         .weather-widget { position: relative; z-index: 1; color: rgba(255,255,255,0.95); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .weather-icon { font-size: 1.5rem; }
 
-        /* 좌측 메인 로고 영역 (완전 개편) */
+        /* 좌측 메인 로고 영역 (크게 확대 및 투명화) */
         .hero-text { position: relative; z-index: 1; color: var(--ivory); }
-        .main-logo-wrap { 
-            display: inline-block; 
-            margin-bottom: 20px; 
-            position: relative; 
-        }
-        /* 투명해진 로고가 어두운 배경에서도 잘 보이도록 부드러운 후광 추가 */
+        .main-logo-wrap { display: inline-block; margin-bottom: 20px; position: relative; }
         .main-logo-wrap::before {
             content: '';
             position: absolute;
@@ -54,28 +49,18 @@
             background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 65%);
             z-index: -1;
         }
-        .main-logo { 
-            height: 160px; /* 로고 대폭 확대 */
-            display: block; 
-            mix-blend-mode: multiply; /* JPG의 흰색 배경을 투명하게 날려버리는 마법 */
-            filter: contrast(1.1); 
-        }
+        .main-logo { height: 160px; display: block; mix-blend-mode: multiply; filter: contrast(1.1); }
         
         .brand-explain { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 0 0 20px 0; line-height: 1.4; color: #fff; font-weight: 300; }
         .hero-text p { font-size: 1.15rem; font-weight: 300; opacity: 0.9; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 20px; }
         
-        /* 우측 콘텐츠 영역 및 카테고리 로고 아이콘 */
+        /* 우측 콘텐츠 영역 */
         .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; }
         .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; display: flex; align-items: center; }
         .category-label:first-child { margin-top: 0; }
         
-        /* 카테고리 앞 로고 아이콘 (흰 배경 투명화 처리 및 정렬) */
-        .category-icon { 
-            height: 40px; 
-            margin-right: 12px; 
-            mix-blend-mode: multiply; /* 흰색 배경 투명화 */
-            transform: translateY(-2px); /* 텍스트와 수평 완벽 정렬 */
-        }
+        /* 카테고리 앞 로고 아이콘 (투명화 및 정렬) */
+        .category-icon { height: 40px; margin-right: 12px; mix-blend-mode: multiply; transform: translateY(-2px); }
         
         .banner-block { width: 100%; height: 250px; background-size: cover; background-position: center; position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;}
         .banner-block:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
@@ -93,14 +78,12 @@
         .list-text h3 { margin: 0 0 8px 0; font-size: 1.3rem; }
         .list-text p { margin: 0; color: var(--gray); font-size: 0.95rem; }
 
-        /* 게임 버튼 */
         .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .game-btn { background: #fff; border: 1px solid rgba(15, 74, 53, 0.2); border-radius: 12px; padding: 25px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; font-size: 1.2rem; font-weight: 500; color: var(--dark-green); box-shadow: 0 2px 10px rgba(0,0,0,0.03); text-decoration: none; display: block; }
         .game-btn:hover { background: var(--dark-green); color: #fff; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(15, 74, 53, 0.2); }
         .game-btn span { display: block; font-size: 0.9rem; font-weight: 300; color: var(--gray); margin-top: 8px; }
         .game-btn:hover span { color: rgba(255,255,255,0.8); }
 
-        /* 상세 페이지 */
         #detail-page { display: none; width: 100%; min-height: 100vh; background: var(--ivory); }
         .top-nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; box-sizing: border-box; display: flex; justify-content: space-between; z-index: 100; mix-blend-mode: difference; color: #fff; }
         .back-btn { font-size: 1.2rem; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;}
@@ -126,7 +109,6 @@
 <body>
 
     <div id="main-page" class="layout-wrapper">
-        <!-- 좌측 영역 -->
         <div class="left-hero" id="greeting-card" style="background-image: url('spring.jfif');">
             <div id="weather-box" class="weather-widget" style="display: none;">
                 <span id="w-icon" class="weather-icon">☀️</span>
@@ -138,7 +120,6 @@
             </div>
             
             <div class="hero-text">
-                <!-- 사장님이 원하셨던 크고 투명한 로고 적용 -->
                 <div class="main-logo-wrap">
                     <img src="logo.jpg.jfif" alt="오마주 로고" class="main-logo">
                 </div>
@@ -153,9 +134,7 @@
             </div>
         </div>
 
-        <!-- 우측 콘텐츠 영역 -->
         <div class="right-content">
-            <!-- 1. 그해 오늘 -->
             <div class="category-label serif-text">
                 <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 그해 오늘
             </div>
@@ -166,7 +145,6 @@
                 </div>
             </div>
 
-            <!-- 2. 오늘의 질문 & 퀴즈 -->
             <div class="category-label serif-text">
                 <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘의 질문 & 퀴즈
             </div>
@@ -177,7 +155,6 @@
                 </div>
             </div>
 
-            <!-- 3. 오늘의 한 끼 -->
             <div class="category-label serif-text">
                 <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘의 한 끼
             </div>
@@ -191,7 +168,6 @@
                 </div>
             </div>
 
-            <!-- 4. 오늘 한 판 -->
             <div class="category-label serif-text" style="margin-top: 50px;">
                 <img src="logo.jpg.jfif" class="category-icon" alt="오마주 로고"> 오늘 한 판
             </div>
@@ -204,7 +180,6 @@
         </div>
     </div>
 
-    <!-- 상세 페이지 -->
     <div id="detail-page">
         <div class="top-nav">
             <div class="back-btn" onclick="closeDetail()">← 뒤로 가기</div>
@@ -242,7 +217,6 @@
             window.scrollTo(0, 0);
         }
 
-        /* 날씨 API */
         async function getRealWeather() {
             const defaultLat = 37.2635; 
             const defaultLon = 127.0286; 
