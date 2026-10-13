@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오마주 (hommage)</title>
+    <title>오마주 (Omaju) - 오늘도 마음은 주니어</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         
@@ -17,23 +17,48 @@
 
         body { margin: 0; background-color: var(--ivory); color: var(--black); font-family: 'Noto Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, .serif-text { font-family: 'Nanum Myeongjo', serif; font-weight: 400; }
-        .point-text { -webkit-text-emphasis: filled circle var(--bright-green); text-emphasis: filled circle var(--bright-green); font-weight: 700; }
         
+        /* 텍스트 방점 세팅 (서브타이틀용) */
+        .spot-wrap { display: inline-block; position: relative; }
+        .spot-wrap::before {
+            content: "●";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--bright-green);
+            font-size: 8px;
+        }
+
         .layout-wrapper { display: flex; min-height: 100vh; }
         
-        .left-hero { width: 45%; position: sticky; top: 0; height: 100vh; background: #ccc center/cover; display: flex; align-items: flex-end; padding: 60px; box-sizing: border-box; transition: background-image 1s ease-in-out; }
-        .left-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(15, 74, 53, 0.8), transparent); }
-        .hero-text { position: relative; z-index: 1; color: var(--ivory); }
-        .hero-text h1 { font-size: 3.5rem; margin: 0 0 10px 0; line-height: 1.5; letter-spacing: -0.02em; }
+        /* 좌측: 감성 배경 및 날씨 */
+        .left-hero { width: 45%; position: sticky; top: 0; height: 100vh; background: #ccc center/cover; display: flex; flex-direction: column; justify-content: space-between; padding: 60px; box-sizing: border-box; transition: background-image 1s ease-in-out; }
+        .left-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(15, 74, 53, 0.85) 0%, rgba(0,0,0,0.3) 100%); }
         
+        .weather-widget { position: relative; z-index: 1; color: rgba(255,255,255,0.95); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .weather-icon { font-size: 1.5rem; }
+
+        /* 좌측 메인 로고 영역 */
+        .hero-text { position: relative; z-index: 1; color: var(--ivory); }
+        .main-logo-wrap { background: rgba(255,255,255,0.95); padding: 15px 25px; border-radius: 15px; display: inline-block; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); backdrop-filter: blur(5px); }
+        .main-logo { height: 70px; display: block; mix-blend-mode: multiply; }
+        
+        .brand-explain { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 0 0 20px 0; line-height: 1.4; color: #fff; font-weight: 300; }
+        .hero-text p { font-size: 1.15rem; font-weight: 300; opacity: 0.9; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 20px; }
+        
+        /* 우측 콘텐츠 영역 및 카테고리 로고 아이콘 */
         .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; }
-        .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; }
+        .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; display: flex; align-items: center; }
         .category-label:first-child { margin-top: 0; }
+        
+        /* 카테고리 앞 로고 아이콘 (흰 배경 투명화 처리) */
+        .category-icon { height: 35px; margin-right: 10px; mix-blend-mode: multiply; }
         
         .banner-block { width: 100%; height: 250px; background-size: cover; background-position: center; position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;}
         .banner-block:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .banner-block::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.35); transition: background 0.3s; }
-        .banner-block:hover::after { background: rgba(0,0,0,0.2); }
+        .banner-block::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.4); transition: background 0.3s; }
+        .banner-block:hover::after { background: rgba(0,0,0,0.25); }
         
         .banner-content { position: absolute; bottom: 30px; left: 30px; z-index: 1; color: #fff; }
         .banner-content h3 { font-size: 1.8rem; margin: 0 0 8px 0; }
@@ -46,121 +71,137 @@
         .list-text h3 { margin: 0 0 8px 0; font-size: 1.3rem; }
         .list-text p { margin: 0; color: var(--gray); font-size: 0.95rem; }
 
+        /* 게임 버튼 */
+        .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .game-btn { background: #fff; border: 1px solid rgba(15, 74, 53, 0.2); border-radius: 12px; padding: 25px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; font-size: 1.2rem; font-weight: 500; color: var(--dark-green); box-shadow: 0 2px 10px rgba(0,0,0,0.03); text-decoration: none; display: block; }
+        .game-btn:hover { background: var(--dark-green); color: #fff; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(15, 74, 53, 0.2); }
+        .game-btn span { display: block; font-size: 0.9rem; font-weight: 300; color: var(--gray); margin-top: 8px; }
+        .game-btn:hover span { color: rgba(255,255,255,0.8); }
+
+        /* 상세 페이지 */
         #detail-page { display: none; width: 100%; min-height: 100vh; background: var(--ivory); }
         .top-nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; box-sizing: border-box; display: flex; justify-content: space-between; z-index: 100; mix-blend-mode: difference; color: #fff; }
         .back-btn { font-size: 1.2rem; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;}
         .back-btn:hover { opacity: 0.8; }
-        
         .detail-hero { width: 100%; height: 55vh; position: relative; background-size: cover; background-position: center; transition: background-image 0.5s ease-in-out; }
-        .detail-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 50%, var(--ivory) 100%); }
+        .detail-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 50%, var(--ivory) 100%); }
         .hero-title-box { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; z-index: 10; }
-        .category-tag { display: inline-block; font-size: 0.9rem; padding: 6px 18px; border: 1px solid var(--dark-green); color: var(--dark-green); border-radius: 20px; margin-bottom: 15px; font-weight: 500;}
+        .category-tag { display: inline-block; font-size: 0.9rem; padding: 6px 18px; border: 1px solid var(--dark-green); color: var(--dark-green); border-radius: 20px; margin-bottom: 15px; font-weight: 500; background: rgba(244, 241, 234, 0.8); backdrop-filter: blur(5px);}
         #detail-title { font-size: 3rem; margin: 0; color: var(--black); line-height: 1.3; }
-        
         .content-body { max-width: 750px; margin: 0 auto; padding: 60px 20px 120px; font-size: 1.15rem; line-height: 2; color: #333; font-weight: 300; }
-        .content-body p { margin-bottom: 30px; text-indent: 10px; }
+        .content-body p { margin-bottom: 25px; text-indent: 5px; }
 
         @media (max-width: 768px) {
             .layout-wrapper { flex-direction: column; }
-            .left-hero { width: 100%; height: 60vh; padding: 40px 20px; }
+            .left-hero { width: 100%; height: 75vh; padding: 40px 25px; }
             .right-content { width: 100%; padding: 40px 20px; }
             .detail-hero { height: 40vh; }
-            #detail-title { font-size: 2rem; }
+            #detail-title { font-size: 2.2rem; }
+            .weather-widget { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="main-page" class="layout-wrapper">
-        <div class="left-hero" id="greeting-card">
+        <!-- 좌측 영역 -->
+        <div class="left-hero" id="greeting-card" style="background-image: url('spring.jfif');">
+            <div id="weather-box" class="weather-widget" style="display: none;">
+                <span id="w-icon" class="weather-icon">☀️</span>
+                <span id="w-text">날씨 불러오는 중...</span>
+            </div>
+            <div id="weather-fallback" class="weather-widget">
+                <span class="weather-icon">🍀</span>
+                <span>오늘의 오마주</span>
+            </div>
+            
             <div class="hero-text">
-                <h1 class="serif-text"><span class="point-text">오</span>늘도 <span class="point-text">마</span>음은<br><span class="point-text">주</span>니어.</h1>
-                <p>오마주와 함께 여는 싱그러운 하루</p>
+                <!-- 사장님이 확정하신 로고 적용 (좌측 메인 페이지 큼지막하게) -->
+                <div class="main-logo-wrap">
+                    <img src="logo.jpg" alt="오마주 로고" class="main-logo">
+                </div>
+                
+                <div class="brand-explain">
+                    <span class="spot-wrap">오</span>늘도 
+                    <span class="spot-wrap">마</span>음은 
+                    <span class="spot-wrap">주</span>니어.
+                </div>
+                
+                <p>당신의 두 번째 청춘을 응원하는 감성 라이프스타일 매거진.<br><strong>오마주와 함께 매일매일,</strong> 새로운 하루를 기분 좋게 열어보세요.</p>
             </div>
         </div>
 
+        <!-- 우측 콘텐츠 영역 -->
         <div class="right-content">
-            <div class="category-label serif-text">오늘의 문화</div>
-            <div class="banner-block" style="background-image: url('culture.jfif');" onclick="openDetail('culture')">
-                <div class="banner-content">
-                    <h3 class="serif-text">마음을 다독이는 햇살 아래의 한 줄</h3>
-                    <p>이해인 수녀의 시와 함께하는 여유</p>
-                </div>
+            <!-- 1. 그해 오늘 -->
+            <div class="category-label serif-text">
+                <img src="logo.jpg" class="category-icon" alt="오마주 로고"> 그해 오늘
             </div>
-
-            <div class="category-label serif-text">오늘의 뮤직</div>
-            <div class="banner-block" style="background-image: url('music.jfif');" onclick="openDetail('music')">
-                <div class="banner-content">
-                    <h3 class="serif-text">오후의 클래식 믹스</h3>
-                    <p>차분하게 공간을 채우는 모던한 턴테이블의 선율</p>
-                </div>
-            </div>
-
-            <div class="category-label serif-text">그해 오늘</div>
             <div class="banner-block" style="background-image: url('history.jfif');" onclick="openDetail('history')">
                 <div class="banner-content">
                     <h3 class="serif-text">1986년, 서랍 속 낡은 다이어리</h3>
-                    <p>손글씨로 꾹꾹 눌러 적은 그때 그 시절의 낭만</p>
+                    <p>빛바랜 사진과 손글씨로 꾹꾹 눌러 적은 그때 그 시절의 추억</p>
                 </div>
             </div>
 
-            <div class="category-label serif-text">오늘의 이야기</div>
+            <!-- 2. 오늘의 질문 & 퀴즈 -->
+            <div class="category-label serif-text">
+                <img src="logo.jpg" class="category-icon" alt="오마주 로고"> 오늘의 질문 & 퀴즈
+            </div>
+            <div class="banner-block" style="background-image: url('culture.jfif');" onclick="openDetail('quiz')">
+                <div class="banner-content">
+                    <h3 class="serif-text">두뇌 회전 깜짝 퀴즈</h3>
+                    <p>매일 아침 잠자는 두뇌를 가볍게 깨우는 시간</p>
+                </div>
+            </div>
+
+            <!-- 3. 오늘의 한 끼 -->
+            <div class="category-label serif-text">
+                <img src="logo.jpg" class="category-icon" alt="오마주 로고"> 오늘의 한 끼
+            </div>
             <div class="list-container">
                 <div class="list-block" onclick="openDetail('food')">
                     <div class="list-img" style="background-image: url('food.jfif');"></div>
                     <div class="list-text">
-                        <h3 class="serif-text">오늘의 한 끼</h3>
-                        <p>정갈하게 담아낸 두부 버섯 덮밥</p>
+                        <h3 class="serif-text">정갈하게 담아낸 두부 버섯 덮밥</h3>
+                        <p>속과 마음을 편안하게 다독여줄 오늘의 건강 밥상</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- 4. 오늘 한 판 -->
+            <div class="category-label serif-text" style="margin-top: 50px;">
+                <img src="logo.jpg" class="category-icon" alt="오마주 로고"> 오늘 한 판
+            </div>
+            <div class="game-grid">
+                <a href="https://v6.netb.co.kr/janggi" target="_blank" class="game-btn">장기 한 판 <span>지혜와 집중력 향상</span></a>
+                <a href="https://v6.netb.co.kr/sichuan" target="_blank" class="game-btn">사천성 게임 <span>같은 모양 짝 맞추기</span></a>
+                <a href="https://v6.netb.co.kr/omok" target="_blank" class="game-btn">오목 한 판 <span>가볍게 즐기는 한 판</span></a>
+                <a href="https://v6.netb.co.kr/gostop" target="_blank" class="game-btn">맞고 게임 <span>스트레스 날리는 시간</span></a>
             </div>
         </div>
     </div>
 
+    <!-- 상세 페이지 -->
     <div id="detail-page">
         <div class="top-nav">
             <div class="back-btn" onclick="closeDetail()">← 뒤로 가기</div>
-            <div class="serif-text" style="font-weight: 700; font-size: 1.2rem; letter-spacing: 0.1em;">hommage</div>
+            <div class="serif-text" style="font-weight: 700; font-size: 1.2rem; letter-spacing: 0.1em;">Omaju</div>
         </div>
-        
         <div class="detail-hero" id="detail-bg">
             <div class="hero-title-box">
                 <span class="category-tag serif-text" id="detail-tag">카테고리</span>
                 <h1 class="serif-text" id="detail-title">제목</h1>
             </div>
         </div>
-
-        <div class="content-body" id="detail-content">
-            본문 내용이 들어갑니다.
-        </div>
+        <div class="content-body" id="detail-content">본문</div>
     </div>
 
     <script>
         const contentData = {
-            culture: {
-                bg: "detail_culture.jfif",
-                tag: "오늘의 문화",
-                title: "마음을 다독이는<br>햇살 아래의 한 줄",
-                text: "<p>어느덧 바람이 옷깃을 스미는 계절입니다. 따뜻한 차 한 잔을 손에 쥐고 창밖을 내다보는 시간이 많아지는 요즘, 여러분의 하루는 어떤 온도로 채워지고 계신가요?</p><p>바쁘게 흘러가던 젊은 날에는 미처 발견하지 못했던 일상의 작은 틈새들이, 이제야 비로소 눈에 들어오기 시작합니다.</p>"
-            },
-            music: {
-                bg: "detail_music.jfif",
-                tag: "오늘의 뮤직",
-                title: "오후의<br>클래식 믹스",
-                text: "<p>잔잔한 턴테이블 바늘이 돌아가는 소리와 함께 오후의 클래식을 감상해 보세요.</p><p>지친 마음을 위로하는 따뜻한 선율이 공간을 채웁니다.</p>"
-            },
-            history: {
-                bg: "detail_history.jfif",
-                tag: "그해 오늘",
-                title: "1986년,<br>서랍 속 낡은 다이어리",
-                text: "<p>서랍 깊숙한 곳에 잠들어 있던 빛바랜 다이어리와 클래식 카메라를 꺼내어 봅니다.</p><p>손글씨로 꾹꾹 눌러 적은 그때 그 시절의 낭만을 떠올리며 잠시 추억 여행을 떠나봅니다.</p>"
-            },
-            food: {
-                bg: "detail_food.jfif",
-                tag: "오늘의 한 끼",
-                title: "정갈하게 담아낸<br>두부 버섯 덮밥",
-                text: "<p>속이 편안해지는 따뜻한 두부와 향긋한 버섯을 올린 건강한 한 끼 식단입니다.</p><p>자극적이지 않아 시니어 분들의 식사로 적극 추천해 드립니다.</p>"
-            }
+            history: { bg: "detail_history.jfif", tag: "그해 오늘", title: "1986년,<br>서랍 속 낡은 다이어리", text: "<p>먼지 쌓인 서랍 안쪽에서 손때가 잔뜩 탄 낡은 수첩 하나를 꺼냈습니다. 한 면에는 '1986'이라는 바랜 금박 숫자가 박혀 있고, 조심스레 넘긴 책장에는 그때의 꾹꾹 눌러쓴 손글씨들이 빼곡합니다.</p><p>당시엔 그저 하루의 사소한 투덜거림이나 약속 시간, 좋아하는 가수의 노랫말들을 적어둔 것뿐이었는데, 오랜 시간이 흐르고 나니 그 어떤 역사서보다 생생한 청춘의 기록이 되었네요.</p><p>손에 잡히는 연필의 질감과 사각거리는 소리가 좋았던 시절. 스마트폰도, 인터넷도 없었지만 가슴에는 낭만이 꽉 들어차 있던 그해 오늘을 잠시 들여다보며, 오늘 하루 바쁜 마음을 잠시 접어두고 옛 기억 속에 머물러보는 건 어떨까요?</p>" },
+            quiz: { bg: "detail_culture.jfif", tag: "오늘의 질문 & 퀴즈", title: "잠자는 기억을 깨우는<br>오늘의 기억력 퀴즈", text: "<p><strong>Q. 다음 보기 중에서 '봄'에 피는 꽃이 아닌 것은 무엇일까요?</strong></p><p>1. 개나리<br>2. 벚꽃<br>3. 코스모스<br>4. 진달래</p><br><p><strong>정답은 바로 [ 3번. 코스모스 ] 입니다!</strong></p><p>코스모스는 가을바람과 함께 피어나 길가를 아름답게 물들이는 가을의 대표적인 꽃이랍니다. 봄에는 진달래와 개나리가, 그리고 가을엔 길가에 핀 하늘거리는 코스모스가 우리 곁을 찾아오지요.</p><p>두뇌를 활성화하는 가장 좋은 방법은 옛 추억과 일상의 상식을 가볍게 자극해 주는 일입니다. 매일 아침 오마주가 드리는 간단한 문제를 풀면서, 뇌 속 세포들에게 활기찬 아침 인사를 건네보세요!</p>" },
+            food: { bg: "detail_food.jfif", tag: "오늘의 한 끼", title: "정갈하게 담아낸<br>따뜻한 두부 버섯 덮밥", text: "<p>쌀쌀한 날씨에는 무엇보다 속을 따뜻하게 보호해 줄 식사가 제일입니다. 오늘은 시니어분들의 소화와 영양을 동시에 챙길 수 있는 정갈한 '두부 버섯 덮밥'을 추천합니다.</p><p>두부는 부드러운 단백질이 풍부하여 위에 부담을 전혀 주지 않고, 쫄깃한 버섯은 비타민과 무기질이 가득해 면역력을 높여줍니다. 양파와 당근을 잘게 썰어 간장 소스에 자작하게 졸인 뒤, 따뜻한 밥 위에 얹어내면 완성입니다.</p><p>꼭 거창한 요리가 아니더라도, 나를 대접하듯 정성을 담아 꼭꼭 씹어 먹는 한 끼 식사만큼 훌륭한 약은 없습니다. 오늘 점심이나 저녁엔 몸을 살포시 데워주는 건강한 덮밥 한 그릇 어떠신가요?</p>" }
         };
 
         function openDetail(category) {
@@ -168,7 +209,6 @@
             document.getElementById('detail-tag').innerText = contentData[category].tag;
             document.getElementById('detail-title').innerHTML = contentData[category].title;
             document.getElementById('detail-content').innerHTML = contentData[category].text;
-
             document.getElementById('main-page').style.display = 'none';
             document.getElementById('detail-page').style.display = 'block';
             window.scrollTo(0, 0); 
@@ -180,28 +220,71 @@
             window.scrollTo(0, 0);
         }
 
-        function setSeasonalGreeting() {
-            const today = new Date();
-            const month = today.getMonth() + 1;
-            let seasonImage = '';
+        /* 날씨 API */
+        async function getRealWeather() {
+            const defaultLat = 37.2635; 
+            const defaultLon = 127.0286; 
+            let lat = defaultLat;
+            let lon = defaultLon;
 
-            if (month >= 3 && month <= 5) {
-                seasonImage = 'spring.jfif';
-            } else if (month >= 6 && month <= 8) {
-                seasonImage = 'summer.jfif';
-            } else if (month >= 9 && month <= 11) {
-                seasonImage = 'autumn.jfif';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    fetchWeather(position.coords.latitude, position.coords.longitude);
+                }, () => {
+                    fetchWeather(lat, lon); 
+                });
             } else {
-                seasonImage = 'winter.jfif';
-            }
-
-            const greetingCard = document.getElementById('greeting-card');
-            if (greetingCard) {
-                greetingCard.style.backgroundImage = `url('${seasonImage}')`;
+                fetchWeather(lat, lon);
             }
         }
 
-        window.addEventListener('DOMContentLoaded', setSeasonalGreeting);
+        async function fetchWeather(lat, lon) {
+            const apiKey = '8d3434682025110bf00e4fb804191d84';
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.weather && data.weather.length > 0) {
+                    const temp = Math.round(data.main.temp);
+                    const desc = data.weather[0].description;
+                    const weatherMain = data.weather[0].main;
+                    const city = data.name === "Suwon-si" ? "수원시" : data.name;
+
+                    let icon = '☀️';
+                    let seasonImg = 'spring.jfif';
+
+                    if (weatherMain === 'Rain' || weatherMain === 'Drizzle') {
+                        icon = '🌧️';
+                        seasonImg = 'autumn.jfif'; 
+                    } else if (weatherMain === 'Snow') {
+                        icon = '❄️';
+                        seasonImg = 'winter.jfif';
+                    } else if (weatherMain === 'Clouds') {
+                        icon = '☁️';
+                        seasonImg = 'summer.jfif'; 
+                    } else {
+                        const month = new Date().getMonth() + 1;
+                        if (month >= 3 && month <= 5) seasonImg = 'spring.jfif';
+                        else if (month >= 6 && month <= 8) seasonImg = 'summer.jfif';
+                        else if (month >= 9 && month <= 11) seasonImg = 'autumn.jfif';
+                        else seasonImg = 'winter.jfif';
+                    }
+
+                    document.getElementById('greeting-card').style.backgroundImage = `url('${seasonImg}')`;
+                    document.getElementById('w-icon').innerText = icon;
+                    document.getElementById('w-text').innerText = `${desc} | ${temp}°C (${city})`;
+                    
+                    document.getElementById('weather-fallback').style.display = 'none';
+                    document.getElementById('weather-box').style.display = 'flex';
+                }
+            } catch (err) {
+                console.error("날씨 호출 중 오류:", err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', getRealWeather);
     </script>
 </body>
 </html>
