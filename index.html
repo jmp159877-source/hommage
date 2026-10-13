@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오마주 (hommage)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --ivory: #F4F1EA;
+            --dark-green: #0F4A35;
+            --bright-green: #19B46B;
+            --black: #141414;
+            --gray: #666;
+        }
+
+        body { margin: 0; background-color: var(--ivory); color: var(--black); font-family: 'Noto Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
+        h1, h2, h3, .serif-text { font-family: 'Nanum Myeongjo', serif; font-weight: 400; }
+        .point-text { -webkit-text-emphasis: filled circle var(--bright-green); text-emphasis: filled circle var(--bright-green); font-weight: 700; }
+        
+        /* 1. 메인 페이지 스타일 */
+        .layout-wrapper { display: flex; min-height: 100vh; }
+        
+        /* 좌측 히어로 (계절별 이미지 자동 적용) */
+        .left-hero { width: 45%; position: sticky; top: 0; height: 100vh; background: #ccc center/cover; display: flex; align-items: flex-end; padding: 60px; box-sizing: border-box; transition: background-image 1s ease-in-out; }
+        .left-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to top, rgba(15, 74, 53, 0.8), transparent); }
+        .hero-text { position: relative; z-index: 1; color: var(--ivory); }
+        .hero-text h1 { font-size: 3.5rem; margin: 0 0 10px 0; line-height: 1.5; letter-spacing: -0.02em; }
+        
+        /* 우측 콘텐츠 영역 */
+        .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; }
+        .category-label { font-size: 1.4rem; color: var(--dark-green); border-bottom: 1px solid rgba(15, 74, 53, 0.2); padding-bottom: 15px; margin-bottom: 30px; margin-top: 70px; }
+        .category-label:first-child { margin-top: 0; }
+        
+        /* 클릭 가능한 배너 블록 */
+        .banner-block { width: 100%; height: 250px; background-size: cover; background-position: center; position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;}
+        .banner-block:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .banner-block::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.35); transition: background 0.3s; }
+        .banner-block:hover::after { background: rgba(0,0,0,0.2); }
+        
+        .banner-content { position: absolute; bottom: 30px; left: 30px; z-index: 1; color: #fff; }
+        .banner-content h3 { font-size: 1.8rem; margin: 0 0 8px 0; }
+        .banner-content p { margin: 0; opacity: 0.9; font-weight: 300; }
+        
+        /* 리스트형 블록 */
+        .list-container { display: flex; flex-direction: column; gap: 15px; }
+        .list-block { display: flex; align-items: center; background: #fff; padding: 15px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .list-block:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); border: 1px solid var(--dark-green); }
+        .list-img { width: 100px; height: 100px; background-size: cover; background-position: center; border-radius: 8px; margin-right: 25px; }
+        .list-text h3 { margin: 0 0 8px 0; font-size: 1.3rem; }
+        .list-text p { margin: 0; color: var(--gray); font-size: 0.95rem; }
+
+        /* 2. 상세 페이지 스타일 */
+        #detail-page { display: none; width: 100%; min-height: 100vh; background: var(--ivory); }
+        .top-nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; box-sizing: border-box; display: flex; justify-content: space-between; z-index: 100; mix-blend-mode: difference; color: #fff; }
+        .back-btn { font-size: 1.2rem; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;}
+        .back-btn:hover { opacity: 0.8; }
+        
+        .detail-hero { width: 100%; height: 55vh; position: relative; background-size: cover; background-position: center; transition: background-image 0.5s ease-in-out; }
+        .detail-hero::after { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 50%, var(--ivory) 100%); }
+        .hero-title-box { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; z-index: 10; }
+        .category-tag { display: inline-block; font-size: 0.9rem; padding: 6px 18px; border: 1px solid var(--dark-green); color: var(--dark-green); border-radius: 20px; margin-bottom: 15px; font-weight: 500;}
+        #detail-title { font-size: 3rem; margin: 0; color: var(--black); line-height: 1.3; }
+        
+        .content-body { max-width: 750px; margin: 0 auto; padding: 60px 20px 120px; font-size: 1.15rem; line-height: 2; color: #333; font-weight: 300; }
+        .content-body p { margin-bottom: 30px; text-indent: 10px; }
+
+        @media (max-width: 768px) {
+            .layout-wrapper { flex-direction: column; }
+            .left-hero { width: 100%; height: 60vh; padding: 40px 20px; }
+            .right-content { width: 100%; padding: 40px 20px; }
+            .detail-hero { height: 40vh; }
+            #detail-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === 1. 메인 페이지 === -->
+    <div id="main-page" class="layout-wrapper">
+        <div class="left-hero" id="greeting-card">
+            <div class="hero-text">
+                <h1 class="serif-text"><span class="point-text">오</span>늘도 <span class="point-text">마</span>음은<br><span class="point-text">주</span>니어.</h1>
+                <p>오마주와 함께 여는 싱그러운 하루</p>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <!-- 오늘의 문화 -->
+            <div class="category-label serif-text">오늘의 문화</div>
+            <div class="banner-block" style="background-image: url('culture.jpg');" onclick="openDetail('culture')">
+                <div class="banner-content">
+                    <h3 class="serif-text">마음을 다독이는 햇살 아래의 한 줄</h3>
+                    <p>이해인 수녀의 시와 함께하는 여유</p>
+                </div>
+            </div>
+
+            <!-- 오늘의 뮤직 -->
+            <div class="category-label serif-text">오늘의 뮤직</div>
+            <div class="banner-block" style="background-image: url('music.jpg');" onclick="openDetail('music')">
+                <div class="banner-content">
+                    <h3 class="serif-text">오후의 클래식 믹스</h3>
+                    <p>차분하게 공간을 채우는 모던한 턴테이블의 선율</p>
+                </div>
+            </div>
+
+            <!-- 그해 오늘 -->
+            <div class="category-label serif-text">그해 오늘</div>
+            <div class="banner-block" style="background-image: url('history.jpg');" onclick="openDetail('history')">
+                <div class="banner-content">
+                    <h3 class="serif-text">1986년, 서랍 속 낡은 다이어리</h3>
+                    <p>손글씨로 꾹꾹 눌러 적은 그때 그 시절의 낭만</p>
+                </div>
+            </div>
+
+            <!-- 오늘의 이야기 -->
+            <div class="category-label serif-text">오늘의 이야기</div>
+            <div class="list-container">
+                <div class="list-block" onclick="openDetail('food')">
+                    <div class="list-img" style="background-image: url('food.jpg');"></div>
+                    <div class="list-text">
+                        <h3 class="serif-text">오늘의 한 끼</h3>
+                        <p>정갈하게 담아낸 두부 버섯 덮밥</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 2. 상세 페이지 === -->
+    <div id="detail-page">
+        <div class="top-nav">
+            <div class="back-btn" onclick="closeDetail()">← 뒤로 가기</div>
+            <div class="serif-text" style="font-weight: 700; font-size: 1.2rem; letter-spacing: 0.1em;">hommage</div>
+        </div>
+        
+        <div class="detail-hero" id="detail-bg">
+            <div class="hero-title-box">
+                <span class="category-tag serif-text" id="detail-tag">카테고리</span>
+                <h1 class="serif-text" id="detail-title">제목</h1>
+            </div>
+        </div>
+
+        <div class="content-body" id="detail-content">
+            본문 내용이 들어갑니다.
+        </div>
+    </div>
+
+    <!-- 자바스크립트 -->
+    <script>
+        // 1. 상세 페이지 데이터 (전용 상세 이미지 적용)
+        const contentData = {
+            culture: {
+                bg: "detail_culture.jpg", // 상세용 이미지 적용
+                tag: "오늘의 문화",
+                title: "마음을 다독이는<br>햇살 아래의 한 줄",
+                text: "<p>어느덧 바람이 옷깃을 스미는 계절입니다. 따뜻한 차 한 잔을 손에 쥐고 창밖을 내다보는 시간이 많아지는 요즘, 여러분의 하루는 어떤 온도로 채워지고 계신가요?</p><p>바쁘게 흘러가던 젊은 날에는 미처 발견하지 못했던 일상의 작은 틈새들이, 이제야 비로소 눈에 들어오기 시작합니다.</p>"
+            },
+            music: {
+                bg: "detail_music.jpg", // 상세용 이미지 적용
+                tag: "오늘의 뮤직",
+                title: "오후의<br>클래식 믹스",
+                text: "<p>잔잔한 턴테이블 바늘이 돌아가는 소리와 함께 오후의 클래식을 감상해 보세요.</p><p>지친 마음을 위로하는 따뜻한 선율이 공간을 채웁니다.</p>"
+            },
+            history: {
+                bg: "detail_history.jpg", // 상세용 이미지 적용
+                tag: "그해 오늘",
+                title: "1986년,<br>서랍 속 낡은 다이어리",
+                text: "<p>서랍 깊숙한 곳에 잠들어 있던 빛바랜 다이어리와 클래식 카메라를 꺼내어 봅니다.</p><p>손글씨로 꾹꾹 눌러 적은 그때 그 시절의 낭만을 떠올리며 잠시 추억 여행을 떠나봅니다.</p>"
+            },
+            food: {
+                bg: "detail_food.jpg", // 상세용 이미지 적용
+                tag: "오늘의 한 끼",
+                title: "정갈하게 담아낸<br>두부 버섯 덮밥",
+                text: "<p>속이 편안해지는 따뜻한 두부와 향긋한 버섯을 올린 건강한 한 끼 식단입니다.</p><p>자극적이지 않아 시니어 분들의 식사로 적극 추천해 드립니다.</p>"
+            }
+        };
+
+        // 2. 상세 페이지 열기 기능
+        function openDetail(category) {
+            document.getElementById('detail-bg').style.backgroundImage = `url('${contentData[category].bg}')`;
+            document.getElementById('detail-tag').innerText = contentData[category].tag;
+            document.getElementById('detail-title').innerHTML = contentData[category].title;
+            document.getElementById('detail-content').innerHTML = contentData[category].text;
+
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'block';
+            window.scrollTo(0, 0); 
+        }
+
+        // 3. 메인 페이지 돌아가기 기능
+        function closeDetail() {
+            document.getElementById('detail-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'flex';
+            window.scrollTo(0, 0);
+        }
+
+        // 4. 계절별 메인 인사 카드 배경 자동 변경 기능
+        function setSeasonalGreeting() {
+            const today = new Date();
+            const month = today.getMonth() + 1; // 1월~12월 확인
+            let seasonImage = '';
+
+            // 계절 판별
+            if (month >= 3 && month <= 5) {
+                seasonImage = 'spring.jpg'; // 봄 (3~5월)
+            } else if (month >= 6 && month <= 8) {
+                seasonImage = 'summer.jpg'; // 여름 (6~8월)
+            } else if (month >= 9 && month <= 11) {
+                seasonImage = 'autumn.jpg'; // 가을 (9~11월)
+            } else {
+                seasonImage = 'winter.jpg'; // 겨울 (12~2월)
+            }
+
+            // 인사 카드 배경 이미지 적용
+            const greetingCard = document.getElementById('greeting-card');
+            if (greetingCard) {
+                greetingCard.style.backgroundImage = `url('${seasonImage}')`;
+            }
+        }
+
+        // 웹페이지 렌더링 후 즉시 실행
+        window.addEventListener('DOMContentLoaded', setSeasonalGreeting);
+    </script>
+</body>
+</html>
