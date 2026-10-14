@@ -392,3 +392,65 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 
 /* ── 인사 카드 손글씨체 ── */
 .gcard.photo q { font-family: 'Gaegu', 'Noto Sans KR', sans-serif; font-size: 1.5rem; line-height: 1.5; font-weight: 700; letter-spacing: 0.01em; }
+
+/* ── 설치·알리기 버튼 강조 ── */
+.ghost.go { background: var(--leaf); color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(25,180,107,0.35); }
+.ghost.go:hover { background: #15a060; }
+
+/* ── 시안: 사각 버튼 ── */
+.ghost, .btn, #stamp, .read, .picks button, .solid, .opts button, .poll button, .modal-actions .btn, .cmt-form input, .memo input, .field input, .field select { border-radius: 6px !important; }
+.hero-actions { gap: 10px; }
+.hero-actions .ghost { padding: 13px 20px; font-size: 1.05rem; }
+.ghost.go { box-shadow: none; }
+.tabs3 button { border-radius: 10px; }
+.banner, .wx-card, .gcard, .banner.photo { border-radius: 10px; }
+.gcard.photo q { font-size: 1.25rem; line-height: 1.5; bottom: 60px; top: auto; }
+.gcard { width: 240px; height: 300px; }
+
+/* ── 인사 카드: 흰 상자 + 짙은 초록 손글씨 ── */
+.gcard.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.35), rgba(20,20,20,0) 50%); }
+.gcard.photo q { top: auto; bottom: 56px; left: 14px; right: 14px; background: rgba(255,255,255,0.88); color: var(--dark-green); padding: 14px 14px; border-radius: 6px; text-shadow: none; font-size: 1.2rem; line-height: 1.45; }
+.gcard.photo .send { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.gcard { width: 250px; height: 320px; }
+.gcard.photo q { font-size: 1.15rem; line-height: 1.5; padding: 12px 14px; }
+
+/* ── 인사 카드: 상자 없이, 흰 굵은 글씨 + 그림자 ── */
+.gcard.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.6) 0%, rgba(20,20,20,0.25) 45%, rgba(20,20,20,0) 75%); }
+.gcard.photo q { background: none; padding: 0; left: 20px; right: 20px; bottom: 58px; color: #fff; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 1.2rem; line-height: 1.55; text-shadow: 0 1px 2px rgba(0,0,0,0.7), 0 2px 10px rgba(0,0,0,0.5); border-radius: 0; }
+.gcard.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.3) 0%, rgba(20,20,20,0) 45%); }
+.gcard.photo q { text-shadow: 0 0 2px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8), 0 2px 12px rgba(0,0,0,0.6); }
+.gcard.photo .send { display: none; }
+.gcard.photo q { bottom: 22px; }
+.note.tip { display: inline-block; background: #FFF3C4; color: var(--black); padding: 10px 14px; border-radius: 6px; font-weight: 500; margin-top: 4px; }
+
+/* ── 탭: 사진 배경 ── */
+.tabs3 button { position: relative; overflow: hidden; background-size: cover; background-position: center; color: #fff; border: 0; min-height: 150px; padding: 0; text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,0.5); }
+.tabs3 button[data-tab="g1"] { background-image: url('../img/tab-today.jpg'); }
+.tabs3 button[data-tab="g2"] { background-image: url('../img/tab-past.jpg'); }
+.tabs3 button[data-tab="g3"] { background-image: url('../img/tab-future.jpg'); }
+.tabs3 button::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,20,20,0.75) 0%, rgba(20,20,20,0.45) 55%, rgba(20,20,20,0.35) 100%); transition: background .2s; }
+.tabs3 button b, .tabs3 button small { position: relative; z-index: 1; }
+.tabs3 button b { font-size: 1.3rem; }
+.tabs3 button small { color: #fff; opacity: 0.95; }
+.tabs3 button[aria-pressed="true"], .tabs3 button[data-tab="g1"][aria-pressed="true"], .tabs3 button[data-tab="g2"][aria-pressed="true"], .tabs3 button[data-tab="g3"][aria-pressed="true"] { background-color: transparent; box-shadow: 0 0 0 4px var(--leaf), 0 6px 18px rgba(0,0,0,0.25); }
+.tabs3 button[aria-pressed="true"]::before { background: linear-gradient(to top, rgba(20,20,20,0.7) 0%, rgba(20,20,20,0.15) 60%, rgba(20,20,20,0.05) 100%); }
+.tabs3 button[aria-pressed="false"] { filter: saturate(0.6) brightness(0.85); }
+.tabs3 button b { display: flex; align-items: flex-end; justify-content: center; height: 100%; padding: 0 6px 44px; }
+.tabs3 button small { position: absolute; left: 0; right: 0; bottom: 14px; }
+@media (max-width: 768px) { .tabs3 button { min-height: 130px; } .tabs3 button b { font-size: 1.1rem; padding-bottom: 38px; } .tabs3 button small { font-size: 0.72rem; bottom: 12px; } }
+.tabs3 button[data-tab="g1"][aria-pressed="true"] { background-image: url('../img/tab-today.jpg') !important; }
+.tabs3 button[data-tab="g2"][aria-pressed="true"] { background-image: url('../img/tab-past.jpg') !important; }
+.tabs3 button[data-tab="g3"][aria-pressed="true"] { background-image: url('../img/tab-future.jpg') !important; }
+.tabs3 button[aria-pressed="true"] { background-color: #333 !important; }
+.tabs3 button[aria-pressed="true"] { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
+
+/* ── 탭: 테두리 없이, 선택되면 살짝 커지고 나머지는 살짝 작아짐 ── */
+.tabs3 { align-items: center; padding: 14px 0 18px; }
+.tabs3 button { transition: transform .25s ease, filter .25s ease, box-shadow .25s ease; transform: scale(0.94); box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.tabs3 button[aria-pressed="true"], .tabs3 button[data-tab="g1"][aria-pressed="true"], .tabs3 button[data-tab="g2"][aria-pressed="true"], .tabs3 button[data-tab="g3"][aria-pressed="true"] { transform: scale(1.06); box-shadow: 0 8px 22px rgba(0,0,0,0.28); z-index: 1; }
+.tabs3 button[aria-pressed="false"] { filter: saturate(0.7) brightness(0.8); }
+.tabs3 { padding: 18px 0 22px; }
+.tabs3 button { transform: scale(0.9); }
+.tabs3 button[aria-pressed="true"], .tabs3 button[data-tab="g1"][aria-pressed="true"], .tabs3 button[data-tab="g2"][aria-pressed="true"], .tabs3 button[data-tab="g3"][aria-pressed="true"] { transform: scale(1.14); }
+.tabs3 button[aria-pressed="true"]::before { background: linear-gradient(to top, rgba(20,20,20,0.6) 0%, rgba(20,20,20,0.1) 55%, rgba(20,20,20,0) 100%); }
+.tabs3 { padding: 18px 8px 22px; }

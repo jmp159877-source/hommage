@@ -17,7 +17,7 @@ DB.onUser((u, p) => {
   if (u && !ok) { $('err').textContent = '관리자 권한이 없는 계정입니다.'; DB.logout(); }
   if (ok) { $('who').textContent = p.nick; loadDash(); }
 });
-document.querySelector('.tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.dataset.sec === b.dataset.tab)); ({ users: loadUsers, content: () => { $('c-date').value = TODAY; loadContent(); }, comments: () => { $('m-date').value = TODAY; loadComments(false); }, resets: loadResets, notice: loadNotice })[b.dataset.tab]?.(); };
+document.querySelector('.tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.dataset.sec === b.dataset.tab)); ({ users: loadUsers, content: () => { $('c-date').value = TODAY; loadContent(); }, comments: () => { $('m-date').value = TODAY; loadComments(false); }, resets: loadResets, notice: loadNotice, maint: loadMaint })[b.dataset.tab]?.(); };
 
 // ── 현황 ──
 async function loadDash() {
@@ -84,3 +84,8 @@ $('resets').onclick = async e => { const b = e.target.closest('[data-done]'); if
 async function loadNotice() { const n = await DB.loadNotice(); $('n-text').value = n ? n.text : ''; }
 $('n-save').onclick = async () => { const t = $('n-text').value.trim(); if (!t) return; const old = await getDocs(query(collection(db, 'notices'), where('active', '==', true))); await Promise.all(old.docs.map(d => updateDoc(d.ref, { active: false }))); await addDoc(collection(db, 'notices'), { text: t, active: true, ts: serverTimestamp() }); $('n-msg').textContent = '올렸습니다.'; };
 $('n-off').onclick = async () => { const old = await getDocs(query(collection(db, 'notices'), where('active', '==', true))); await Promise.all(old.docs.map(d => updateDoc(d.ref, { active: false }))); $('n-text').value = ''; $('n-msg').textContent = '내렸습니다.'; };
+
+// ── 점검 모드 ──
+async function loadMaint() { const s = await getDoc(doc(db, 'settings', 'maint')); const m = s.exists() ? s.data() : {}; $('mt-text').value = m.text || ''; $('mt-msg').textContent = m.on ? '지금 점검 모드가 켜져 있습니다.' : '꺼져 있습니다.'; }
+$('mt-on').onclick = async () => { await setDoc(doc(db, 'settings', 'maint'), { on: true, text: $('mt-text').value.trim(), ts: serverTimestamp() }); $('mt-msg').textContent = '켰습니다. 방문자에게 안내가 보입니다.'; };
+$('mt-off').onclick = async () => { await setDoc(doc(db, 'settings', 'maint'), { on: false, text: '', ts: serverTimestamp() }); $('mt-msg').textContent = '껐습니다.'; };

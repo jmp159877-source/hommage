@@ -38,10 +38,10 @@
         <span id="stamp-wrap" hidden><button type="button" class="btn" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
       </div>
       <div class="hero-actions">
-        <span class="user-chip" id="user-chip" hidden><b id="user-nick"></b><button type="button" class="ghost" id="my">내 자리</button><button type="button" class="ghost" id="logout">나가기</button></span>
+        <span class="user-chip" id="user-chip" hidden><b id="user-nick"></b><button type="button" class="ghost" id="my">나의 정보</button><button type="button" class="ghost" id="logout">로그아웃</button><a class="ghost" id="admin-btn" href="admin.html" hidden style="text-decoration:none;display:inline-block">관리자 화면</a></span>
         <button type="button" class="ghost" id="login-btn">로그인 · 회원가입</button>
-        <button type="button" class="ghost" id="install-btn">앱 아이콘 설치하기</button>
-        <button type="button" class="ghost" id="share-btn">친구에게 알리기</button>
+        <button type="button" class="ghost go" id="install-btn">앱 아이콘 설치하기</button>
+        <button type="button" class="ghost go" id="share-btn">친구에게 알리기</button>
       </div>
     </div>
   </aside>
@@ -66,7 +66,7 @@
 
     <div class="label"><img src="leaf.png" alt="">오늘의 인사말<button type="button" class="read" data-read="cards">읽어 주기</button></div>
     <div class="cards" id="cards"></div>
-    <p class="note">카드를 누르면 그림 카드로 카톡에 보낼 수 있습니다.</p>
+    <p class="note tip">카드를 누르면 그림 카드로 카톡에 보낼 수 있습니다.</p>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 운세<button type="button" class="read" data-read="fortune">읽어 주기</button></div>
     <button type="button" class="banner photo" data-toggle id="fortune-banner" data-corner="fortune" style="background-image:url('img/fortune.jpg'); background-position: center 18%"><div class="b-text"><div><h3>열두 띠 운세</h3><p>내 띠를 고르면 오늘의 한마디가 나옵니다</p></div><span>펼쳐 보기</span></div></button>
@@ -132,6 +132,9 @@
   </div>
 </div>
 
+<div id="maint" hidden style="position:fixed;inset:0;z-index:100;background:var(--ivory);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center">
+  <div style="max-width:420px"><img src="logo.png" alt="오마주" style="width:200px;margin:0 auto 20px;display:block"><h2 style="font-size:1.6rem;margin:0 0 12px;color:var(--dark-green)">지금은 점검 중입니다</h2><p id="maint-text" style="font-size:1.15rem;line-height:1.8;color:#333"></p><p class="note">조금 뒤에 다시 와 주세요.</p></div>
+</div>
 <div id="modal-root"></div>
 <div class="toast" id="toast" hidden></div>
 <script type="module" src="js/app.js"></script>

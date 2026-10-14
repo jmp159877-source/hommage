@@ -25,6 +25,7 @@ let C = DEFAULT_CONTENT;
 const remote = await DB.loadDaily(TODAY);
 if (remote) C = Object.assign({}, DEFAULT_CONTENT, remote);
 DB.bumpVisit();
+DB.loadMaint().then(m => { if (m && m.on && !DB.isAdmin()) { $('maint-text').textContent = m.text || ''; $('maint').hidden = false; } });
 DB.loadNotice().then(n => { if (n && n.text) { $('notice-text').textContent = n.text; $('notice').hidden = false; } });
 
 // ── 날씨 ──
@@ -254,7 +255,7 @@ async function openMy() {
   const first = new Date(Y, M, 1).getDay(), last = new Date(Y, M + 1, 0).getDate();
   let cal = WD.map(w => `<div class="h">${w}</div>`).join('') + '<div></div>'.repeat(first);
   for (let d = 1; d <= last; d++) cal += `<div class="${set.has(d) ? 'on' : ''}">${d}</div>`;
-  modal(`<h2>${esc(p.nick)}님의 자리</h2><p class="note">아이디 ${esc(p.username)} · 연속 ${p.streak || 0}일 · 총 ${p.checkinCount || 0}일 출석</p>
+  modal(`<h2>${esc(p.nick)}님의 정보</h2><p class="note">아이디 ${esc(p.username)} · 연속 ${p.streak || 0}일 · 총 ${p.checkinCount || 0}일 출석</p>
   <p class="note" style="margin-top:14px">${M + 1}월 출석</p><div class="cal">${cal}</div>
   <div class="field" style="margin-top:22px"><label>글자 크기</label><div class="in"><button type="button" class="btn line" id="m-size-big">크게</button><button type="button" class="btn line" id="m-size-normal">보통</button></div></div>
   <div class="field"><label>별명 바꾸기</label><div class="in"><input id="m-nick" value="${esc(p.nick)}" maxlength="12"><button type="button" class="btn line" id="m-nick-go">바꾸기</button></div><div class="msg" id="m-nick-msg"></div></div>
@@ -282,6 +283,8 @@ function renderStamp(p) {
 $('stamp').onclick = async () => { if (!DB.currentUser()) { afterLogin = () => $('stamp').click(); return openGate('출석 도장을 찍으려면'); } try { const s = await DB.checkin(); renderStamp(DB.currentProfile()); toast(s > 1 ? `도장을 찍었습니다. 연속 ${s}일째!` : '도장을 찍었습니다.'); } catch (e) { toast(e.message); } };
 DB.onUser((u, p) => {
   $('user-chip').hidden = !u; $('login-btn').hidden = !!u;
+  $('admin-btn').hidden = !(p && p.role === 'admin');
+  if (p && p.role === 'admin') $('maint').hidden = true;
   if (u && p) { $('user-nick').textContent = p.nick + '님'; if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); }
   renderStamp(p); renderCmts();
 });

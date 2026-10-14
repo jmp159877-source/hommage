@@ -133,6 +133,9 @@ export async function myCheckins(yyyymm) {
 export async function loadDaily(date = todayKey()) {
   try { const s = await getDoc(doc(db, 'daily', date)); return s.exists() ? s.data() : null; } catch (e) { return null; }
 }
+export async function loadMaint() {
+  try { const s = await getDoc(doc(db, 'settings', 'maint')); return s.exists() ? s.data() : null; } catch (e) { return null; }
+}
 export async function loadNotice() {
   try {
     const s = await getDocs(query(collection(db, 'notices'), where('active', '==', true)));
