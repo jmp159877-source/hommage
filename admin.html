@@ -9,30 +9,50 @@
 <link rel="stylesheet" href="css/omaju.css">
 <style>
 body { background: var(--ivory2); }
-.adm { max-width: 1000px; margin: 0 auto; padding: 30px 20px 100px; }
-.adm h1 { font-size: 1.6rem; color: var(--dark-green); display: flex; align-items: center; gap: 12px; }
-.adm h1 img { height: 34px; }
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 26px; }
-.tabs button { background: #fff; border: 1px solid var(--line); border-radius: 30px; padding: 8px 18px; }
+.adm { max-width: 1000px; margin: 0 auto; padding: 20px 16px 100px; }
+.adm h1 { font-size: 1.4rem; color: var(--dark-green); display: flex; align-items: center; gap: 10px; margin: 0 0 14px; flex-wrap: wrap; }
+.adm h1 img { height: 30px; }
+.adm h1 #who { font-size: 0.9rem; color: #666; font-weight: 400; }
+.topbar { display: flex; gap: 8px; margin: 0 0 14px; }
+.topbar a, .topbar button { flex: 1; text-align: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-size: 1rem; color: var(--dark-green); text-decoration: none; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0 0 20px; }
+.tabs button { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 12px 4px; font-size: 1rem; color: #333; }
 .tabs button[aria-pressed="true"] { background: var(--dark-green); color: var(--ivory); border-color: var(--dark-green); }
 .sec { display: none; } .sec.on { display: block; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 26px; }
-.tile { background: #fff; border-radius: 12px; padding: 16px 18px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 22px; }
+.tile { background: #fff; border-radius: 8px; padding: 14px 16px; }
 .tile b { display: block; font-size: 2rem; color: var(--dark-green); font-family: 'Nanum Myeongjo', serif; }
 .tile span { color: #666; font-size: 0.9rem; }
-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; font-size: 0.95rem; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; font-size: 0.95rem; }
 th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(15,74,53,0.1); vertical-align: top; }
-th { background: var(--mint); color: var(--dark-green); font-weight: 500; }
-td button { background: none; border: 1px solid var(--line); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; margin-right: 4px; }
-td button.danger { color: #a93226; border-color: #e6b0aa; }
-textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 10px; font-family: ui-monospace, monospace; font-size: 0.9rem; }
-.bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
-.bar input { padding: 10px 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 10px; }
-.chart { display: flex; align-items: flex-end; gap: 4px; height: 140px; background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 20px; }
-.chart div { flex: 1; background: var(--leaf-deep); border-radius: 3px 3px 0 0; min-height: 2px; position: relative; }
+th { background: var(--mint); color: var(--dark-green); font-weight: 500; white-space: nowrap; }
+td button { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; font-size: 0.9rem; margin-right: 4px; }
+td button.danger { color: #8a2a22; border-color: #c99; }
+textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 6px; font-family: ui-monospace, monospace; font-size: 0.9rem; }
+.bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+.bar input { padding: 10px 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 6px; flex: 1; min-width: 160px; }
+.bar .btn { padding: 10px 14px; }
+.chart { display: flex; align-items: flex-end; gap: 4px; height: 140px; background: #fff; border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+.chart div { flex: 1; background: var(--leaf-deep); border-radius: 2px 2px 0 0; min-height: 2px; position: relative; }
 .chart div::after { content: attr(data-v); position: absolute; top: -18px; left: 0; right: 0; text-align: center; font-size: 0.7rem; color: #666; }
-.gate { max-width: 400px; margin: 80px auto; background: #fff; padding: 30px; border-radius: 16px; }
-#err { color: #a93226; margin-top: 10px; }
+.gate { max-width: 400px; margin: 60px auto; background: #fff; padding: 26px; border-radius: 8px; }
+#err { color: #8a2a22; margin-top: 10px; }
+/* 휴대폰: 표 한 줄을 카드 한 장으로 */
+@media (max-width: 700px) {
+  .tabs { grid-template-columns: repeat(3, 1fr); }
+  table, tbody { display: block; }
+  table { background: none; }
+  table tr { display: block; background: #fff; border-radius: 8px; padding: 6px 14px; margin-bottom: 10px; }
+  table tr:first-child { display: none; }
+  table td { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid rgba(15,74,53,0.08); }
+  table td:last-child { border-bottom: 0; }
+  table td::before { content: attr(data-l); flex: 0 0 64px; color: #2f6b4f; font-size: 0.9rem; }
+  table td:empty { display: none; }
+  table td:not([data-l])::before { content: none; }
+  #clicks tr, #regions tr { display: flex; padding: 0 14px; margin: 0; border-radius: 0; }
+  #clicks td, #regions td { flex: 1; } #clicks td::before, #regions td::before { content: none; }
+  #clicks tr:first-child, #regions tr:first-child { display: flex; background: var(--mint); } #clicks th, #regions th { flex: 1; }
+}
 </style>
 </head>
 <body>
@@ -48,7 +68,8 @@ textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid rgba
   </div>
 
   <div id="panel" hidden>
-    <div class="tabs"><button type="button" data-tab="dash" aria-pressed="true">현황</button><button type="button" data-tab="users">회원</button><button type="button" data-tab="content">오늘 콘텐츠</button><button type="button" data-tab="comments">한마디·신고</button><button type="button" data-tab="resets">찾기 요청</button><button type="button" data-tab="notice">공지</button><button type="button" data-tab="maint">점검 모드</button><a class="btn line" href="index.html" style="margin-left:auto;text-decoration:none">오마주로 돌아가기</a><button type="button" class="btn line" id="a-out">로그아웃</button></div>
+    <div class="topbar"><a href="index.html">오마주로 돌아가기</a><button type="button" id="a-out">로그아웃</button></div>
+    <div class="tabs"><button type="button" data-tab="dash" aria-pressed="true">현황</button><button type="button" data-tab="users">회원</button><button type="button" data-tab="content">오늘 콘텐츠</button><button type="button" data-tab="comments">한마디·신고</button><button type="button" data-tab="resets">찾기 요청</button><button type="button" data-tab="notice">공지</button><button type="button" data-tab="maint">점검 모드</button></div>
 
     <section class="sec on" data-sec="dash">
       <div class="tiles" id="tiles"></div>
