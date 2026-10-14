@@ -31,6 +31,21 @@ DB.loadNotice().then(n => { if (n && n.text) { $('notice-text').textContent = n.
 // ── 날씨 ──
 const WMO = { 0: '맑음', 1: '대체로 맑음', 2: '구름 조금', 3: '흐림', 45: '안개', 48: '안개', 51: '이슬비', 53: '이슬비', 55: '이슬비', 56: '이슬비', 57: '이슬비', 61: '약한 비', 63: '비', 65: '강한 비', 66: '진눈깨비', 67: '진눈깨비', 71: '약한 눈', 73: '눈', 75: '많은 눈', 77: '싸락눈', 80: '소나기', 81: '소나기', 82: '강한 소나기', 85: '눈', 86: '많은 눈', 95: '천둥번개', 96: '천둥번개', 99: '천둥번개' };
 function wxSay(t, c) { if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95) return '비 소식이 있습니다. 우산 챙기시고, 빗소리 좋은 창가에서 차 한 잔 어떠세요.'; if ((c >= 71 && c <= 77) || c === 85 || c === 86) return '눈이 옵니다. 길이 미끄러우니 천천히, 풍경은 넉넉히 즐기세요.'; if (t >= 28) return '더운 날입니다. 물 자주 드시고 한낮 볕은 잠시 피하세요.'; if (t >= 18) return '걷기 딱 좋은 날씨입니다. 가까운 길이라도 한 바퀴 돌고 오세요.'; if (t >= 8) return '아침저녁으로 쌀쌀합니다. 겉옷 하나 걸치고 나서세요.'; return '날이 찹니다. 목도리 두르고, 따뜻한 국물로 속부터 데우세요.'; }
+
+// 날씨 그림: 맑음 해, 구름, 비, 눈, 천둥, 안개
+function wxIcon(c) {
+  const sun = '<circle cx="12" cy="12" r="4.2" fill="#FFD54A"/><g stroke="#FFD54A" stroke-width="1.8" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g>';
+  const cloud = (fill, dy = 0) => `<path transform="translate(0 ${dy})" d="M7 18.5h10.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6-1.4A3.8 3.8 0 0 0 7 18.5z" fill="${fill}"/>`;
+  const sunCloud = '<circle cx="8" cy="9" r="3.4" fill="#FFD54A"/><g stroke="#FFD54A" stroke-width="1.6" stroke-linecap="round"><path d="M8 2.6v1.8M2.6 9h1.8M4.2 5.2l1.3 1.3M11.8 5.2l-1.3 1.3"/></g>' + cloud('#F4F1EA', 1);
+  const rain = cloud('#DCE3E8', -3) + '<g stroke="#6FB7F0" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 17.5l-1 3M12 17.5l-1 3M15.5 17.5l-1 3"/></g>';
+  const snow = cloud('#DCE3E8', -3) + '<g fill="#fff"><circle cx="8" cy="19" r="1.2"/><circle cx="12" cy="20.5" r="1.2"/><circle cx="16" cy="19" r="1.2"/></g>';
+  const storm = cloud('#B9C3CC', -3) + '<path d="M12.5 15.5l-2.5 4h2.2l-1.2 3.5 3.5-5h-2.2l1.2-2.5z" fill="#FFD54A"/>';
+  const fog = '<g stroke="#E6E6E6" stroke-width="1.8" stroke-linecap="round"><path d="M4 9h16M6 13h12M4 17h16"/></g>';
+  let g = sunCloud;
+  if (c === 0 || c === 1) g = sun; else if (c === 2) g = sunCloud; else if (c === 3) g = cloud('#E6E6E6', 0); else if (c === 45 || c === 48) g = fog;
+  else if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) g = rain; else if ((c >= 71 && c <= 77) || c === 85 || c === 86) g = snow; else if (c >= 95) g = storm;
+  return `<svg class="wx-ic" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">${g}</svg>`;
+}
 async function loadWx(lat, lon, label) {
   try {
     const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=auto`);
@@ -39,7 +54,7 @@ async function loadWx(lat, lon, label) {
     $('wx-temp').textContent = t + '°'; $('wx-desc').textContent = desc;
     $('wx-sub').textContent = `${label} · 체감 ${Math.round(c.apparent_temperature)}° · 습도 ${Math.round(c.relative_humidity_2m)}%`;
     $('wx-say').textContent = wxSay(t, c.weather_code);
-    $('wx-pill').textContent = `${label}  ·  ${desc}  ${t}°`;
+    $('wx-pill').innerHTML = wxIcon(c.weather_code) + `<span>${esc(label)}  ·  ${esc(desc)}  ${t}°</span>`;
   } catch (e) { $('wx-temp').textContent = ''; $('wx-desc').textContent = '지금은 날씨를 불러오지 못했습니다.'; $('wx-say').textContent = '오늘도 좋은 하루 보내세요.'; }
 }
 function askHere(silent) {
