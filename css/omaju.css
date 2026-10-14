@@ -318,3 +318,12 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 .ghost { background: rgba(255,255,255,0.92); }
 #stamp { background: var(--leaf); color: #fff; } #stamp:disabled { background: rgba(255,255,255,0.9); color: var(--dark-green); opacity: 1; }
 @media (max-width: 768px) { .hero::after { background: linear-gradient(to top, rgba(20,20,20,0.82) 0%, rgba(20,20,20,0.5) 50%, rgba(20,20,20,0.15) 80%, rgba(20,20,20,0.3) 100%); } }
+
+/* ── 탭 세 개 각자 색 ── */
+.tabs3 button[data-tab="g1"][aria-pressed="true"] { background: #D99A2B; border-color: #D99A2B; color: #fff; box-shadow: 0 4px 14px rgba(217,154,43,0.35); }
+.tabs3 button[data-tab="g2"][aria-pressed="true"] { background: #1F3A5F; border-color: #1F3A5F; color: #fff; box-shadow: 0 4px 14px rgba(31,58,95,0.35); }
+.tabs3 button[data-tab="g3"][aria-pressed="true"] { background: var(--leaf); border-color: var(--leaf); color: #fff; box-shadow: 0 4px 14px rgba(25,180,107,0.35); }
+.tabs3 button[aria-pressed="true"] small { color: #fff; }
+.tabsec[data-g="g1"] .label { border-bottom-color: #D99A2B; }
+.tabsec[data-g="g2"] .label { border-bottom-color: #1F3A5F; }
+.tabsec[data-g="g3"] .label { border-bottom-color: var(--leaf); }
