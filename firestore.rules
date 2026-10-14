@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+    function isAdmin() { return signedIn() && get(/databases/$(db)/documents/users/$(request.auth.uid)).data.role == 'admin'; }
+    function notBanned() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data.get('banned', false) != true; }
+    function onlyIncrement(field) {
+      return request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().hasOnly([field])
+        && request.resource.data[field] == (resource == null ? 0 : resource.data.get(field, 0)) + 1;
+    }
+
+    // 회원: 본인과 관리자만 읽고, 본인만 쓴다. 역할(role)은 본인이 못 바꾼다.
+    match /users/{uid} {
+      allow read: if isMe(uid) || isAdmin();
+      allow create: if isMe(uid) && request.resource.data.role == 'member';
+      allow update: if (isMe(uid) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'username', 'banned', 'phone'])) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    // 아이디·별명 중복 확인: 누구나 있는지 볼 수 있고, 비어 있을 때만 본인이 만든다.
+    match /usernames/{name} {
+      allow get: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+    match /nicknames/{key} {
+      allow get: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+    // 출석: 본인 것만, 하루 한 번(문서 id가 uid_날짜라 중복 불가).
+    match /checkins/{id} {
+      allow read: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid && id == request.auth.uid + '_' + request.resource.data.date;
+    }
+    // 오늘 콘텐츠·공지: 누구나 읽고, 관리자만 쓴다.
+    match /daily/{date} { allow read: if true; allow write: if isAdmin(); }
+    match /notices/{id} { allow read: if true; allow write: if isAdmin(); }
+    // 투표: 누구나 읽고, 한 칸을 1씩만 올릴 수 있다. 회원은 votes로 한 번만.
+    match /polls/{date} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['counts']) || isAdmin();
+    }
+    match /votes/{id} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid && id == request.resource.data.date + '_' + request.auth.uid;
+    }
+    // 한마디: 숨겨지지 않은 것은 누구나 읽고, 회원만 쓰고, 본인 것만 지운다. 신고 수는 1씩만.
+    match /comments/{id} {
+      allow read: if resource.data.hidden == false || isAdmin();
+      allow create: if signedIn() && notBanned() && request.resource.data.uid == request.auth.uid && request.resource.data.text.size() <= 200 && request.resource.data.hidden == false && request.resource.data.reports == 0;
+      allow update: if (signedIn() && onlyIncrement('reports')) || isAdmin();
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+    match /reports/{id} {
+      allow read: if isAdmin();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid && id.matches('^.*_' + request.auth.uid + '$');
+    }
+    // 아이디·비밀번호 찾기 요청: 누구나 넣고, 관리자만 본다.
+    match /resets/{id} { allow create: if true; allow read, update, delete: if isAdmin(); }
+    // 집계: 숫자만 올릴 수 있고, 관리자만 본다.
+    match /stats/{date} {
+      allow read: if isAdmin();
+      allow create, update: if request.resource.data.keys().hasOnly(['visits', 'clicks']);
+    }
+  }
+}

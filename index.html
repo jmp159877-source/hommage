@@ -1,466 +1,126 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오마주 - 오늘도 마음은 주니어</title>
-    <meta name="description" content="매일 아침 5분, 오늘의 운세와 인사말, 그해 오늘의 추억과 노래, 한 끼와 한 판. 오마주 — 오늘도 마음은 주니어.">
-    <meta property="og:title" content="오마주 - 오늘도 마음은 주니어">
-    <meta property="og:description" content="매일 아침 5분, 운세와 인사말, 그해 오늘의 추억과 노래.">
-    <meta property="og:image" content="og.jpg">
-    <meta property="og:type" content="website">
-    <link rel="icon" href="leaf.png">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-        
-        :root {
-            --ivory: #F4F1EA;
-            --dark-green: #0F4A35;
-            --bright-green: #19B46B;
-            --mint: #DDF2E3;
-            --orange: #FF7A3D;
-            --black: #141414;
-        }
-
-        body {
-            margin: 0;
-            background-color: var(--ivory);
-            color: var(--black);
-            font-family: 'Noto Sans KR', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        h1, h2, h3, .category-label {
-            font-family: 'Nanum Myeongjo', serif;
-            font-weight: 400;
-        }
-
-        /* 오마주 글자 강조 (점 찍기) */
-        .point-text {
-            -webkit-text-emphasis: filled circle var(--bright-green); 
-            text-emphasis: filled circle var(--bright-green);
-            font-size: 1.15em; 
-            font-weight: 700; 
-        }
-
-        .layout-wrapper { display: flex; min-height: 100vh; }
-
-        /* 좌측 고정 (아침 인사) */
-        .left-hero {
-            width: 45%; position: sticky; top: 0; height: 100vh;
-            background: #0F4A35 url('img/hero.jpg') 50% center/cover;
-            display: flex; align-items: flex-end; padding: 60px; box-sizing: border-box;
-        }
-        .left-hero::after {
-            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
-            background: linear-gradient(to top, rgba(15, 74, 53, 0.88) 0%, rgba(15,74,53,0.25) 55%, rgba(0,0,0,0.35) 100%);
-        }
-        .hero-text { position: relative; z-index: 1; color: var(--ivory); }
-        .hero-text h1 { font-size: 3.5rem; margin: 0 0 10px 0; line-height: 1.5; letter-spacing: -0.02em; }
-        .hero-text p { font-size: 1.1rem; font-weight: 300; opacity: 0.8; margin: 20px 0 0 0; }
-
-        /* 우측 스크롤 (콘텐츠 영역) */
-        .right-content { width: 55%; padding: 100px 80px; box-sizing: border-box; }
-        
-        .category-label {
-            font-size: 1.4rem; color: var(--dark-green);
-            border-bottom: 1px solid rgba(15, 74, 53, 0.2);
-            padding-bottom: 15px; margin-bottom: 40px; margin-top: 80px;
-        }
-        .category-label:first-child { margin-top: 0; }
-
-        /* 인사 카드 (가로 스크롤) */
-        .card-scroll { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
-        .card-scroll::-webkit-scrollbar { display: none; }
-        .greeting-card { min-width: 200px; height: 266px; background-color: #eee; border-radius: 8px; background-size: cover; background-position: center; }
-
-        /* 배너형 (운세, 퀴즈) */
-        .banner-block { width: 100%; padding-top: 33.33%; background-color: var(--mint); position: relative; cursor: pointer; transition: opacity 0.3s; }
-        .banner-block:hover { opacity: 0.8; }
-        .banner-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; padding: 40px; }
-        .banner-content h3 { margin: 0 0 10px 0; font-size: 1.8rem; color: var(--dark-green); }
-        .banner-content p { margin: 0; color: #555; }
-
-        /* 그해 오늘 (기사형) */
-        .article-img { width: 100%; height: 400px; background: url('img/history.jpg') center/cover; margin-bottom: 30px;  }
-        .article-block h2 { font-size: 2.2rem; margin: 0 0 15px 0; }
-        .article-block p { font-size: 1rem; line-height: 1.8; color: #444; max-width: 90%; }
-
-        /* 리스트형 (한 끼, 사연) */
-        .list-container { display: flex; flex-direction: column; gap: 20px; }
-        .list-block { display: flex; align-items: center; border: 1px solid rgba(20, 20, 20, 0.1); padding: 20px; cursor: pointer; background: #fff; }
-        .list-img { width: 100px; height: 100px; background-size: cover; background-position: center; margin-right: 30px; }
-        .list-text h3 { font-size: 1.3rem; margin: 0 0 8px 0; }
-        .list-text p { margin: 0; color: #666; font-size: 0.95rem; }
-
-        /* 모바일 반응형 */
-        @media (max-width: 768px) {
-            .layout-wrapper { flex-direction: column; }
-            .left-hero { width: 100%; height: 75vh; padding: 40px 20px; }
-            .hero-text h1 { font-size: 2.5rem; line-height: 1.6; }
-            .right-content { width: 100%; padding: 40px 20px; }
-            .category-label { margin-top: 60px; margin-bottom: 25px; }
-            .article-img { height: 250px; }
-            .banner-block { padding-top: 40%; }
-            .banner-content { padding: 20px; }
-            .list-block { padding: 15px; }
-            .list-img { width: 80px; height: 80px; margin-right: 20px; }
-        }
-
-        /* ── 기능용 추가 (제미나이 시안의 선·서체·색만 사용) ── */
-        html.big { font-size: 118%; }
-        button { font: inherit; color: inherit; cursor: pointer; }
-        .left-hero { flex-direction: column; justify-content: space-between; align-items: stretch; }
-        .hero-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: baseline; color: var(--ivory); }
-        .brand { font-family: 'Nanum Myeongjo', serif; font-size: 1.25rem; letter-spacing: 0.35em; }
-        .brand i { font-size: 0.9rem; letter-spacing: 0.05em; opacity: 0.75; margin-left: 6px; }
-        .ghost { background: none; border: 1px solid rgba(244,241,234,0.55); color: var(--ivory); padding: 8px 16px; font-size: 0.9rem; }
-        .ghost:hover { background: rgba(244,241,234,0.12); }
-        .hero-foot { margin-top: 36px; padding-top: 22px; border-top: 1px solid rgba(244,241,234,0.3); display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; font-size: 0.95rem; }
-        .hero-foot .when { opacity: 0.85; font-weight: 300; }
-        .stamp { background: var(--orange); border: 0; color: #fff; padding: 12px 26px; font-size: 1rem; font-weight: 500; }
-        .stamp:disabled { background: none; border: 1px solid rgba(244,241,234,0.55); cursor: default; }
-        .streak { font-size: 0.85rem; opacity: 0.75; margin-left: 12px; }
-
-        .greeting-card { position: relative; overflow: hidden; border: 0; padding: 0; flex: none; width: 200px; text-align: left; }
-        .greeting-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,74,53,0.85), transparent 65%); }
-        .greeting-card q { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 1; quotes: none; color: var(--ivory); font-family: 'Nanum Myeongjo', serif; font-size: 0.95rem; line-height: 1.6; }
-        .note { font-size: 0.85rem; color: #777; margin: 12px 0 0; }
-
-        .panel { display: none; padding: 34px 0 0; }
-        .open + .panel { display: block; }
-        .banner-block, .list-block { border-radius: 0; text-align: left; box-sizing: border-box; }
-        button.banner-block { border: 0; display: block; }
-        button.list-block { width: 100%; }
-        .more { margin-left: auto; padding-left: 20px; font-family: 'Nanum Myeongjo', serif; color: var(--dark-green); font-size: 0.95rem; white-space: nowrap; }
-        .banner-content { justify-content: space-between; }
-
-        .picks { display: flex; flex-wrap: wrap; gap: 0 26px; border-bottom: 1px solid rgba(15,74,53,0.2); }
-        .picks button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 0; margin-bottom: -1px; font-family: 'Nanum Myeongjo', serif; font-size: 1.1rem; color: #777; }
-        .picks button[aria-pressed="true"] { color: var(--dark-green); border-color: var(--bright-green); font-weight: 700; }
-        .say { font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; line-height: 1.7; color: var(--dark-green); margin: 30px 0 0; }
-
-        #tabs { margin-bottom: 30px; }
-        .rows { margin-top: 30px; border-top: 1px solid rgba(15,74,53,0.2); }
-        .rowline { display: flex; gap: 24px; padding: 18px 0; border-bottom: 1px solid rgba(15,74,53,0.12); align-items: baseline; }
-        .rowline b { flex: none; width: 5.5em; font-family: 'Nanum Myeongjo', serif; color: var(--dark-green); font-weight: 700; }
-        .rowline p { margin: 0; line-height: 1.7; color: #444; max-width: none; font-size: 1rem; }
-        .rowline span { color: #777; margin-left: 10px; font-size: 0.95rem; }
-        .rowline a { margin-left: auto; color: var(--dark-green); font-size: 0.95rem; white-space: nowrap; text-underline-offset: 4px; }
-        .subhead { font-family: 'Nanum Myeongjo', serif; font-size: 1.15rem; color: var(--dark-green); margin: 44px 0 0; }
-        .memo { display: flex; gap: 12px; margin-top: 16px; }
-        .memo input { flex: 1; min-width: 0; font: inherit; padding: 12px 14px; border: 1px solid rgba(20,20,20,0.2); background: #fff; }
-        .solid { background: var(--dark-green); color: var(--ivory); border: 0; padding: 12px 22px; }
-        .mine { font-family: 'Nanum Myeongjo', serif; font-size: 1.2rem; margin: 16px 0 0; }
-
-        .panel ol, .panel ul { margin: 0; padding-left: 1.3em; line-height: 2; color: #444; }
-        .panel ul { list-style: none; padding: 0 0 18px; margin-bottom: 18px; border-bottom: 1px solid rgba(15,74,53,0.12); display: flex; flex-wrap: wrap; gap: 0 22px; color: var(--dark-green); }
-        .panel p { line-height: 1.9; color: #444; margin: 0 0 16px; }
-        .q { font-family: 'Nanum Myeongjo', serif; font-size: 3rem; letter-spacing: 0.25em; color: var(--dark-green); }
-        .q em { font-style: normal; display: inline-block; min-width: 1em; border-bottom: 2px solid var(--bright-green); text-align: center; }
-        .opts { display: flex; gap: 14px; margin: 26px 0 0; }
-        .opts button { width: 64px; height: 64px; background: #fff; border: 1px solid rgba(20,20,20,0.15); font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; }
-        .opts button.ok { background: var(--dark-green); color: var(--ivory); border-color: var(--dark-green); }
-        .opts button.no { opacity: 0.4; }
-        .poll { display: grid; gap: 10px; }
-        .poll button { position: relative; background: #fff; border: 1px solid rgba(20,20,20,0.1); padding: 16px 20px; text-align: left; overflow: hidden; }
-        .poll button i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--mint); }
-        .poll button > span { position: relative; display: flex; justify-content: space-between; }
-        .poll button[aria-pressed="true"] { border-color: var(--dark-green); }
-        .lede { font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; margin: 0 0 24px; color: var(--black); }
-        .foot { margin-top: 90px; padding-top: 20px; border-top: 1px solid rgba(15,74,53,0.2); font-size: 0.85rem; color: #777; line-height: 1.8; }
-        .toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 12px 22px; font-size: 0.95rem; z-index: 9; }
-        @media (max-width: 768px) {
-            .left-hero { position: relative; }
-            .rowline { gap: 14px; flex-wrap: wrap; }
-            .q { font-size: 2.2rem; }
-        }
-
-        /* ── 사이트용 추가 ── */
-        .hero-logo { width: 190px; height: auto; display: block; }
-        .hero-top { align-items: flex-start; }
-        .wx-temp:empty { display: none; }
-        .wx { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 22px; }
-        .wx-temp { font-family: 'Nanum Myeongjo', serif; font-size: 3.6rem; color: var(--dark-green); line-height: 1; }
-        .wx-desc { font-size: 1.2rem; color: var(--black); }
-        .wx-sub { color: #777; font-size: 0.95rem; }
-        .wx-say { font-family: 'Nanum Myeongjo', serif; font-size: 1.35rem; line-height: 1.7; color: var(--dark-green); margin: 22px 0 0; }
-        .linkbtn { background: none; border: 0; padding: 0; color: var(--dark-green); text-decoration: underline; text-underline-offset: 4px; font-size: 0.9rem; }
-        .category-label { display: flex; align-items: center; gap: 12px; }
-        .category-label img { height: 30px; width: auto; }
-        button.banner-block.photo { background-size: cover; background-position: center; padding-top: 38%; overflow: hidden; }
-        button.banner-block.photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,74,53,0.85), rgba(15,74,53,0.15) 70%); }
-        .photo .banner-content { z-index: 1; align-items: flex-end; }
-        .photo .banner-content h3, .photo .banner-content p, .photo .more { color: var(--ivory); }
-        .detail-img { width: 100%; height: 300px; background-size: cover; background-position: center; margin-bottom: 26px; }
-        .greeting-card { width: 220px; min-width: 220px; height: 290px; }
-        @media (max-width: 768px) { .hero-logo { width: 140px; } .left-hero { height: auto; min-height: 78vh; gap: 40px; } .detail-img { height: 200px; } button.banner-block.photo { padding-top: 56%; } }
-
-        /* ── 카테고리 배너 → 안쪽 화면 ── */
-        .cat { display: block; width: 100%; height: 250px; border: 0; padding: 0; position: relative; overflow: hidden; background-size: cover; background-position: center; text-align: left; margin-bottom: 0; }
-        .cat::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,74,53,0.88), rgba(15,74,53,0.1) 75%); transition: opacity .3s; }
-        .cat:hover::after { opacity: 0.8; }
-        .cat-text { position: absolute; left: 34px; right: 34px; bottom: 30px; z-index: 1; color: var(--ivory); display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
-        .cat-text h3 { font-size: 1.8rem; margin: 0 0 8px; }
-        .cat-text p { margin: 0; font-weight: 300; opacity: 0.9; }
-        .cat-text span { font-family: 'Nanum Myeongjo', serif; white-space: nowrap; border-bottom: 1px solid rgba(244,241,234,0.6); padding-bottom: 3px; }
-        .greeting-card.t0 { background: var(--dark-green); } .greeting-card.t1 { background: var(--mint); } .greeting-card.t2 { background: #fff; border: 1px solid rgba(15,74,53,0.2); }
-        .greeting-card::after { display: none; }
-        .greeting-card q { top: 26px; bottom: auto; left: 22px; right: 22px; font-size: 1.15rem; line-height: 1.8; }
-        .greeting-card.t1 q, .greeting-card.t2 q { color: var(--dark-green); }
-        .greeting-card img { position: absolute; right: 16px; bottom: 16px; width: 86px; }
-        button.banner-block.mint { background: var(--mint); padding-top: 26%; }
-
-        #detail-page { display: none; min-height: 100vh; background: var(--ivory); }
-        body.in-detail #detail-page { display: block; } body.in-detail #main-page { display: none; }
-        .top-nav { position: fixed; top: 0; left: 0; right: 0; padding: 22px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 20; color: #fff; background: linear-gradient(to bottom, rgba(0,0,0,0.45), transparent); }
-        .back-btn { background: none; border: 0; color: #fff; font-size: 1.15rem; padding: 6px 0; }
-        .top-nav img { height: 54px; }
-        .detail-hero { height: 55vh; position: relative; background-size: cover; background-position: center; }
-        .detail-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 45%, var(--ivory) 100%); }
-        .hero-title-box { position: absolute; bottom: 30px; left: 20px; right: 20px; text-align: center; z-index: 1; }
-        .category-tag { display: inline-block; font-family: 'Nanum Myeongjo', serif; font-size: 0.95rem; padding: 6px 18px; border: 1px solid var(--dark-green); color: var(--dark-green); border-radius: 20px; margin-bottom: 14px; background: rgba(244,241,234,0.85); }
-        #detail-title { font-size: 3rem; margin: 0; line-height: 1.3; color: var(--black); }
-        .content-body { max-width: 760px; margin: 0 auto; padding: 40px 24px 120px; }
-        .dsec { display: none; } .dsec.on { display: block; }
-        .dsec p { line-height: 1.9; color: #444; }
-        .dsec .lead { font-size: 1.15rem; line-height: 2; color: #333; margin: 0 0 10px; }
-        .dsec ol { margin: 0; padding-left: 1.3em; line-height: 2.1; color: #444; font-size: 1.05rem; }
-        .dsec ul.ing { list-style: none; padding: 18px 0; margin: 26px 0; border-top: 1px solid rgba(15,74,53,0.2); border-bottom: 1px solid rgba(15,74,53,0.2); display: flex; flex-wrap: wrap; gap: 4px 24px; color: var(--dark-green); font-size: 1.05rem; }
-        .article-block h2 { margin-top: 10px; }
-        @media (max-width: 768px) { .cat { height: 200px; } .cat-text { left: 20px; right: 20px; bottom: 20px; } .cat-text h3 { font-size: 1.45rem; } .top-nav { padding: 16px 20px; } .detail-hero { height: 42vh; } #detail-title { font-size: 2.1rem; } }
-
-        /* ── 왼쪽 화면: 깃허브 시안 그대로 ── */
-        .left-hero::after { background: linear-gradient(to top, rgba(15, 74, 53, 0.85) 0%, rgba(0,0,0,0.3) 100%); }
-        .hero-top { align-items: center; }
-        .weather-widget { color: rgba(255,255,255,0.95); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .weather-icon { font-size: 1.5rem; }
-        .ghost { border-radius: 30px; border-color: rgba(255,255,255,0.4); font-size: 0.85rem; }
-        .main-logo { width: 100%; max-width: 300px; display: block; margin: 0 0 22px -14px; }
-        .spot-wrap { display: inline-block; position: relative; }
-        .spot-wrap::before { content: "●"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); color: var(--bright-green); font-size: 8px; }
-        .brand-explain { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 0 0 20px; line-height: 1.4; color: #fff; font-weight: 300; }
-        .hero-text p.hero-desc { font-size: 1.15rem; font-weight: 300; opacity: 0.9; line-height: 1.6; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 20px; margin: 0; }
-        .hero-foot { border-top: 0; padding-top: 0; margin-top: 28px; font-size: 0.9rem; }
-        .stamp { border-radius: 30px; padding: 10px 22px; font-size: 0.95rem; }
-        /* 카테고리 배너: 깃허브 시안의 둥근 모서리와 그림자 */
-        .cat { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform .3s ease, box-shadow .3s ease; }
-        .cat:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .cat::after { background: rgba(0,0,0,0.4); }
-        .cat:hover::after { opacity: 0.65; }
-        .cat-text { left: 30px; bottom: 30px; }
-        button.banner-block.mint, .greeting-card { border-radius: 12px; }
-        .poll button { border-radius: 10px; }
-        @media (max-width: 768px) { .hero-desc br { display: none; } .main-logo { max-width: 220px; } .brand-explain { font-size: 1.5rem; } .hero-text p.hero-desc { font-size: 1rem; } .weather-widget { font-size: 0.95rem; } }
-
-        /* ── 다듬기 ── */
-        .category-label { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; }
-        .cat-text h3, .banner-content h3, .list-text h3, #detail-title, .lede, .say, .wx-say, .greeting-card q, .subhead, .picks button, .category-tag { font-weight: 700; }
-        .weather-widget { background: none; box-shadow: none; backdrop-filter: none; padding: 0; border-radius: 0; font-size: 1rem; letter-spacing: 0.04em; font-weight: 300; white-space: pre; }
-        .weather-widget[hidden] { display: none; }
-        .main-logo { max-width: 270px; margin: 0 0 26px -10px; }
-        .brand-explain { font-weight: 400; }
-        .stamp { background: var(--ivory); color: var(--dark-green); font-weight: 500; }
-        .stamp:hover { background: #fff; }
-        .stamp:disabled { background: none; color: var(--ivory); }
-        .solid { border-radius: 30px; }
-
-        /* ── 로고 아래 한글, 문구 강조, 안내 글씨 ── */
-        .logo-wrap { position: relative; width: 100%; max-width: 270px; margin: 0 0 26px -10px; }
-        .main-logo { max-width: none; margin: 0; }
-        .logo-kr { position: absolute; left: 54%; top: 71%; transform: translateX(-50%); font-family: 'Nanum Myeongjo', serif; font-size: 1.05rem; letter-spacing: 0.45em; margin-right: -0.45em; color: var(--ivory); white-space: nowrap; }
-        .brand-explain { font-size: 1.7rem; line-height: 1.5; margin-top: 6px; }
-        .spot-wrap { font-size: 1.45em; font-weight: 700; margin: 0 0.02em; }
-        .spot-wrap::before { top: -0.45em; font-size: 10px; }
-        .note, .hint { font-size: 1.05rem; color: #555; line-height: 1.7; }
-        .streak { font-size: 1rem; opacity: 0.9; }
-        .wx-sub { font-size: 1.05rem; }
-        @media (max-width: 768px) { .logo-wrap { max-width: 220px; } .brand-explain { font-size: 1.4rem; } }
-
-        /* ── 색: 로고의 초록·금빛. 글씨 대비는 4.5:1 이상 유지 ── */
-        :root { --gold: #E3B04B; --leaf: #19B46B; --leaf-deep: #0D7A47; }
-        html { font-size: 17px; }
-        .category-label { color: var(--dark-green); border-bottom: 2px solid var(--dark-green); }
-        .greeting-card.t0 { background: var(--dark-green); }
-        .greeting-card.t1 { background: var(--leaf-deep); } .greeting-card.t1 q { color: var(--ivory); }
-        .greeting-card.t2 { background: var(--gold); border: 0; } .greeting-card.t2 q { color: var(--black); }
-        button.banner-block.mint { background: linear-gradient(135deg, var(--dark-green), #1C7A52); }
-        .mint .banner-content h3 { color: var(--gold); } .mint .banner-content p { color: var(--ivory); } .mint .more { color: var(--ivory); }
-        .cat::after { background: linear-gradient(to top, rgba(15,74,53,0.92), rgba(15,74,53,0.05) 70%); }
-        .cat-text span { color: var(--gold); border-color: var(--gold); }
-        .picks button[aria-pressed="true"] { border-color: var(--gold); }
-        .picks button { color: #555; }
-        .poll button i { background: rgba(25,180,107,0.22); } .poll button[aria-pressed="true"] { border-color: var(--leaf); border-width: 2px; }
-        .solid, .opts button.ok { background: var(--leaf-deep); border-color: var(--leaf-deep); color: #fff; }
-        .stamp { background: var(--gold); color: var(--black); border: 0; }
-        .rowline b, .linkbtn, .rowline a, .wx-temp, .say, .wx-say { color: var(--dark-green); }
-        .rowline p, .dsec p, .panel p, .article-block p { color: #333; }
-        .note, .hint, .wx-sub, .rowline span, .cat-text p { color: #4a4a4a; } .cat-text p { color: var(--ivory); }
-        .right-content { background: #F7F4ED; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>오마주 - 매일 아침 5분, 마음은 주니어</title>
+<meta name="description" content="매일 아침 5분, 운세와 인사말, 그해 오늘과 추억의 노래, 한 끼와 퀴즈. 오마주 — 오늘도 마음은 주니어.">
+<meta property="og:title" content="오마주 - 매일 아침 5분, 마음은 주니어">
+<meta property="og:description" content="매일 아침 5분, 운세와 인사말, 그해 오늘과 추억의 노래, 한 끼와 퀴즈.">
+<meta property="og:image" content="https://omaju.kr/og.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0F4A35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="오마주">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="leaf.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="css/omaju.css">
 </head>
 <body>
-    <div id="main-page" class="layout-wrapper">
-        <div class="left-hero">
-            <div class="hero-top">
-                <div class="weather-widget" id="w-pill" hidden><span id="w-text"></span></div><span></span>
-                <button type="button" class="ghost" id="sizer">글자 크게</button>
-            </div>
-            <div class="hero-text">
-                <div class="logo-wrap"><img src="logo-light.png" alt="Omaju" class="main-logo"><span class="logo-kr">오마주</span></div>
-                <div class="brand-explain"><span class="spot-wrap">오</span>늘도 <span class="spot-wrap">마</span>음은 <span class="spot-wrap">주</span>니어.</div>
-                <p class="hero-desc">당신의 두 번째 청춘을 응원하는 감성 라이프스타일 매거진.<br><strong>오마주와 함께 매일매일,</strong> 새로운 하루를 기분 좋게 열어보세요.</p>
-                <div class="hero-foot">
-                    <span class="when"><span id="date"></span><span id="lunar"></span></span>
-                    <span><button type="button" class="stamp" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
-                </div>
-            </div>
-        </div>
 
-        <div class="right-content">
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 날씨</div>
-            <div class="wx"><span class="wx-temp" id="wx-temp">–°</span><span class="wx-desc" id="wx-desc">날씨를 불러오는 중입니다</span><span class="wx-sub" id="wx-sub"></span></div>
-            <p class="wx-say" id="wx-say"></p>
-            <p class="note"><button type="button" class="linkbtn" id="wx-here">내 동네 날씨로 보기</button></p>
+<div id="main" class="layout">
+  <aside class="hero">
+    <div class="hero-top">
+      <span class="wx-pill" id="wx-pill"></span>
+      <button type="button" class="ghost" id="sizer">글자 크게</button>
+    </div>
+    <div>
+      <div class="logo-wrap"><img src="logo-light.png" alt="Omaju"><span class="logo-kr">오마주</span></div>
+      <div class="brand"><span class="spot">오</span>늘도 <span class="spot">마</span>음은 <span class="spot">주</span>니어.</div>
+      <p class="hero-desc">매일 아침 5분, 운세와 추억의 노래, 그해 오늘, 한 끼와 퀴즈.<br>마음은 아직 주니어인 당신을 위한 아침.</p>
+      <div class="hero-foot">
+        <span class="when"><span id="date"></span><span id="lunar"></span></span>
+        <span><button type="button" class="btn" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
+      </div>
+      <div class="hero-actions">
+        <span class="user-chip" id="user-chip" hidden><b id="user-nick"></b><button type="button" class="ghost" id="my">내 자리</button><button type="button" class="ghost" id="logout">나가기</button></span>
+        <button type="button" class="ghost" id="login-btn">로그인 · 회원가입</button>
+        <button type="button" class="ghost" id="install-btn">앱 아이콘 설치하기</button>
+        <button type="button" class="ghost" id="share-btn">친구에게 알리기</button>
+      </div>
+    </div>
+  </aside>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 인사말</div>
-            <div class="card-scroll" id="cards"></div>
-            <p class="note">마음에 드는 카드를 누르면 인사말이 복사됩니다. 카톡에 붙여 넣어 보내세요.</p>
+  <main class="content">
+    <div class="notice" id="notice" hidden><b>공지</b><span id="notice-text"></span></div>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 운세</div>
-            <button type="button" class="banner-block mint" data-toggle>
-                <div class="banner-content"><div><h3>열두 띠 운세</h3><p>내 띠를 고르면 오늘의 한마디가 나옵니다</p></div><span class="more">펼쳐 보기</span></div>
-            </button>
-            <div class="panel">
-                <div class="picks" id="zodiac" role="group" aria-label="띠 고르기"></div>
-                <p class="say" id="fortune"></p>
-            </div>
+    <div class="group"><span>오늘 즐기기</span><i></i><small>오늘 하루를 기분 좋게</small></div>
 
-            <div class="category-label"><img src="leaf.png" alt="">그해 오늘</div><button type="button" class="cat" data-open="history" style="background-image:url('img/history.jpg')"><div class="cat-text"><div><h3><span id="cat-year"></span>년, 그해 오늘</h3><p>그때 그 시절의 소식과 나의 기억</p></div><span>들어가기</span></div></button>
+    <div class="label"><img src="leaf.png" alt="">오늘의 날씨</div>
+    <div class="wx-card" id="wx-card"><div class="wx-in">
+      <span class="wx-temp" id="wx-temp"></span><span class="wx-desc" id="wx-desc">날씨를 불러오는 중입니다</span>
+      <div class="wx-sub" id="wx-sub"></div>
+      <p class="wx-say" id="wx-say"></p>
+      <button type="button" class="linkbtn" id="wx-here">내 동네 날씨로 보기</button>
+    </div></div>
 
-            <div class="category-label"><img src="leaf.png" alt="">그 시절 노래</div><button type="button" class="cat" data-open="music" style="background-image:url('img/music.jpg')"><div class="cat-text"><div><h3>그해 사랑받은 노래</h3><p>턴테이블에 바늘을 올리듯, 한 곡씩</p></div><span>들어가기</span></div></button>
+    <div class="label"><img src="leaf.png" alt="">오늘의 인사말<button type="button" class="read" data-read="cards">읽어 주기</button></div>
+    <div class="cards" id="cards"></div>
+    <p class="note">마음에 드는 카드를 누르면 인사말이 복사됩니다. 카톡에 붙여 넣어 보내세요.</p>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 한 끼</div><button type="button" class="cat" data-open="food" style="background-image:url('img/food.jpg')"><div class="cat-text"><div><h3>정갈하게 담아낸 두부 버섯 덮밥</h3><p>1인분 · 15분 · 재료 다섯 가지</p></div><span>만드는 법</span></div></button>
+    <div class="label"><img src="leaf.png" alt="">오늘의 운세<button type="button" class="read" data-read="fortune">읽어 주기</button></div>
+    <button type="button" class="banner solid" data-toggle data-corner="fortune"><div class="b-text"><div><h3>열두 띠 운세</h3><p>내 띠를 고르면 오늘의 한마디가 나옵니다</p></div><span>펼쳐 보기</span></div></button>
+    <div class="panel"><div class="picks" id="zodiac" role="group" aria-label="띠 고르기"></div><p class="say" id="fortune"></p></div>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 한 판</div><button type="button" class="cat" data-open="quiz" style="background-image:url('img/culture.jpg')"><div class="cat-text"><div><h3>오늘의 사자성어</h3><p>가볍게 풀어 보는 오늘의 한 문제</p></div><span>풀어 보기</span></div></button>
+    <div class="label"><img src="leaf.png" alt="">오늘의 한 끼</div>
+    <button type="button" class="banner photo" data-open="food" data-corner="food" style="background-image:url('img/food.jpg')"><div class="b-text"><div><h3 id="meal-title"></h3><p id="meal-sub"></p></div><span>만드는 법</span></div></button>
 
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 사연</div><button type="button" class="cat" data-open="story" style="background-image:url('img/detail_music.jpg')"><div class="cat-text"><div><h3>서랍 속 카세트테이프</h3><p>책장을 넘기듯 읽는 오늘의 이야기</p></div><span>읽어 보기</span></div></button>
-
-            <div class="category-label"><img src="leaf.png" alt="">오늘의 질문</div>
-            <p class="lede">학창 시절 도시락, 가장 반가웠던 반찬은?</p>
-            <div class="poll" id="poll"></div>
-
-            <div class="foot">오마주 · 오늘도 마음은 주니어<br>시험 운영 중입니다. 투표 숫자는 예시이고, 출석 도장과 선택은 이 기기에만 저장됩니다.</div>
-        </div>
+    <div class="label"><img src="leaf.png" alt="">오늘의 퀴즈<button type="button" class="read" data-read="quiz">읽어 주기</button></div>
+    <button type="button" class="banner photo" data-toggle data-corner="quiz" style="background-image:url('img/culture.jpg')"><div class="b-text"><div><h3 id="quiz-kind"></h3><p>뜻을 읽고 답을 고른 뒤 정답을 확인하세요</p></div><span>풀어 보기</span></div></button>
+    <div class="panel">
+      <p class="quiz-q" id="quiz-q"></p>
+      <div class="opts" id="opts"></div>
+      <div class="quiz-foot"><button type="button" class="btn green" id="quiz-check" disabled>정답 확인</button><span id="quiz-result"></span></div>
+      <div class="quiz-exp" id="quiz-exp" hidden></div>
     </div>
 
-    <div id="detail-page">
-        <div class="top-nav"><button type="button" class="back-btn" id="back">← 뒤로 가기</button><img src="logo-light.png" alt="오마주"></div>
-        <div class="detail-hero" id="detail-bg"><div class="hero-title-box"><span class="category-tag" id="detail-tag"></span><h1 id="detail-title"></h1></div></div>
-        <div class="content-body">
-            <section class="dsec" data-k="history">
-                <div class="picks" id="tabs" role="group" aria-label="몇 년 전 오늘"></div>
-                <div class="article-block" id="era"></div>
-            </section>
-            <section class="dsec" data-k="music">
-                <div class="picks" id="tabs2" role="group" aria-label="몇 년 전 노래"></div>
-                <div id="songs"></div>
-            </section>
-            <section class="dsec" data-k="food">
-                <p class="lead">버섯이 제철입니다. 두부는 겉만 노릇하게 구워 올리면 간장 한 숟갈로도 맛이 꽉 찹니다. 나를 대접하듯 정성껏 담아 보세요.</p>
-                <ul class="ing"><li>두부 반 모</li><li>느타리버섯 한 줌</li><li>대파 반 대</li><li>간장 2큰술</li><li>밥 한 공기</li></ul>
-                <ol>
-                    <li>두부는 깍둑 썰고, 버섯은 손으로 찢고, 대파는 송송 썹니다.</li>
-                    <li>팬에 기름을 두르고 대파를 볶다가 두부와 버섯을 넣어 노릇해질 때까지 익힙니다.</li>
-                    <li>간장과 물 3큰술을 넣어 한 번 끓인 뒤 밥 위에 올립니다.</li>
-                </ol>
-                <p class="note">달걀을 하나 풀어 넣으면 더 든든합니다.</p>
-            </section>
-            <section class="dsec" data-k="quiz">
-                <p class="lead">빈칸에 들어갈 글자는?</p>
-                <div class="q">고진감<em id="blank">&nbsp;</em></div>
-                <div class="opts" id="opts"></div>
-                <p class="say" id="result" style="font-size:1.15rem"></p>
-            </section>
-            <section class="dsec" data-k="story">
-                <p class="lead">서랍을 정리하다가 카세트테이프 하나를 찾았습니다. 겉에 볼펜으로 "86년 가을, 듣기 좋은 노래"라고 적혀 있더군요. 라디오에서 좋아하는 노래가 나오면 녹음 버튼을 누르려고 숨죽이고 기다리던 그 테이프입니다.</p>
-                <p class="lead">틀 기계가 없어서 듣지는 못했습니다. 그래도 곡 목록을 손으로 적어 둔 속지를 보니 그때 누구를 생각하며 녹음했는지까지 다 떠올랐습니다. 그 사람은 지금 제 옆에서 TV를 보고 있습니다.</p>
-                <p class="note">독자 사연을 받기 전까지 넣어 둔 예시 글입니다.</p>
-            </section>
-        </div>
-    </div>
-    <div class="toast" id="toast" hidden></div>
-<script>
+    <div class="label"><img src="leaf.png" alt="">오늘의 질문</div>
+    <p class="lede" id="poll-q"></p>
+    <div class="poll" id="poll"></div>
+    <form class="cmt-form" id="cmt-form"><input type="text" id="cmt-in" maxlength="200" placeholder="한마디 남기기"><button type="submit" class="btn green">남기기</button></form>
+    <div class="cmts" id="cmts"></div>
 
+    <div class="group"><span>돌아보기</span><i></i><small>젊었던 때를 꺼낸다</small></div>
 
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const store={get(k,d){try{const v=localStorage.getItem('omaju.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('omaju.'+k,JSON.stringify(v))}catch(e){}}};
-let toastT;function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
-async function copy(text){try{await navigator.clipboard.writeText(text);toast('문구를 복사했습니다. 카톡에 붙여 넣으세요.')}catch(e){toast('복사하지 못했습니다.')}}
-const now=new Date(),M=now.getMonth(),D=now.getDate(),Y=now.getFullYear(),WD=['일','월','화','수','목','금','토'];
-const key=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-$('date').textContent=Y+'년 '+(M+1)+'월 '+D+'일 '+WD[now.getDay()]+'요일';
-try{const p=new Intl.DateTimeFormat('ko-KR-u-ca-dangi',{month:'numeric',day:'numeric'}).formatToParts(now);const m=p.find(x=>x.type==='month'),d=p.find(x=>x.type==='day');if(m&&d)$('lunar').textContent=' · 음력 '+m.value+'월 '+d.value+'일'}catch(e){}
-function applySize(b){document.documentElement.classList.toggle('big',b);$('sizer').setAttribute('aria-pressed',b);$('sizer').textContent=b?'글자 보통':'글자 크게'}
-applySize(store.get('big',false));$('sizer').onclick=()=>{const b=!document.documentElement.classList.contains('big');applySize(b);store.set('big',b)};
-function renderStamp(){const s=store.get('stamp',{last:'',n:0}),done=s.last===key(now);$('stamp').disabled=done;$('stamp').textContent=done?'오늘 출석 완료':'출석 도장 찍기';$('streak').textContent=s.n?('연속 '+s.n+'일째'):'매일 찍으면 기록이 쌓입니다'}
-$('stamp').onclick=()=>{const s=store.get('stamp',{last:'',n:0}),y=new Date(now);y.setDate(D-1);s.n=(s.last===key(y))?s.n+1:1;s.last=key(now);store.set('stamp',s);renderStamp();toast('도장을 찍었습니다.')};renderStamp();
+    <div class="label"><img src="leaf.png" alt="">그해 오늘</div>
+    <button type="button" class="banner photo" data-open="history" data-corner="history" style="background-image:url('img/history.jpg')"><div class="b-text"><div><h3><span id="cat-year"></span>년, 그해 오늘</h3><p>그때 그 시절의 소식과 나의 기억</p></div><span>들어가기</span></div></button>
 
-const SEASON=M<2||M===11?'winter':M<5?'spring':M<8?'summer':'autumn';
+    <div class="label"><img src="leaf.png" alt="">그 시절 노래</div>
+    <button type="button" class="banner photo" data-open="music" data-corner="music" style="background-image:url('img/music.jpg')"><div class="b-text"><div><h3>그해 사랑받은 노래</h3><p>턴테이블에 바늘을 올리듯, 한 곡씩</p></div><span>들어가기</span></div></button>
 
-const WMO={0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',45:'안개',48:'안개',51:'이슬비',53:'이슬비',55:'이슬비',56:'이슬비',57:'이슬비',61:'약한 비',63:'비',65:'강한 비',66:'진눈깨비',67:'진눈깨비',71:'약한 눈',73:'눈',75:'많은 눈',77:'싸락눈',80:'소나기',81:'소나기',82:'강한 소나기',85:'눈',86:'많은 눈',95:'천둥번개',96:'천둥번개',99:'천둥번개'};
-function wxSay(t,c){if((c>=51&&c<=67)||(c>=80&&c<=82)||c>=95)return '비 소식이 있습니다. 우산 챙기시고, 빗소리 좋은 창가에서 차 한 잔 어떠세요.';if((c>=71&&c<=77)||c===85||c===86)return '눈이 옵니다. 길이 미끄러우니 천천히, 풍경은 넉넉히 즐기세요.';if(t>=28)return '더운 날입니다. 물 자주 드시고 한낮 볕은 잠시 피하세요.';if(t>=18)return '걷기 딱 좋은 날씨입니다. 가까운 길이라도 한 바퀴 돌고 오세요.';if(t>=8)return '아침저녁으로 쌀쌀합니다. 겉옷 하나 걸치고 나서세요.';return '날이 찹니다. 목도리 두르고, 따뜻한 국물로 속부터 데우세요.'}
-async function loadWx(lat,lon,label){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=auto');const d=await r.json();const c=d.current;if(!c)throw 0;const t=Math.round(c.temperature_2m),desc=WMO[c.weather_code]||'';$('wx-temp').textContent=t+'°';$('wx-desc').textContent=desc;$('wx-sub').textContent=label+' · 체감 '+Math.round(c.apparent_temperature)+'° · 습도 '+Math.round(c.relative_humidity_2m)+'%';$('wx-say').textContent=wxSay(t,c.weather_code);$('w-text').textContent=label+'  ·  '+desc+'  '+t+'°';$('w-pill').hidden=false}catch(e){$('wx-temp').textContent='';$('wx-desc').textContent='지금은 날씨를 불러오지 못했습니다.';$('wx-say').textContent='오늘도 좋은 하루 보내세요.'}}
-loadWx(37.5665,126.978,'서울');
-$('wx-here').onclick=()=>{if(!navigator.geolocation)return toast('이 기기에서는 위치를 알 수 없습니다.');navigator.geolocation.getCurrentPosition(p=>loadWx(p.coords.latitude,p.coords.longitude,'내 동네'),()=>toast('위치 허용이 필요합니다.'))};
-const ZO=[['쥐','미뤄 둔 연락을 먼저 해 보세요. 반가운 답이 돌아옵니다.'],['소','서두르지 않아도 되는 날입니다. 평소 속도가 가장 좋습니다.'],['호랑이','하고 싶은 말은 오전에 하세요. 듣는 사람 마음이 열려 있습니다.'],['토끼','작은 지출이 큰 기분 전환이 됩니다. 좋아하는 것 하나를 고르세요.'],['용','오래된 물건을 정리하면 뜻밖의 것을 찾습니다.'],['뱀','한 걸음 물러서서 보면 답이 보이는 날입니다.'],['말','몸을 움직이면 생각이 가벼워집니다. 가까운 길을 걸어 보세요.'],['양','누군가 당신의 한마디를 기다립니다. 칭찬을 아끼지 마세요.'],['원숭이','새로운 것을 하나 배워 보기 좋은 날입니다.'],['닭','약속 시간보다 조금 일찍 나서면 하루가 여유롭습니다.'],['개','오랜 친구 생각이 나면 그게 신호입니다. 안부를 물어 보세요.'],['돼지','맛있는 한 끼가 오늘의 복입니다. 천천히 드세요.']];
-let myZ=store.get('zodiac',null);
-function renderZ(){$('zodiac').innerHTML=ZO.map((z,i)=>'<button type="button" data-z="'+i+'" aria-pressed="'+(myZ===i)+'">'+z[0]+'</button>').join('');$('fortune').textContent=myZ==null?'띠를 고르면 오늘의 한마디가 나옵니다.':ZO[myZ][1]}
-$('zodiac').onclick=e=>{const b=e.target.closest('[data-z]');if(!b)return;myZ=+b.dataset.z;store.set('zodiac',myZ);renderZ()};renderZ();
+    <div class="label"><img src="leaf.png" alt="">오늘의 사연</div>
+    <button type="button" class="banner photo" data-open="story" data-corner="story" style="background-image:url('img/detail_music.jpg')"><div class="b-text"><div><h3 id="story-title"></h3><p id="story-sub"></p></div><span>읽어 보기</span></div></button>
 
-const CARDS=['좋은 아침입니다.\n오늘도 당신 편인\n하루가 되기를.','어제보다 한 뼘 더\n가벼운 마음으로.','시월의 햇살이 좋습니다.\n잠깐이라도\n걷고 오세요.','따뜻한 차 한 잔처럼\n포근한 하루 보내세요.'];
-$('cards').innerHTML=CARDS.map((c,i)=>'<button type="button" class="greeting-card t'+(i%3)+'" data-copy="'+i+'"><q>'+esc(c).replace(/\n/g,'<br>')+'</q><img src="leaf.png" alt=""></button>').join('');
-$('cards').onclick=e=>{const b=e.target.closest('[data-copy]');if(b)copy(CARDS[+b.dataset.copy].replace(/\n/g,' ')+'\n\n— 오마주, 오늘도 마음은 주니어')};
-document.addEventListener('click',e=>{const t=e.target.closest('[data-toggle]');if(t)t.classList.toggle('open')});
-const MOOD={50:'흑백 텔레비전 앞에 온 식구가 모여 앉던 저녁. 통기타 소리와 다이얼 전화기의 그 시절을 다시 꺼내어 봅니다.',40:'카세트 플레이어와 롤러스케이트. 음악다방에서 신청곡을 적어 내던 그 시절의 낭만을 다시 꺼내어 봅니다.',30:'허리춤의 삐삐와 공중전화 앞의 긴 줄. 노래방에서 목이 쉬도록 부르던 그 시절을 다시 꺼내어 봅니다.',20:'폴더폰을 여닫던 소리와 미니홈피의 배경 음악. 엊그제 같은 그 시절을 다시 꺼내어 봅니다.'};
-const ERA={
- 50:{facts:[['그해 여름','8월 1일, 양정모 선수가 몬트리올 올림픽 레슬링에서 건국 후 첫 올림픽 금메달을 땄습니다.'],['안방극장','MBC 〈수사반장〉이 방영 중이었습니다.']],songs:[['돌아와요 부산항에','조용필'],['오동잎','최헌'],['해뜰날','송대관'],['당신은 모르실거야','혜은이']]},
- 40:{facts:[['그해 가을','10월 5일, 서울 아시안게임이 막을 내렸습니다. 한국은 금메달 93개로 종합 2위에 올랐습니다.'],['안방극장','MBC 〈전원일기〉가 방영 중이었습니다.']],songs:[['난 아직 모르잖아요','이문세'],['허공','조용필'],['오늘밤','김완선']]},
- 30:{facts:[['그해 가을','10월 11일, 경제협력개발기구(OECD)가 한국의 가입을 승인했습니다. 한국은 그해 12월 스물아홉 번째 회원국이 됐습니다.'],['안방극장','KBS 주말극 〈첫사랑〉이 방영 중이었습니다. 이듬해 최고 시청률 65.8%를 기록합니다.']],songs:[['캔디','H.O.T.'],['스피드','김건모'],['꿍따리 샤바라','클론'],['정','영턱스클럽']]},
- 20:{facts:[['그해 가을','10월 13일, 유엔 총회가 반기문 당시 외교통상부 장관을 제8대 유엔 사무총장으로 선출했습니다.'],['그해 가을','10월 9일, 북한이 첫 핵실험을 했습니다.'],['안방과 극장','MBC 〈주몽〉이 방영 중이었고, 극장에는 영화 〈타짜〉가 걸려 있었습니다.']],songs:[['사랑 안 해','백지영'],['내 사람','SG워너비'],['남자를 몰라','버즈']]}
-};
-let ago=store.get('ago',40);const demo=(M===9&&D===13);
-function renderEra(){
-  const tabs=[50,40,30,20].map(n=>'<button type="button" data-ago="'+n+'" aria-pressed="'+(ago===n)+'">'+n+'년 전</button>').join('');
-  $('tabs').innerHTML=tabs;$('tabs2').innerHTML=tabs;
-  const yr=Y-ago,e=ERA[ago],memo=store.get('memo'+ago,'');$('cat-year').textContent=yr;
-  let h='<p class="lead" style="margin-top:30px">'+MOOD[ago]+'</p>';
-  h+='<div class="rows">'+e.facts.map(f=>'<div class="rowline"><b>'+f[0]+'</b><p>'+esc(f[1])+'</p></div>').join('')+'</div>';
-  h+='<h3 class="subhead">나는 그때</h3>'+(memo?'<p class="mine">'+esc(memo)+'</p>':'<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="'+yr+'년의 나는 어디서 무엇을 하고 있었나요"><button type="submit" class="solid">남기기</button></form>');
-  $('era').innerHTML=h;
-  $('songs').innerHTML='<p class="note" style="margin:30px 0 0">노래 듣기를 누르면 유튜브에서 바로 찾아 줍니다.</p><div class="rows">'+e.songs.map(s=>'<div class="rowline"><p><strong>'+esc(s[0])+'</strong><span>'+esc(s[1])+'</span></p><a href="https://www.youtube.com/results?search_query='+encodeURIComponent(s[1]+' '+s[0])+'" target="_blank" rel="noopener">노래 듣기</a></div>').join('')+'</div>';
-  if(cur)setTitle();
-}
-const DET={history:['detail_history','그해 오늘',()=>(Y-ago)+'년,<br>그해 오늘'],music:['detail_music','그 시절 노래',()=>(Y-ago)+'년,<br>그해 사랑받은 노래'],food:['detail_food','오늘의 한 끼',()=>'정갈하게 담아낸<br>두부 버섯 덮밥'],quiz:['detail_culture','오늘의 한 판',()=>'오늘의 사자성어'],story:['detail_music','오늘의 사연',()=>'서랍 속<br>카세트테이프']};
-let cur=null;
-function setTitle(){$('detail-title').innerHTML=DET[cur][2]()}
-function route(){const k=location.hash.slice(1);cur=DET[k]?k:null;document.body.classList.toggle('in-detail',!!cur);if(cur){$('detail-bg').style.backgroundImage="url('img/"+DET[cur][0]+".jpg')";$('detail-tag').textContent=DET[cur][1];setTitle();document.querySelectorAll('.dsec').forEach(s=>s.classList.toggle('on',s.dataset.k===cur));window.scrollTo(0,0)}else if(route.y!=null)window.scrollTo(0,route.y)}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(b){route.y=window.scrollY;location.hash=b.dataset.open}});
-$('back').onclick=()=>{if(route.y!=null)history.back();else location.hash=''};
-window.addEventListener('hashchange',route);
-const onTab=e=>{const b=e.target.closest('[data-ago]');if(!b)return;ago=+b.dataset.ago;store.set('ago',ago);renderEra()};
-$('tabs').onclick=onTab;$('tabs2').onclick=onTab;
-document.addEventListener('submit',e=>{if(e.target.id!=='memo')return;e.preventDefault();const v=$('memo-in').value.trim();if(!v)return;store.set('memo'+ago,v);renderEra()});renderEra();
+    <div class="group"><span>앞으로 나아가기</span><i></i><small>지금 젊다, 배운다</small></div>
 
-const QZ={opts:['래','내','례','뢰'],ans:0,full:'고진감래(苦盡甘來)',mean:'쓴 것이 다하면 단 것이 온다. 고생 끝에 낙이 온다는 뜻입니다.'};
-function renderQuiz(){const s=store.get('quiz',{day:'',pick:null}),done=s.day===key(now);$('opts').innerHTML=QZ.opts.map((o,i)=>'<button type="button" data-o="'+i+'" class="'+(done?(i===QZ.ans?'ok':'no'):'')+'"'+(done?' disabled':'')+'>'+o+'</button>').join('');$('blank').textContent=done?QZ.opts[QZ.ans]:' ';$('result').textContent=done?((s.pick===QZ.ans?'정답입니다. ':'아쉽습니다. 정답은 "래"입니다. ')+QZ.full+' — '+QZ.mean):''}
-$('opts').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;store.set('quiz',{day:key(now),pick:+b.dataset.o});renderQuiz()};renderQuiz();
-const POLL=[['분홍 소시지 부침',38],['달걀말이',27],['멸치볶음',14],['볶은 김치',21]];
-function renderPoll(){const pick=store.get('poll',null);$('poll').innerHTML=POLL.map((p,i)=>'<button type="button" data-p="'+i+'" aria-pressed="'+(pick===i)+'">'+(pick!=null?'<i style="width:'+p[1]+'%"></i>':'')+'<span><span>'+p[0]+'</span>'+(pick!=null?'<span>'+p[1]+'%</span>':'')+'</span></button>').join('')}
-$('poll').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;store.set('poll',+b.dataset.p);renderPoll()};renderPoll();
-route();
+    <div class="label"><img src="leaf.png" alt="">오늘의 따라하기</div>
+    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>아침 체조 · 노래 교실 · 라인댄스 · 악기 · 요가</h3><p>항목마다 매일 새 영상. 곧 열립니다.</p></div><span>준비 중</span></div></button>
 
-</script>
+    <div class="label"><img src="leaf.png" alt="">오늘의 회화 학습</div>
+    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>영어 · 일본어 · 중국어</h3><p>하루 한 문장, 읽어 주고 따라 말하기. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+
+    <div class="label"><img src="leaf.png" alt="">오늘의 나들이</div>
+    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>산 · 공연 · 전시 · 여행</h3><p>내 지역 소식부터, 예매까지 한 번에. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+
+    <div class="foot">오마주 · 매일 아침 5분, 마음은 주니어<br><a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a><a href="mailto:jmp159877@gmail.com">문의</a></div>
+  </main>
+</div>
+
+<div id="detail">
+  <div class="top-nav"><button type="button" class="back" id="back">← 뒤로 가기</button><img src="logo-light.png" alt="오마주"></div>
+  <div class="d-hero" id="d-bg"><div class="d-title"><span class="tag" id="d-tag"></span><h1 id="d-title"></h1></div></div>
+  <div class="d-body">
+    <section class="dsec" data-k="history"><button type="button" class="read" data-read="era">읽어 주기</button><div class="picks" id="tabs" role="group"></div><div id="era"></div></section>
+    <section class="dsec" data-k="music"><div class="picks" id="tabs2" role="group"></div><div id="songs"></div></section>
+    <section class="dsec" data-k="food"><button type="button" class="read" data-read="meal">읽어 주기</button><div id="meal"></div></section>
+    <section class="dsec" data-k="story"><button type="button" class="read" data-read="story">읽어 주기</button><div id="story"></div></section>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div class="toast" id="toast" hidden></div>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

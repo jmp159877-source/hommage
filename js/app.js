@@ -1,0 +1,252 @@
+import { DEFAULT_CONTENT } from './content.js';
+import * as DB from './db.js';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = { get(k, d) { try { const v = localStorage.getItem('omaju.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('omaju.' + k, JSON.stringify(v)); } catch (e) {} } };
+let toastT, readingBtn = null; function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2800); }
+const SITE = 'https://omaju.kr';
+const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n네이버에서 "오마주"를 검색하세요';
+
+// ── 날짜 ──
+const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
+const TODAY = DB.todayKey(now);
+$('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
+try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = ` · 음력 ${m.value}월 ${d.value}일`; } catch (e) {}
+const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
+$('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
+
+// ── 글자 크기 ──
+function applySize(b) { document.documentElement.classList.toggle('big', b); $('sizer').textContent = b ? '글자 보통' : '글자 크게'; }
+applySize(store.get('big', false)); $('sizer').onclick = () => { const b = !document.documentElement.classList.contains('big'); applySize(b); store.set('big', b); };
+
+// ── 콘텐츠 ──
+let C = DEFAULT_CONTENT;
+const remote = await DB.loadDaily(TODAY);
+if (remote) C = Object.assign({}, DEFAULT_CONTENT, remote);
+DB.bumpVisit();
+DB.loadNotice().then(n => { if (n && n.text) { $('notice-text').textContent = n.text; $('notice').hidden = false; } });
+
+// ── 날씨 ──
+const WMO = { 0: '맑음', 1: '대체로 맑음', 2: '구름 조금', 3: '흐림', 45: '안개', 48: '안개', 51: '이슬비', 53: '이슬비', 55: '이슬비', 56: '이슬비', 57: '이슬비', 61: '약한 비', 63: '비', 65: '강한 비', 66: '진눈깨비', 67: '진눈깨비', 71: '약한 눈', 73: '눈', 75: '많은 눈', 77: '싸락눈', 80: '소나기', 81: '소나기', 82: '강한 소나기', 85: '눈', 86: '많은 눈', 95: '천둥번개', 96: '천둥번개', 99: '천둥번개' };
+function wxSay(t, c) { if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95) return '비 소식이 있습니다. 우산 챙기시고, 빗소리 좋은 창가에서 차 한 잔 어떠세요.'; if ((c >= 71 && c <= 77) || c === 85 || c === 86) return '눈이 옵니다. 길이 미끄러우니 천천히, 풍경은 넉넉히 즐기세요.'; if (t >= 28) return '더운 날입니다. 물 자주 드시고 한낮 볕은 잠시 피하세요.'; if (t >= 18) return '걷기 딱 좋은 날씨입니다. 가까운 길이라도 한 바퀴 돌고 오세요.'; if (t >= 8) return '아침저녁으로 쌀쌀합니다. 겉옷 하나 걸치고 나서세요.'; return '날이 찹니다. 목도리 두르고, 따뜻한 국물로 속부터 데우세요.'; }
+async function loadWx(lat, lon, label) {
+  try {
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=auto`);
+    const d = await r.json(); const c = d.current; if (!c) throw 0;
+    const t = Math.round(c.temperature_2m), desc = WMO[c.weather_code] || '';
+    $('wx-temp').textContent = t + '°'; $('wx-desc').textContent = desc;
+    $('wx-sub').textContent = `${label} · 체감 ${Math.round(c.apparent_temperature)}° · 습도 ${Math.round(c.relative_humidity_2m)}%`;
+    $('wx-say').textContent = wxSay(t, c.weather_code);
+    $('wx-pill').textContent = `${label}  ·  ${desc}  ${t}°`;
+  } catch (e) { $('wx-temp').textContent = ''; $('wx-desc').textContent = '지금은 날씨를 불러오지 못했습니다.'; $('wx-say').textContent = '오늘도 좋은 하루 보내세요.'; }
+}
+function askHere(silent) {
+  if (!navigator.geolocation) { if (!silent) toast('이 기기에서는 위치를 알 수 없습니다.'); return; }
+  navigator.geolocation.getCurrentPosition(p => { store.set('geo', [p.coords.latitude, p.coords.longitude]); loadWx(p.coords.latitude, p.coords.longitude, '내 동네'); }, () => { if (!silent) toast('위치 허용이 필요합니다. 휴대폰 설정에서 허용해 주세요.'); }, { timeout: 8000 });
+}
+const geo = store.get('geo', null);
+if (geo) loadWx(geo[0], geo[1], '내 동네'); else { loadWx(37.5665, 126.978, '서울'); askHere(true); }
+$('wx-here').onclick = () => askHere(false);
+
+// ── 인사말 ──
+const cardsEl = $('cards');
+cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard t${i % 3}" data-copy="${i}"><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="send">누르면 복사</span><img src="leaf.png" alt=""></button>`).join('');
+cardsEl.onclick = async e => { const b = e.target.closest('[data-copy]'); if (!b) return; const text = C.greetings[+b.dataset.copy].replace(/\n/g, ' ') + '\n\n' + TAGLINE; DB.bumpClick('greeting'); try { await navigator.clipboard.writeText(text); toast('인사말을 복사했습니다. 카톡에 붙여 넣으세요.'); } catch (e) { toast('복사하지 못했습니다.'); } };
+
+// ── 운세 ──
+const ZO = Object.keys(C.fortune);
+let myZ = store.get('zodiac', null);
+function renderZ() { $('zodiac').innerHTML = ZO.map(z => `<button type="button" data-z="${z}" aria-pressed="${myZ === z}">${z}</button>`).join(''); $('fortune').textContent = myZ ? C.fortune[myZ] : '띠를 고르면 오늘의 한마디가 나옵니다.'; }
+$('zodiac').onclick = e => { const b = e.target.closest('[data-z]'); if (!b) return; myZ = b.dataset.z; store.set('zodiac', myZ); if (DB.currentUser()) DB.saveProfile({ zodiac: myZ }).catch(() => {}); renderZ(); };
+renderZ();
+
+// ── 배너 펼치기 / 안쪽 화면 ──
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle]'); if (t) { t.classList.toggle('open'); if (t.classList.contains('open') && t.dataset.corner) DB.bumpClick(t.dataset.corner); }
+  const o = e.target.closest('[data-open]'); if (o) { route.y = window.scrollY; DB.bumpClick(o.dataset.corner); location.hash = o.dataset.open; }
+});
+
+// ── 그해 오늘 · 노래 ──
+let ago = store.get('ago', 40);
+function renderEra() {
+  const tabs = [50, 40, 30, 20].map(n => `<button type="button" data-ago="${n}" aria-pressed="${ago === n}">${n}년 전</button>`).join('');
+  $('tabs').innerHTML = tabs; $('tabs2').innerHTML = tabs;
+  const yr = Y - ago, e = C.era[ago], memo = store.get('memo' + ago, ''); $('cat-year').textContent = yr;
+  let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
+  h += '<h3 class="subhead">나는 그때</h3>' + (memo ? `<p class="mine">${esc(memo)}</p>` : `<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="${yr}년의 나는 어디서 무엇을 하고 있었나요"><button type="submit" class="btn green">남기기</button></form>`);
+  $('era').innerHTML = h;
+  $('songs').innerHTML = `<p class="note" style="margin:30px 0 0">노래 듣기를 누르면 유튜브에서 바로 찾아 줍니다.</p><div class="rows">` + e.songs.map(s => `<div class="row"><p><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></p><a href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">노래 듣기</a></div>`).join('') + '</div>';
+  if (cur) setTitle();
+}
+const onTab = e => { const b = e.target.closest('[data-ago]'); if (!b) return; ago = +b.dataset.ago; store.set('ago', ago); renderEra(); };
+$('tabs').onclick = onTab; $('tabs2').onclick = onTab;
+document.addEventListener('submit', e => { if (e.target.id !== 'memo') return; e.preventDefault(); const v = $('memo-in').value.trim(); if (!v) return; store.set('memo' + ago, v); renderEra(); });
+
+// ── 한 끼 · 사연 ──
+$('meal-title').textContent = C.meal.title; $('meal-sub').textContent = C.meal.sub;
+$('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${C.meal.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><ol class="steps">${C.meal.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol><p class="note">${esc(C.meal.tip || '')}</p>`;
+$('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
+$('story').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
+
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_music', '오늘의 사연', () => esc(C.story.title)] };
+let cur = null;
+function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
+function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
+$('back').onclick = () => { if (route.y != null) history.back(); else location.hash = ''; };
+window.addEventListener('hashchange', route);
+renderEra(); route();
+
+// ── 퀴즈 ──
+$('quiz-kind').textContent = '오늘의 ' + (C.quiz.kind || '퀴즈');
+$('quiz-q').textContent = C.quiz.question;
+let pick = null;
+function renderQuiz() {
+  const s = store.get('quiz', { day: '', pick: null }), done = s.day === TODAY;
+  if (done) pick = s.pick;
+  $('opts').innerHTML = C.quiz.options.map((o, i) => `<button type="button" data-o="${i}" aria-pressed="${pick === i}" class="${done ? (i === C.quiz.answer ? 'ok' : 'no') : ''}" ${done ? 'disabled' : ''}>${i + 1}. ${esc(o)}</button>`).join('');
+  $('quiz-check').disabled = done || pick == null; $('quiz-check').hidden = done;
+  $('quiz-result').textContent = done ? (s.pick === C.quiz.answer ? '정답입니다.' : `아쉽습니다. 정답은 ${C.quiz.answer + 1}번입니다.`) : '';
+  $('quiz-exp').hidden = !done; $('quiz-exp').textContent = C.quiz.explain;
+}
+$('opts').onclick = e => { const b = e.target.closest('[data-o]'); if (!b || b.disabled) return; pick = +b.dataset.o; renderQuiz(); };
+$('quiz-check').onclick = () => { if (pick == null) return; store.set('quiz', { day: TODAY, pick }); DB.track('quiz_answer', { correct: pick === C.quiz.answer }); renderQuiz(); };
+renderQuiz();
+
+// ── 투표 · 한마디 ──
+$('poll-q').textContent = C.poll.question;
+function renderPoll(counts) {
+  const mine = store.get('poll.' + TODAY, null), total = counts ? counts.reduce((a, b) => a + b, 0) : 0;
+  $('poll').innerHTML = C.poll.options.map((o, i) => { const pct = mine != null && total ? Math.round((counts[i] || 0) * 100 / total) : null; return `<button type="button" data-p="${i}" aria-pressed="${mine === i}" ${mine != null ? 'disabled' : ''}>${pct != null ? `<i style="width:${pct}%"></i>` : ''}<span><span>${esc(o)}</span>${pct != null ? `<span>${pct}%</span>` : ''}</span></button>`; }).join('');
+}
+$('poll').onclick = async e => { const b = e.target.closest('[data-p]'); if (!b || b.disabled) return; const i = +b.dataset.p; store.set('poll.' + TODAY, i); renderPoll(await DB.vote(TODAY, i, C.poll.options.length)); };
+DB.loadPoll(TODAY).then(renderPoll);
+async function renderCmts() {
+  const list = await DB.listComments(TODAY), me = DB.currentUser();
+  $('cmts').innerHTML = list.map(c => `<div class="cmt"><b>${esc(c.nick)}</b><p>${esc(c.text)}</p>${me && me.uid === c.uid ? `<button type="button" data-del="${c.id}">지우기</button>` : `<button type="button" data-rep="${c.id}">신고</button>`}</div>`).join('') || '<p class="note">첫 한마디를 남겨 보세요.</p>';
+}
+$('cmt-form').onsubmit = async e => { e.preventDefault(); if (!DB.currentUser()) return openGate('한마디를 남기려면'); try { await DB.addComment(TODAY, $('cmt-in').value); $('cmt-in').value = ''; renderCmts(); } catch (err) { toast(err.message); } };
+$('cmts').onclick = async e => { const d = e.target.closest('[data-del]'), r = e.target.closest('[data-rep]'); try { if (d) { await DB.deleteMyComment(d.dataset.del); renderCmts(); } if (r) { if (!DB.currentUser()) return openGate('신고하려면'); await DB.reportComment(r.dataset.rep); toast('신고했습니다. 확인 후 처리합니다.'); } } catch (err) { toast(err.message); } };
+renderCmts();
+
+// ── 읽어 주기 ──
+const READ = { cards: () => C.greetings.join('. '), fortune: () => $('fortune').textContent, quiz: () => C.quiz.question + '. ' + C.quiz.options.map((o, i) => (i + 1) + '번, ' + o).join('. '), era: () => $('era').innerText, meal: () => C.meal.title + '. ' + C.meal.lead + ' 재료. ' + C.meal.ingredients.join(', ') + '. 만드는 법. ' + C.meal.steps.join(' '), story: () => C.story.paras.join(' ') };
+function stopRead() { try { speechSynthesis.cancel(); } catch (e) {} if (readingBtn) { readingBtn.textContent = '읽어 주기'; readingBtn.setAttribute('aria-pressed', 'false'); readingBtn = null; } }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-read]'); if (!b) return;
+  if (readingBtn === b) return stopRead();
+  stopRead();
+  if (!('speechSynthesis' in window)) return toast('이 기기에서는 읽어 주기를 쓸 수 없습니다.');
+  const u = new SpeechSynthesisUtterance(READ[b.dataset.read]()); u.lang = 'ko-KR'; u.rate = 0.9;
+  const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('ko')); if (v) u.voice = v;
+  u.onend = stopRead; speechSynthesis.speak(u); readingBtn = b; b.textContent = '멈추기'; b.setAttribute('aria-pressed', 'true');
+});
+
+// ── 앱 설치 · 알리기 ──
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
+const UA = navigator.userAgent, isIOS = /iPhone|iPad|iPod/.test(UA), inApp = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\//i.test(UA), standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+if (standalone) $('install-btn').hidden = true;
+$('install-btn').onclick = async () => {
+  DB.track('install_click');
+  if (inApp) return modal(`<h2>크롬으로 열어 주세요</h2><p>지금은 카톡이나 네이버 앱 안에서 열려 있어서 앱 아이콘을 설치할 수 없습니다.</p>${isIOS ? '<p>오른쪽 아래(또는 위) <b>⋯</b> 또는 <b>공유</b> 버튼을 누르고 <b>"Safari로 열기"</b>를 고르세요.</p>' : `<div class="modal-actions"><a class="btn green" style="text-align:center;text-decoration:none" href="intent://${location.host}${location.pathname}#Intent;scheme=https;package=com.android.chrome;end">크롬으로 열기</a></div>`}`);
+  if (deferredPrompt) { deferredPrompt.prompt(); const r = await deferredPrompt.userChoice; deferredPrompt = null; if (r.outcome === 'accepted') { toast('설치되었습니다. 휴대폰 바탕화면에서 오마주 아이콘을 누르세요.'); $('install-btn').hidden = true; } return; }
+  if (isIOS) return modal(`<h2>앱 아이콘 설치하기</h2><div class="steps-ios">1. 화면 아래 가운데 <b>네모에 화살표 (공유)</b> 버튼을 누르세요.<br>2. 아래로 내려 <b>"홈 화면에 추가"</b>를 누르세요.<br>3. 오른쪽 위 <b>"추가"</b>를 누르세요.</div><p class="note">바탕화면에 오마주 아이콘이 생깁니다.</p>`);
+  modal(`<h2>앱 아이콘 설치하기</h2><p>크롬 오른쪽 위 <b>⋮</b> 메뉴를 누르고 <b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b>를 누르세요.</p><p class="note">이미 설치되어 있으면 바탕화면에서 오마주 아이콘을 찾아 주세요.</p>`);
+};
+$('share-btn').onclick = async () => {
+  const text = `아침마다 5분 보는 건데 재밌어. 운세, 옛날 노래, 그해 오늘 소식. 네이버에서 "오마주" 검색해 봐.\n${SITE}`;
+  DB.track('share');
+  if (navigator.share) { try { await navigator.share({ title: '오마주', text, url: SITE }); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(text); toast('소개 글을 복사했습니다. 카톡에 붙여 넣어 보내세요.'); } catch (e) {} }
+};
+
+// ── 모달 ──
+function modal(html, onReady) { const r = $('modal-root'); r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><button type="button" class="x" id="modal-x" aria-label="닫기">×</button>${html}</div></div>`; $('modal-x').onclick = closeModal; $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); }; if (onReady) onReady(); }
+function closeModal() { $('modal-root').innerHTML = ''; }
+let afterLogin = null;
+function openGate(why) {
+  afterLogin = null;
+  modal(`<h2>간단한 회원가입을 하시면</h2><p>${why ? why + ' 회원가입이 필요합니다. ' : ''}가입하면 글 읽기와 글쓰기, 출석 도장이 됩니다. 아이디와 숫자 비밀번호면 충분합니다.</p>
+  <div class="modal-actions"><button type="button" class="btn green" id="g-signup">간편 회원가입하기</button><button type="button" class="btn line" id="g-login">이미 가입했어요, 로그인</button></div>
+  <div class="divider"></div><p class="note">매일 아침 바로 열어 보시려면</p><div class="modal-actions"><button type="button" class="btn ivory" id="g-install">앱 아이콘 설치하기</button></div>`,
+  () => { $('g-signup').onclick = openSignup; $('g-login').onclick = openLogin; $('g-install').onclick = () => { closeModal(); $('install-btn').click(); }; });
+}
+const REGIONS = { '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'], '경기': ['수원', '성남', '고양', '용인', '부천', '안산', '안양', '남양주', '화성', '평택', '의정부', '시흥', '파주', '김포', '광명', '광주', '군포', '하남', '오산', '양주', '이천', '구리', '안성', '포천', '의왕', '여주', '양평', '동두천', '과천', '가평', '연천'], '인천': ['중구', '동구', '미추홀구', '연수구', '남동구', '부평구', '계양구', '서구', '강화군', '옹진군'], '부산': ['중구', '서구', '동구', '영도구', '부산진구', '동래구', '남구', '북구', '해운대구', '사하구', '금정구', '강서구', '연제구', '수영구', '사상구', '기장군'], '대구': ['중구', '동구', '서구', '남구', '북구', '수성구', '달서구', '달성군', '군위군'], '광주': ['동구', '서구', '남구', '북구', '광산구'], '대전': ['동구', '중구', '서구', '유성구', '대덕구'], '울산': ['중구', '남구', '동구', '북구', '울주군'], '세종': ['세종'], '강원': ['춘천', '원주', '강릉', '동해', '태백', '속초', '삼척', '홍천', '횡성', '영월', '평창', '정선', '철원', '화천', '양구', '인제', '고성', '양양'], '충북': ['청주', '충주', '제천', '보은', '옥천', '영동', '증평', '진천', '괴산', '음성', '단양'], '충남': ['천안', '공주', '보령', '아산', '서산', '논산', '계룡', '당진', '금산', '부여', '서천', '청양', '홍성', '예산', '태안'], '전북': ['전주', '군산', '익산', '정읍', '남원', '김제', '완주', '진안', '무주', '장수', '임실', '순창', '고창', '부안'], '전남': ['목포', '여수', '순천', '나주', '광양', '담양', '곡성', '구례', '고흥', '보성', '화순', '장흥', '강진', '해남', '영암', '무안', '함평', '영광', '장성', '완도', '진도', '신안'], '경북': ['포항', '경주', '김천', '안동', '구미', '영주', '영천', '상주', '문경', '경산', '의성', '청송', '영양', '영덕', '청도', '고령', '성주', '칠곡', '예천', '봉화', '울진', '울릉'], '경남': ['창원', '진주', '통영', '사천', '김해', '밀양', '거제', '양산', '의령', '함안', '창녕', '고성', '남해', '하동', '산청', '함양', '거창', '합천'], '제주': ['제주시', '서귀포시'] };
+function openSignup() {
+  modal(`<h2>간편 회원가입</h2>
+  <div class="field"><label>아이디</label><div class="in"><input id="s-id" autocomplete="username" inputmode="latin" placeholder="예: happy1960" maxlength="12"><button type="button" class="btn line" id="s-id-chk">중복 확인</button></div><div class="hint">영문 소문자와 숫자, 4~12자</div><div class="msg" id="s-id-msg"></div></div>
+  <div class="field"><label>비밀번호</label><input id="s-pw" type="password" inputmode="numeric" placeholder="숫자 6개" maxlength="6" autocomplete="new-password"><div class="hint">숫자 6자리</div></div>
+  <div class="field"><label>별명</label><div class="in"><input id="s-nick" placeholder="예: 강남 멋쟁이" maxlength="12"><button type="button" class="btn line" id="s-nick-chk">중복 확인</button></div><div class="hint">글을 쓸 때 보이는 이름</div><div class="msg" id="s-nick-msg"></div></div>
+  <div class="field"><label>연락처</label><input id="s-phone" type="tel" inputmode="tel" placeholder="010-1234-5678" maxlength="13"><div class="hint">아이디나 비밀번호를 잊으셨을 때 찾는 데 필요합니다.</div></div>
+  <div class="field"><label>거주 지역</label><div class="in"><select id="s-r1"><option value="">시·도</option>${Object.keys(REGIONS).map(r => `<option>${r}</option>`).join('')}</select><select id="s-r2"><option value="">구·군</option></select></div></div>
+  <label class="chk"><input type="checkbox" id="s-agree"><span>개인정보 수집에 동의합니다. 아이디·비밀번호 찾기와 서비스 안내에만 쓰고, 다른 곳에 주지 않습니다. <a href="privacy.html" target="_blank">자세히</a></span></label>
+  <label class="chk"><input type="checkbox" id="s-mkt"><span>(선택) 오마주 소식을 문자로 받겠습니다.</span></label>
+  <div class="modal-actions"><button type="button" class="btn green" id="s-go">가입하기</button></div><div class="err-box" id="s-err" hidden></div>`,
+  () => {
+    $('s-r1').onchange = () => { $('s-r2').innerHTML = '<option value="">구·군</option>' + (REGIONS[$('s-r1').value] || []).map(r => `<option>${r}</option>`).join(''); };
+    $('s-phone').oninput = e => { let v = e.target.value.replace(/\D/g, '').slice(0, 11); if (v.length > 7) v = v.slice(0, 3) + '-' + v.slice(3, 7) + '-' + v.slice(7); else if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3); e.target.value = v; };
+    $('s-id').oninput = e => { e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''); $('s-id-msg').textContent = ''; };
+    $('s-id-chk').onclick = async () => { const u = $('s-id').value; const m = $('s-id-msg'); if (!DB.validUsername(u)) { m.className = 'msg err'; m.textContent = '영문 소문자와 숫자로 4~12자입니다.'; return; } m.className = 'msg'; m.textContent = '확인 중…'; const t = await DB.usernameTaken(u); m.className = 'msg ' + (t ? 'err' : 'ok'); m.textContent = t ? '이미 있는 아이디입니다. 다른 아이디를 넣어 주세요.' : '사용할 수 있습니다.'; };
+    $('s-nick-chk').onclick = async () => { const n = $('s-nick').value.trim(); const m = $('s-nick-msg'); if (n.length < 2) { m.className = 'msg err'; m.textContent = '2자 이상 적어 주세요.'; return; } m.className = 'msg'; m.textContent = '확인 중…'; const t = await DB.nicknameTaken(n); if (t) { const s = await DB.suggestNick(n); m.className = 'msg err'; m.innerHTML = `이미 있는 별명입니다. "<b>${esc(s)}</b>"는 어떠세요? <button type="button" class="linkbtn" id="s-nick-use">이걸로 할게요</button>`; $('s-nick-use').onclick = () => { $('s-nick').value = s; m.className = 'msg ok'; m.textContent = '사용할 수 있습니다.'; }; } else { m.className = 'msg ok'; m.textContent = '사용할 수 있습니다.'; } };
+    $('s-go').onclick = async () => {
+      const err = $('s-err'); err.hidden = true;
+      if (!$('s-agree').checked) { err.textContent = '개인정보 수집 동의에 체크해 주세요.'; err.hidden = false; return; }
+      $('s-go').disabled = true; $('s-go').textContent = '가입하는 중…';
+      try {
+        await DB.signup({ username: $('s-id').value, pw: $('s-pw').value, nick: $('s-nick').value, phone: $('s-phone').value, region: [$('s-r1').value, $('s-r2').value].filter(Boolean).join(' '), marketing: $('s-mkt').checked });
+        closeModal(); toast('가입되었습니다. 환영합니다!'); if (afterLogin) afterLogin();
+      } catch (e) { err.textContent = e.message; err.hidden = false; $('s-go').disabled = false; $('s-go').textContent = '가입하기'; }
+    };
+  });
+}
+function openLogin() {
+  modal(`<h2>로그인</h2>
+  <div class="field"><label>아이디</label><input id="l-id" autocomplete="username" placeholder="아이디"></div>
+  <div class="field"><label>비밀번호</label><input id="l-pw" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="숫자 6개"></div>
+  <div class="modal-actions"><button type="button" class="btn green" id="l-go">로그인</button><button type="button" class="btn line" id="l-signup">처음이에요, 회원가입</button><button type="button" class="linkbtn" id="l-forgot">아이디·비밀번호를 잊었어요</button></div><div class="err-box" id="l-err" hidden></div>`,
+  () => { $('l-signup').onclick = openSignup; $('l-forgot').onclick = openForgot; const go = async () => { const err = $('l-err'); err.hidden = true; try { await DB.login($('l-id').value, $('l-pw').value); closeModal(); toast('반갑습니다.'); if (afterLogin) afterLogin(); } catch (e) { err.textContent = e.message; err.hidden = false; } }; $('l-go').onclick = go; $('l-pw').onkeydown = e => { if (e.key === 'Enter') go(); }; });
+}
+function openForgot() {
+  modal(`<h2>아이디·비밀번호 찾기</h2><p>가입할 때 적은 아이디와 휴대폰 번호를 넣어 주세요. 확인 뒤 그 번호로 연락드립니다.</p>
+  <div class="field"><label>아이디</label><input id="f-id" placeholder="아이디 (모르면 비워 두세요)"></div>
+  <div class="field"><label>휴대폰 번호</label><input id="f-phone" type="tel" placeholder="010-1234-5678"></div>
+  <div class="modal-actions"><button type="button" class="btn green" id="f-go">찾기 요청</button></div><div class="err-box" id="f-err" hidden></div>`,
+  () => { $('f-go').onclick = async () => { const err = $('f-err'); err.hidden = true; try { await DB.requestReset($('f-id').value || 'unknown', $('f-phone').value); closeModal(); toast('요청했습니다. 확인 뒤 연락드리겠습니다.'); } catch (e) { err.textContent = e.message; err.hidden = false; } }; });
+}
+async function openMy() {
+  const p = DB.currentProfile(); if (!p) return;
+  const ym = TODAY.slice(0, 7), days = await DB.myCheckins(ym), set = new Set(days.map(d => +d.slice(8)));
+  const first = new Date(Y, M, 1).getDay(), last = new Date(Y, M + 1, 0).getDate();
+  let cal = WD.map(w => `<div class="h">${w}</div>`).join('') + '<div></div>'.repeat(first);
+  for (let d = 1; d <= last; d++) cal += `<div class="${set.has(d) ? 'on' : ''}">${d}</div>`;
+  modal(`<h2>${esc(p.nick)}님의 자리</h2><p class="note">아이디 ${esc(p.username)} · 연속 ${p.streak || 0}일 · 총 ${p.checkinCount || 0}일 출석</p>
+  <p class="note" style="margin-top:14px">${M + 1}월 출석</p><div class="cal">${cal}</div>
+  <div class="field" style="margin-top:22px"><label>별명 바꾸기</label><div class="in"><input id="m-nick" value="${esc(p.nick)}" maxlength="12"><button type="button" class="btn line" id="m-nick-go">바꾸기</button></div><div class="msg" id="m-nick-msg"></div></div>
+  <div class="field"><label>비밀번호 바꾸기</label><div class="in"><input id="m-pw" type="password" inputmode="numeric" maxlength="6" placeholder="새 숫자 6개"><button type="button" class="btn line" id="m-pw-go">바꾸기</button></div><div class="msg" id="m-pw-msg"></div></div>
+  <div class="field"><label>태어난 해 · 성별 (선택)</label><div class="in"><input id="m-born" inputmode="numeric" maxlength="4" placeholder="예: 1960" value="${p.born || ''}"><select id="m-sex"><option value="">성별</option><option ${p.sex === '남' ? 'selected' : ''}>남</option><option ${p.sex === '여' ? 'selected' : ''}>여</option></select><button type="button" class="btn line" id="m-born-go">저장</button></div><div class="msg" id="m-born-msg"></div></div>`,
+  () => {
+    $('m-nick-go').onclick = async () => { const m = $('m-nick-msg'); try { await DB.changeNick($('m-nick').value); m.className = 'msg ok'; m.textContent = '바꿨습니다.'; $('user-nick').textContent = DB.currentProfile().nick; } catch (e) { m.className = 'msg err'; m.textContent = e.message; } };
+    $('m-pw-go').onclick = async () => { const m = $('m-pw-msg'); try { await DB.changePw($('m-pw').value); m.className = 'msg ok'; m.textContent = '바꿨습니다.'; } catch (e) { m.className = 'msg err'; m.textContent = e.code === 'auth/requires-recent-login' ? '안전을 위해 나갔다가 다시 로그인한 뒤 바꿔 주세요.' : e.message; } };
+    $('m-born-go').onclick = async () => { const m = $('m-born-msg'); const born = +$('m-born').value; if ($('m-born').value && (born < 1920 || born > 2010)) { m.className = 'msg err'; m.textContent = '태어난 해를 다시 확인해 주세요.'; return; } try { await DB.saveProfile({ born: $('m-born').value, sex: $('m-sex').value }); m.className = 'msg ok'; m.textContent = '저장했습니다.'; } catch (e) { m.className = 'msg err'; m.textContent = e.message; } };
+  });
+}
+$('login-btn').onclick = () => openGate('');
+$('logout').onclick = async () => { await DB.logout(); toast('나갔습니다. 내일 또 뵙겠습니다.'); };
+$('my').onclick = openMy;
+
+// ── 출석 도장 ──
+function renderStamp(p) {
+  const done = p && p.lastCheckin === TODAY;
+  $('stamp').disabled = !!done; $('stamp').textContent = done ? '오늘 출석 완료' : '출석 도장 찍기';
+  $('streak').textContent = p ? (p.streak ? `연속 ${p.streak}일째` : '매일 찍으면 기록이 쌓입니다') : '가입하면 기록이 쌓입니다';
+}
+$('stamp').onclick = async () => { if (!DB.currentUser()) { afterLogin = () => $('stamp').click(); return openGate('출석 도장을 찍으려면'); } try { const s = await DB.checkin(); renderStamp(DB.currentProfile()); toast(s > 1 ? `도장을 찍었습니다. 연속 ${s}일째!` : '도장을 찍었습니다.'); } catch (e) { toast(e.message); } };
+DB.onUser((u, p) => {
+  $('user-chip').hidden = !u; $('login-btn').hidden = !!u;
+  if (u && p) { $('user-nick').textContent = p.nick + '님'; if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } }
+  renderStamp(p); renderCmts();
+});
+
+// ── 서비스 워커 ──
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

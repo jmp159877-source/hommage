@@ -1,0 +1,15 @@
+{
+  "name": "오마주 - 매일 아침 5분, 마음은 주니어",
+  "short_name": "오마주",
+  "description": "매일 아침 5분, 운세와 인사말, 그해 오늘과 추억의 노래, 한 끼와 퀴즈.",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4F1EA",
+  "theme_color": "#0F4A35",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
