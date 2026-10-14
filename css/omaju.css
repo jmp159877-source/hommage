@@ -531,3 +531,7 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 }
 /* 위로 당겨서 새로고침 끄기 (실수 방지) */
 html, body { overscroll-behavior-y: none; }
+/* 스크롤 부드럽게: 흐림 효과·색 필터 제거 (휴대폰에서 무거움) */
+#login-btn { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.18); }
+.tabs3 button[aria-pressed="false"] { filter: none; opacity: 0.72; }
+.tabs3 button { will-change: transform; backface-visibility: hidden; }
