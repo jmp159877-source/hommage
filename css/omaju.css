@@ -522,3 +522,10 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 /* 첫 화면 날씨 줄 제거, 로고 묶음 한 칸 위로 */
 .hero-top { display: none; }
 @media (max-width: 768px) { .hero > div:last-child { padding-top: calc(7vh + 18px); } .brand { margin-bottom: 30px; } }
+/* 휴대폰 주소창이 숨을 때 첫 화면이 늘었다 줄었다 하는 것 방지: 큰 화면 기준으로 고정 */
+@media (max-width: 768px) {
+  @supports (height: 100lvh) {
+    .hero { min-height: 128lvh; }
+    .hero > div:last-child { padding-top: calc(7lvh + 18px); }
+  }
+}
