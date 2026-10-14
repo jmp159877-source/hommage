@@ -217,7 +217,7 @@ if (/[?&]install=1/.test(location.search) && !standalone && !inApp) {
   setTimeout(() => modal(`<h2>앱 아이콘 설치하기</h2><p style="font-size:1.2rem">크롬으로 잘 넘어왔습니다. 아래 단추를 한 번 더 누르면 설치 창이 뜹니다.</p><div class="modal-actions"><button type="button" class="btn green" onclick="document.getElementById('modal-root').innerHTML='';document.getElementById('install-btn').click()">설치하기</button></div>`), 600);
 }
 $('share-btn').onclick = async () => {
-  const text = '매일 아침 5분.\n오늘, 추억, 그리고 내일.\n마음은 아직 주니어인 당신에게.\n\n오마주';
+  const text = '매일 아침 5분.\n과거와 오늘, 그리고 내일.\n마음은 아직 주니어인 당신에게.\n\n오마주';
   DB.track('share');
   if (navigator.share) { try { await navigator.share({ title: '오마주', text: text + '\n' + SITE }); } catch (e) {} }
   else { try { await navigator.clipboard.writeText(text + '\n' + SITE); toast('소개 글을 복사했습니다. 카톡에 붙여 넣어 보내세요.'); } catch (e) {} }
@@ -302,7 +302,7 @@ $('my').onclick = openMy;
 
 // ── 출석 도장 ──
 function renderStamp(p) {
-  $('stamp-wrap').hidden = !p;
+  $('stamp-wrap').hidden = true;
   const done = p && p.lastCheckin === TODAY;
   $('stamp').disabled = !!done; $('stamp').textContent = done ? '오늘 출석 완료' : '출석 도장 찍기';
   $('streak').textContent = p ? (p.streak ? `연속 ${p.streak}일째` : '매일 찍으면 기록이 쌓입니다') : '가입하면 기록이 쌓입니다';
