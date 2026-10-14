@@ -97,6 +97,14 @@ cardsEl.onclick = async e => {
   if (canShare) $('card-share').onclick = async () => { try { await navigator.share({ files: [file], text }); closeModal(); } catch (err) { if (err.name !== 'AbortError') save(); } };
 };
 
+
+// 휴대폰 첫 화면 높이를 열 때 한 번만 숫자로 고정 (주소창 숨김으로 흔들리지 않게)
+(function fixHero() {
+  const hero = document.querySelector('.hero'); if (!hero) return; let w = 0;
+  const set = () => { if (window.innerWidth > 768) { hero.style.minHeight = ''; w = 0; return; } if (window.innerWidth === w) return; w = window.innerWidth; const h = Math.max(window.innerHeight, screen.height * 0.9); hero.style.minHeight = Math.round(h * 1.28) + 'px'; const box = hero.querySelector(':scope > div:last-child'); if (box) box.style.paddingTop = Math.round(h * 0.07 + 18) + 'px'; };
+  set(); window.addEventListener('resize', set); window.addEventListener('orientationchange', () => setTimeout(set, 300));
+})();
+
 // ── 운세 ──
 const ZO = Object.keys(C.fortune);
 let myZ = store.get('zodiac', null);

@@ -529,3 +529,5 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
     .hero > div:last-child { padding-top: calc(7lvh + 18px); }
   }
 }
+/* 위로 당겨서 새로고침 끄기 (실수 방지) */
+html, body { overscroll-behavior-y: none; }
