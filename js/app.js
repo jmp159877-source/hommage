@@ -43,10 +43,13 @@ async function loadWx(lat, lon, label) {
 }
 function askHere(silent) {
   if (!navigator.geolocation) { if (!silent) toast('이 기기에서는 위치를 알 수 없습니다.'); return; }
-  navigator.geolocation.getCurrentPosition(p => { store.set('geo', [p.coords.latitude, p.coords.longitude]); loadWx(p.coords.latitude, p.coords.longitude, '내 동네'); }, () => { if (!silent) toast('위치 허용이 필요합니다. 휴대폰 설정에서 허용해 주세요.'); }, { timeout: 8000 });
+  navigator.geolocation.getCurrentPosition(p => { store.set('geo', [p.coords.latitude, p.coords.longitude]); loadWx(p.coords.latitude, p.coords.longitude, '내 동네'); }, err => { if (silent) return; if (err.code === 1) modal(`<h2>위치 허용이 필요합니다</h2><p>휴대폰이 위치를 알려 주지 않도록 되어 있습니다.</p><div class="steps-ios">1. 크롬 주소창 왼쪽의 <b>자물쇠(또는 ⓘ)</b>를 누르세요.<br>2. <b>권한</b> → <b>위치</b>를 "허용"으로 바꾸세요.<br>3. 이 화면으로 돌아와 다시 눌러 주세요.</div><p class="note">허용하지 않아도 가입할 때 적은 거주 지역의 날씨를 보여 드립니다.</p>`); else toast('지금은 위치를 알 수 없습니다. 잠시 뒤 다시 눌러 주세요.'); }, { timeout: 8000 });
 }
+// 시·도별 대표 좌표 (가입 때 적은 거주 지역으로 날씨 보기)
+const REGION_XY = { '서울': [37.5665, 126.978], '경기': [37.4138, 127.5183], '인천': [37.4563, 126.7052], '부산': [35.1796, 129.0756], '대구': [35.8714, 128.6014], '광주': [35.1595, 126.8526], '대전': [36.3504, 127.3845], '울산': [35.5384, 129.3114], '세종': [36.48, 127.289], '강원': [37.8813, 127.7298], '충북': [36.6424, 127.489], '충남': [36.6588, 126.6728], '전북': [35.8242, 127.148], '전남': [34.8161, 126.4629], '경북': [36.576, 128.5056], '경남': [35.2383, 128.6924], '제주': [33.4996, 126.5312] };
 const geo = store.get('geo', null);
 if (geo) loadWx(geo[0], geo[1], '내 동네'); else { loadWx(37.5665, 126.978, '서울'); askHere(true); }
+function wxByRegion(p) { if (store.get('geo', null) || !p || !p.region) return; const sido = p.region.split(' ')[0], xy = REGION_XY[sido]; if (xy) loadWx(xy[0], xy[1], p.region); }
 $('wx-here').onclick = () => askHere(false);
 
 // ── 인사말 ──
@@ -244,7 +247,7 @@ function renderStamp(p) {
 $('stamp').onclick = async () => { if (!DB.currentUser()) { afterLogin = () => $('stamp').click(); return openGate('출석 도장을 찍으려면'); } try { const s = await DB.checkin(); renderStamp(DB.currentProfile()); toast(s > 1 ? `도장을 찍었습니다. 연속 ${s}일째!` : '도장을 찍었습니다.'); } catch (e) { toast(e.message); } };
 DB.onUser((u, p) => {
   $('user-chip').hidden = !u; $('login-btn').hidden = !!u;
-  if (u && p) { $('user-nick').textContent = p.nick + '님'; if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } }
+  if (u && p) { $('user-nick').textContent = p.nick + '님'; if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); }
   renderStamp(p); renderCmts();
 });
 
