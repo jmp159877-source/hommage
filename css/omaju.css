@@ -535,3 +535,47 @@ html, body { overscroll-behavior-y: none; }
 #login-btn { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.18); }
 .tabs3 button[aria-pressed="false"] { filter: none; opacity: 0.72; }
 .tabs3 button { will-change: transform; backface-visibility: hidden; }
+/* 세 묶음 탭 → 네 칸(2×2), 크게 */
+.tabs3 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0 14px; }
+.tabs3 button { aspect-ratio: 1.45 / 1; height: auto; min-height: 0; transform: none !important; }
+.tabs3 button[aria-pressed="true"] { transform: none !important; opacity: 1; outline: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+.tabs3 button[aria-pressed="false"] { opacity: 0.72; }
+.tabs3 button[data-tab="g4"] { background-image: url('../img/tab-note.jpg') !important; background-size: cover !important; background-position: center 60% !important; }
+.tabs3 button b { font-size: 1.5rem; }
+.tabs3 button small { font-size: 1rem; }
+@media (max-width: 768px) {
+  .tabs3 { gap: 10px; }
+  .tabs3 button b { font-size: 1.35rem; }
+  .tabs3 button small { font-size: 0.95rem; }
+}
+/* 내려가면 네 칸이 한 줄로 작아져서 따라온다 */
+.tabs3.compact { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 0 10px; }
+.tabs3.compact button { aspect-ratio: auto; height: 54px; min-height: 54px; box-shadow: none; }
+.tabs3.compact button small { display: none; }
+.tabs3.compact button b { font-size: 0.98rem; line-height: 1.2; }
+.tabs3.compact button[aria-pressed="true"] { opacity: 1; box-shadow: inset 0 0 0 2px #fff; }
+.tabs3 button[aria-pressed="true"] { opacity: 1; }
+.tabs3 button[aria-pressed="true"] b { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.tabs3.compact button { min-height: 54px !important; height: 54px; }
+.tabs3.compact button b { padding: 0 4px; align-items: center; height: 100%; white-space: nowrap; font-size: 0.95rem; text-decoration: none; }
+.tabs3.compact button[aria-pressed="true"] b { text-decoration: underline; text-underline-offset: 5px; }
+.tabs3.compact button::before { background: rgba(20,20,20,0.55); }
+.tabs3 button b { display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 6px 34px; text-align: center; line-height: 1.25; }
+.tabs3 button[data-tab="g4"][aria-pressed="true"] { background-image: url('../img/tab-note.jpg') !important; }
+@media (max-width: 768px) { .tabs3:not(.compact) button { min-height: 0; } .tabs3:not(.compact) button b { padding-bottom: 36px; } .tabs3:not(.compact) button small { font-size: 0.95rem; bottom: 12px; } .tabs3.compact button b { font-size: 0.92rem; } }
+.tabs3.compact button b { white-space: normal; font-size: 0.88rem; line-height: 1.15; padding: 0 2px; }
+.tabs3.compact button { height: 58px; min-height: 58px !important; }
+@media (max-width: 768px) { .tabs3.compact button b { font-size: 0.84rem; } }
+/* 네 칸 위 잡지식 제목: 오늘의 목차 */
+.toc { display: flex; align-items: flex-end; justify-content: space-between; margin: 26px 0 0; padding: 0 2px 10px; border-bottom: 1px solid rgba(20,20,20,0.75); }
+.toc-l { display: inline-flex; align-items: center; gap: 10px; font-family: 'Nanum Myeongjo', serif; font-weight: 700; font-size: 1.35rem; color: #141414; }
+.toc-l img { width: 34px; }
+.toc-r { font-family: 'Nanum Myeongjo', serif; font-size: 1rem; color: #555; letter-spacing: 0.02em; padding-bottom: 3px; }
+.tabs3:not(.compact) { padding-top: 16px; }
+/* 고른 칸은 살짝 커지고 나머지는 살짝 작아짐 */
+.tabs3:not(.compact) button { transform: scale(0.96) !important; transition: transform .25s ease, opacity .25s ease; }
+.tabs3:not(.compact) button[aria-pressed="true"] { transform: scale(1.05) !important; z-index: 1; box-shadow: 0 8px 22px rgba(0,0,0,0.28); }
+.tabs3:not(.compact) { gap: 14px; }
+.tabs3:not(.compact) button[aria-pressed="true"] b { text-decoration: none; }
+@media (max-width: 768px) { .toc { margin-top: 18px; } .toc-l { font-size: 1.25rem; } .toc-r { font-size: 0.95rem; } }
+.toc-l em { font-style: normal; font-family: 'Nanum Myeongjo', Georgia, serif; font-weight: 700; font-size: 1.45rem; letter-spacing: 0.22em; color: #141414; }

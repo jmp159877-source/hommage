@@ -11,7 +11,7 @@ const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n' + loc
 // ── 날짜 ──
 const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
 const TODAY = DB.todayKey(now);
-$('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
+$('toc-date').textContent = `${M + 1}월 ${D}일 ${['일','월','화','수','목','금','토'][new Date().getDay()]}요일`; $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
 try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = `음력 ${m.value}월 ${d.value}일`; } catch (e) {}
 const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
 $('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
@@ -103,6 +103,15 @@ cardsEl.onclick = async e => {
   const hero = document.querySelector('.hero'); if (!hero) return; let w = 0;
   const set = () => { if (window.innerWidth > 768) { hero.style.minHeight = ''; w = 0; return; } if (window.innerWidth === w) return; w = window.innerWidth; const h = Math.max(window.innerHeight, screen.height * 0.9); hero.style.minHeight = Math.round(h * 1.28) + 'px'; const box = hero.querySelector(':scope > div:last-child'); if (box) box.style.paddingTop = Math.round(h * 0.07 + 18) + 'px'; };
   set(); window.addEventListener('resize', set); window.addEventListener('orientationchange', () => setTimeout(set, 300));
+})();
+
+
+// 네 칸 탭: 아래로 내려가면 한 줄로 작아져 따라오고, 올라오면 다시 커진다
+(function compactTabs() {
+  const t = $('tabs3'); if (!t) return; let top = 0;
+  const measure = () => { t.classList.remove('compact'); top = t.getBoundingClientRect().top + window.scrollY; };
+  const onScroll = () => { t.classList.toggle('compact', window.scrollY > top + 40); };
+  measure(); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', () => { measure(); onScroll(); });
 })();
 
 // ── 운세 ──
