@@ -273,3 +273,38 @@ h2, h3, .label, .b-text h3, .lede, .say, .wx-say, .gcard q, .subhead, .picks but
 @media (max-width: 768px) { .banner.photo .b-text { padding: 100px 20px 20px; } .banner.photo { min-height: 190px; } }
 body { word-break: keep-all; overflow-wrap: anywhere; }
 .banner.soon .b-text { flex-wrap: wrap; }
+
+/* ── 색 정리: 띠 세 개만 색, 나머지는 흰 바탕 ── */
+.group.g1 { background: #D9542B; color: #fff; }
+.group.g1 small { color: #fff; }
+.group.g2 { background: #1F3A5F; color: #fff; }
+.group.g2 small { color: #fff; }
+.group.g3 { background: #0D7A47; color: #fff; }
+.group.g3 small { color: #fff; }
+.group span, .group small { color: #fff !important; }
+.banner.solid { background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.banner.solid .b-text h3, .banner.solid .b-text p { color: var(--dark-green); }
+.banner.solid .b-text span { color: var(--dark-green); border-color: var(--dark-green); }
+.gcard.t0, .gcard.t1, .gcard.t2 { background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.gcard q, .gcard.t2 q { color: var(--dark-green); }
+.gcard .send, .gcard.t2 .send { color: #666; }
+.stamp, .btn { background: var(--ivory); color: var(--dark-green); }
+.btn.green { background: var(--dark-green); color: var(--ivory); }
+.b-text span { color: var(--ivory); border-color: var(--ivory); }
+.banner.photo .b-text span { color: #fff; border-color: #fff; }
+.cat-text span { color: var(--ivory); }
+.wx-card::after { background: linear-gradient(to right, rgba(31,58,95,0.0) 0%, rgba(0,0,0,0.0) 100%), linear-gradient(to right, rgba(15,74,53,0.9) 0%, rgba(15,74,53,0.55) 55%, rgba(15,74,53,0.1) 100%); }
+
+/* ── 세 묶음 탭 ── */
+.tabs3 { position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: var(--ivory2); padding: 10px 0 14px; margin: 0 0 10px; }
+.tabs3 button { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 6px; text-align: center; line-height: 1.25; color: var(--dark-green); }
+.tabs3 button b { display: block; font-size: 1.15rem; font-weight: 700; }
+.tabs3 button small { display: block; font-size: 0.8rem; margin-top: 4px; color: #666; }
+.tabs3 button[aria-pressed="true"] { background: var(--dark-green); border-color: var(--dark-green); color: var(--ivory); box-shadow: 0 4px 14px rgba(15,74,53,0.3); }
+.tabs3 button[aria-pressed="true"] small { color: var(--ivory); opacity: 0.9; }
+.tabsec { display: none; } .tabsec.on { display: block; }
+.tabsec .label:first-child { margin-top: 14px; }
+.content { padding-top: 24px; }
+.group { display: none; }
+@media (max-width: 768px) { .tabs3 { gap: 6px; } .tabs3 button { padding: 10px 4px; border-radius: 12px; } .tabs3 button b { font-size: 1rem; } .tabs3 button small { display: none; } }
+@media (min-width: 769px) { .content { max-width: 900px; } .layout { justify-content: flex-start; } .hero { flex: none; } .content { flex: 1; } }

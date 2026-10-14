@@ -259,5 +259,8 @@ DB.onUser((u, p) => {
   renderStamp(p); renderCmts();
 });
 
+// ── 세 묶음 탭 ──
+$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const top = $('tabs3').getBoundingClientRect().top + window.scrollY - 8; if (window.scrollY > top) window.scrollTo({ top, behavior: 'smooth' }); };
+
 // ── 서비스 워커 ──
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

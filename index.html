@@ -49,7 +49,12 @@
   <main class="content">
     <div class="notice" id="notice" hidden><b>공지</b><span id="notice-text"></span></div>
 
-    <div class="group g1"><span>오늘 즐기기</span><small>오늘 하루를 기분 좋게</small></div>
+    <nav class="tabs3" id="tabs3">
+      <button type="button" data-tab="g1" aria-pressed="true"><b>오늘 즐기기</b><small>하루를 기분 좋게</small></button>
+      <button type="button" data-tab="g2"><b>그때 돌아보기</b><small>그 시절을 꺼내다</small></button>
+      <button type="button" data-tab="g3"><b>앞으로 나아가기</b><small>지금도 젊다</small></button>
+    </nav>
+    <section class="tabsec on" data-g="g1">
 
     <div class="label"><img src="leaf.png" alt="">오늘의 날씨</div>
     <div class="wx-card" id="wx-card"><div class="wx-in">
@@ -87,7 +92,8 @@
 
     </div>
 
-    <div class="group g2"><span>그때 돌아보기</span><small>젊었던 그 시절을 꺼내 봅니다</small></div>
+    </section>
+    <section class="tabsec" data-g="g2">
 
     <div class="label"><img src="leaf.png" alt="">그해 오늘</div>
     <button type="button" class="banner photo" data-open="history" data-corner="history" style="background-image:url('img/history.jpg')"><div class="b-text"><div><h3><b id="cat-year"></b>년, 그해 오늘</h3><p>그때 그 시절의 소식과 나의 기억</p></div><span>들어가기</span></div></button>
@@ -98,7 +104,8 @@
     <div class="label"><img src="leaf.png" alt="">오늘의 사연</div>
     <button type="button" class="banner photo" data-open="story" data-corner="story" style="background-image:url('img/detail_music.jpg')"><div class="b-text"><div><h3 id="story-title"></h3><p id="story-sub"></p></div><span>읽어 보기</span></div></button>
 
-    <div class="group g3"><span>앞으로 나아가기</span><small>지금도 젊다, 오늘도 배운다</small></div>
+    </section>
+    <section class="tabsec" data-g="g3">
 
     <div class="label"><img src="leaf.png" alt="">오늘의 따라하기</div>
     <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>체조 · 노래 교실 · 댄스 · 골프</h3><p>항목마다 매일 새 영상. 곧 열립니다.</p></div><span>준비 중</span></div></button>
@@ -109,6 +116,7 @@
     <div class="label"><img src="leaf.png" alt="">오늘의 나들이</div>
     <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>산 · 공연 · 전시 · 여행</h3><p>내 지역 소식부터, 예매까지 한 번에. 곧 열립니다.</p></div><span>준비 중</span></div></button>
 
+    </section>
     <div class="foot">오마주 · 매일 아침 5분, 마음은 주니어<br><a href="terms.html">이용약관</a><a href="privacy.html">개인정보처리방침</a><a href="mailto:jmp159877@gmail.com">문의</a></div>
   </main>
 </div>
