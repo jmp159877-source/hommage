@@ -1,3 +1,6 @@
+
+// 휴대폰에서 표를 카드처럼 보이게: 각 칸에 머리글 이름을 붙인다
+function labelize(t) { const hs = [...t.querySelectorAll('th')].map(h => h.textContent); t.querySelectorAll('tr').forEach(tr => [...tr.children].forEach((td, i) => { if (td.tagName === 'TD' && hs[i]) td.dataset.l = hs[i]; })); }
 import * as DB from './db.js';
 import { DEFAULT_CONTENT } from './content.js';
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc, query, where, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
@@ -32,9 +35,9 @@ async function loadDash() {
   $('chart').innerHTML = stats.map((s, i) => `<div style="height:${(s.visits || 0) * 100 / max}%" data-v="${s.visits || 0}" title="${days[i]}"></div>`).join('');
   const clicks = Object.entries(sToday.clicks || {}).sort((a, b) => b[1] - a[1]);
   const NAMES = { greeting: '인사말', fortune: '운세', food: '한 끼', quiz: '퀴즈', history: '그해 오늘', music: '그 시절 노래', story: '사연' };
-  $('clicks').innerHTML = '<tr><th>코너</th><th>클릭</th></tr>' + (clicks.map(([k, v]) => `<tr><td>${NAMES[k] || k}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="2">아직 없음</td></tr>');
+  $('clicks').innerHTML = '<tr><th>코너</th><th>클릭</th></tr>' + (clicks.map(([k, v]) => `<tr><td>${NAMES[k] || k}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="2">아직 없음</td></tr>'); labelize($('clicks'));
   const reg = {}; users.forEach(u => { const r = (u.region || '미입력').split(' ')[0]; reg[r] = (reg[r] || 0) + 1; });
-  $('regions').innerHTML = '<tr><th>지역</th><th>가입자</th></tr>' + Object.entries(reg).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join('');
+  $('regions').innerHTML = '<tr><th>지역</th><th>가입자</th></tr>' + Object.entries(reg).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join(''); labelize($('regions'));
 }
 
 // ── 회원 ──
@@ -45,7 +48,7 @@ async function loadUsers() {
 }
 function renderUsers(list) {
   $('u-count').textContent = list.length + '명';
-  $('users').innerHTML = '<tr><th>별명</th><th>아이디</th><th>연락처</th><th>지역</th><th>가입</th><th>마지막</th><th>출석</th><th></th></tr>' + list.slice(0, 300).map(u => `<tr><td>${esc(u.nick)}${u.role === 'admin' ? ' <small>(관리자)</small>' : ''}${u.banned ? ' <small style="color:#a93226">(정지)</small>' : ''}</td><td>${esc(u.username)}</td><td>${esc(u.phone)}</td><td>${esc(u.region)}</td><td>${fmt(u.createdAt)}</td><td>${esc(u.lastSeenDay)}</td><td>${u.checkinCount || 0}</td><td>${u.role === 'admin' ? '' : `<button type="button" data-ban="${u.id}" class="${u.banned ? '' : 'danger'}">${u.banned ? '정지 풀기' : '정지'}</button>`}</td></tr>`).join('');
+  $('users').innerHTML = '<tr><th>별명</th><th>아이디</th><th>연락처</th><th>지역</th><th>가입</th><th>마지막</th><th>출석</th><th></th></tr>' + list.slice(0, 300).map(u => `<tr><td>${esc(u.nick)}${u.role === 'admin' ? ' <small>(관리자)</small>' : ''}${u.banned ? ' <small style="color:#a93226">(정지)</small>' : ''}</td><td>${esc(u.username)}</td><td>${esc(u.phone)}</td><td>${esc(u.region)}</td><td>${fmt(u.createdAt)}</td><td>${esc(u.lastSeenDay)}</td><td>${u.checkinCount || 0}</td><td>${u.role === 'admin' ? '' : `<button type="button" data-ban="${u.id}" class="${u.banned ? '' : 'danger'}">${u.banned ? '정지 풀기' : '정지'}</button>`}</td></tr>`).join(''); labelize($('users'));
 }
 $('u-find').onclick = () => { const q = $('u-q').value.trim().toLowerCase(); renderUsers(q ? allUsers.filter(u => [u.nick, u.username, u.phone].some(x => (x || '').toLowerCase().includes(q))) : allUsers); };
 $('users').onclick = async e => { const b = e.target.closest('[data-ban]'); if (!b) return; const u = allUsers.find(x => x.id === b.dataset.ban); if (!confirm((u.banned ? '정지를 풀까요? ' : '이 회원을 정지할까요? ') + u.nick)) return; await updateDoc(doc(db, 'users', u.id), { banned: !u.banned }); loadUsers(); };
@@ -67,7 +70,7 @@ $('c-save').onclick = async () => {
 async function loadComments(onlyReported) {
   const q = onlyReported ? query(collection(db, 'comments'), where('reports', '>', 0), orderBy('reports', 'desc'), limit(100)) : query(collection(db, 'comments'), where('date', '==', $('m-date').value));
   const list = (await getDocs(q)).docs.map(d => ({ id: d.id, ...d.data() }));
-  $('comments').innerHTML = '<tr><th>날짜</th><th>별명</th><th>내용</th><th>신고</th><th></th></tr>' + (list.map(c => `<tr style="${c.hidden ? 'opacity:.5' : ''}"><td>${esc(c.date)}</td><td>${esc(c.nick)}</td><td>${esc(c.text)}</td><td>${c.reports || 0}</td><td><button type="button" data-hide="${c.id}" data-h="${c.hidden ? 0 : 1}">${c.hidden ? '다시 보이기' : '숨기기'}</button><button type="button" data-rm="${c.id}" class="danger">삭제</button></td></tr>`).join('') || '<tr><td colspan="5">없음</td></tr>');
+  $('comments').innerHTML = '<tr><th>날짜</th><th>별명</th><th>내용</th><th>신고</th><th></th></tr>' + (list.map(c => `<tr style="${c.hidden ? 'opacity:.5' : ''}"><td>${esc(c.date)}</td><td>${esc(c.nick)}</td><td>${esc(c.text)}</td><td>${c.reports || 0}</td><td><button type="button" data-hide="${c.id}" data-h="${c.hidden ? 0 : 1}">${c.hidden ? '다시 보이기' : '숨기기'}</button><button type="button" data-rm="${c.id}" class="danger">삭제</button></td></tr>`).join('') || '<tr><td colspan="5">없음</td></tr>'); labelize($('comments'));
 }
 $('m-load').onclick = () => loadComments(false); $('m-reported').onclick = () => loadComments(true);
 $('comments').onclick = async e => { const h = e.target.closest('[data-hide]'), r = e.target.closest('[data-rm]'); if (h) await updateDoc(doc(db, 'comments', h.dataset.hide), { hidden: h.dataset.h === '1' }); if (r && confirm('삭제할까요?')) await deleteDoc(doc(db, 'comments', r.dataset.rm)); if (h || r) loadComments(false); };
@@ -76,7 +79,7 @@ $('comments').onclick = async e => { const h = e.target.closest('[data-hide]'), 
 async function loadResets() {
   const list = (await getDocs(query(collection(db, 'resets'), orderBy('ts', 'desc'), limit(100)))).docs.map(d => ({ id: d.id, ...d.data() }));
   const rows = await Promise.all(list.map(async r => { let m = '아이디 없음'; if (r.username && r.username !== 'unknown') { const u = await getDoc(doc(db, 'usernames', r.username)); if (u.exists()) { const p = (await getDoc(doc(db, 'users', u.data().uid))).data(); m = p ? (p.phone === r.phone ? '연락처 일치 ✓ (' + esc(p.nick) + ')' : '연락처 불일치 ✗') : '회원 정보 없음'; } } return `<tr style="${r.done ? 'opacity:.5' : ''}"><td>${fmt(r.ts)}</td><td>${esc(r.username)}</td><td>${esc(r.phone)}</td><td>${m}</td><td>${r.done ? '완료' : `<button type="button" data-done="${r.id}">처리 완료</button>`}</td></tr>`; }));
-  $('resets').innerHTML = '<tr><th>요청</th><th>아이디</th><th>연락처</th><th>확인</th><th></th></tr>' + (rows.join('') || '<tr><td colspan="5">없음</td></tr>');
+  $('resets').innerHTML = '<tr><th>요청</th><th>아이디</th><th>연락처</th><th>확인</th><th></th></tr>' + (rows.join('') || '<tr><td colspan="5">없음</td></tr>'); labelize($('resets'));
 }
 $('resets').onclick = async e => { const b = e.target.closest('[data-done]'); if (!b) return; await updateDoc(doc(db, 'resets', b.dataset.done), { done: true }); loadResets(); };
 

@@ -75,10 +75,11 @@ cardsEl.onclick = async e => {
   toast('카드를 만드는 중입니다…');
   const blob = await makeCard(i), file = new File([blob], 'omaju-card.jpg', { type: 'image/jpeg' });
   const text = C.greetings[i].replace(/\n/g, ' ') + '\n' + TAGLINE;
-  if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], text }); return; } catch (err) { if (err.name === 'AbortError') return; } }
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'omaju-card.jpg'; a.click();
-  try { await navigator.clipboard.writeText(text); } catch (err) {}
-  modal(`<h2>카드를 저장했습니다</h2><p style="font-size:1.1rem">휴대폰 <b>사진(갤러리)</b>에 인사 카드가 저장되었습니다. 카톡에서 사진 보내기로 보내 주세요.</p><p class="note">인사말 글도 복사해 두었습니다.</p>`);
+  const url = URL.createObjectURL(blob), canShare = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+  modal(`<h2>인사 카드가 준비되었습니다</h2><img src="${url}" alt="" style="width:100%;max-width:260px;display:block;margin:0 auto 16px;box-shadow:0 6px 20px rgba(0,0,0,0.25)"><div class="modal-actions">${canShare ? '<button type="button" class="btn green" id="card-share">카톡으로 보내기</button>' : ''}<button type="button" class="btn line" id="card-save">사진에 저장하기</button></div>`);
+  const save = () => { const a = document.createElement('a'); a.href = url; a.download = 'omaju-card.jpg'; a.click(); closeModal(); modal(`<h2>카드를 저장했습니다</h2><p style="font-size:1.1rem">휴대폰 <b>사진(갤러리)</b>에 저장되었습니다. 카톡에서 사진 보내기로 보내 주세요.</p>`); };
+  $('card-save').onclick = save;
+  if (canShare) $('card-share').onclick = async () => { try { await navigator.share({ files: [file], text }); closeModal(); } catch (err) { if (err.name !== 'AbortError') save(); } };
 };
 
 // ── 운세 ──
@@ -116,7 +117,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_music', '오늘의 사연', () => esc(C.story.title)] };
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_music', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
@@ -158,14 +159,21 @@ renderCmts();
 
 // ── 읽어 주기 ──
 const READ = { cards: () => C.greetings.join('. '), fortune: () => $('fortune').textContent, quiz: () => C.quiz.question + '. ' + C.quiz.options.map((o, i) => (i + 1) + '번, ' + o).join('. '), era: () => $('era').innerText, meal: () => C.meal.title + '. ' + C.meal.lead + ' 재료. ' + C.meal.ingredients.join(', ') + '. 만드는 법. ' + C.meal.steps.join(' '), story: () => C.story.paras.join(' ') };
+// 기기에 깔린 한국어 목소리 중 가장 자연스러운 것을 고른다 (구글 > 삼성 > 나머지)
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith('ko'));
+  const score = v => (/google/i.test(v.name) ? 30 : 0) + (/samsung|yuna|sora/i.test(v.name) ? 20 : 0) + (/natural|neural|premium|enhanced/i.test(v.name) ? 15 : 0) + (v.localService ? 0 : 5);
+  return vs.sort((a, b) => score(b) - score(a))[0];
+}
+try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); } catch (e) {}
 function stopRead() { try { speechSynthesis.cancel(); } catch (e) {} if (readingBtn) { readingBtn.textContent = '읽어 주기'; readingBtn.setAttribute('aria-pressed', 'false'); readingBtn = null; } }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-read]'); if (!b) return;
   if (readingBtn === b) return stopRead();
   stopRead();
   if (!('speechSynthesis' in window)) return toast('이 기기에서는 읽어 주기를 쓸 수 없습니다.');
-  const u = new SpeechSynthesisUtterance(READ[b.dataset.read]()); u.lang = 'ko-KR'; u.rate = 0.9;
-  const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('ko')); if (v) u.voice = v;
+  const u = new SpeechSynthesisUtterance(READ[b.dataset.read]()); u.lang = 'ko-KR'; u.rate = 0.95; u.pitch = 1;
+  const v = pickVoice(); if (v) u.voice = v;
   u.onend = stopRead; speechSynthesis.speak(u); readingBtn = b; b.textContent = '멈추기'; b.setAttribute('aria-pressed', 'true');
 });
 
@@ -177,7 +185,7 @@ const UA = navigator.userAgent, isIOS = /iPhone|iPad|iPod/.test(UA), inApp = /KA
 if (standalone) $('install-btn').hidden = true;
 $('install-btn').onclick = async () => {
   DB.track('install_click');
-  if (inApp) return modal(`<h2>크롬으로 열어 주세요</h2><p>지금은 카톡이나 네이버 앱 안에서 열려 있어서 앱 아이콘을 설치할 수 없습니다.</p>${isIOS ? '<p>오른쪽 아래(또는 위) <b>⋯</b> 또는 <b>공유</b> 버튼을 누르고 <b>"Safari로 열기"</b>를 고르세요.</p>' : `<div class="modal-actions"><a class="btn green" style="text-align:center;text-decoration:none" href="intent://${location.host}${location.pathname}#Intent;scheme=https;package=com.android.chrome;end">크롬으로 열기</a></div>`}`);
+  if (inApp) return modal(`<h2>크롬으로 열어 주세요</h2><p>지금은 카톡이나 네이버 앱 안에서 열려 있어서 앱 아이콘을 설치할 수 없습니다.</p>${isIOS ? '<p>오른쪽 아래(또는 위) <b>⋯</b> 또는 <b>공유</b> 버튼을 누르고 <b>"Safari로 열기"</b>를 고르세요.</p>' : `<div class="modal-actions"><a class="btn green" style="text-align:center;text-decoration:none" href="intent://${location.host}${location.pathname}?install=1#Intent;scheme=https;package=com.android.chrome;end">크롬으로 열기</a></div>`}`);
   if (deferredPrompt) {
     modal(`<h2>앱 아이콘 설치하기</h2><p style="font-size:1.2rem">화면 <b>위쪽(또는 아래쪽)</b>에 뜨는 <b>"설치"</b> 버튼을 눌러 주세요.</p><p class="note">안 보이면 이 창을 닫고 다시 눌러 주세요.</p>`);
     const p = deferredPrompt; deferredPrompt = null;
@@ -189,8 +197,12 @@ $('install-btn').onclick = async () => {
   if (isIOS) return modal(`<h2>앱 아이콘 설치하기</h2><div class="steps-ios">1. 화면 아래 가운데 <b>네모에 화살표 (공유)</b> 버튼을 누르세요.<br>2. 아래로 내려 <b>"홈 화면에 추가"</b>를 누르세요.<br>3. 오른쪽 위 <b>"추가"</b>를 누르세요.</div><p class="note">바탕화면에 오마주 아이콘이 생깁니다.</p>`);
   modal(`<h2>앱 아이콘 설치하기</h2><p>크롬 오른쪽 위 <b>⋮</b> 메뉴를 누르고 <b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b>를 누르세요.</p><p class="note">이미 설치되어 있으면 바탕화면에서 오마주 아이콘을 찾아 주세요.</p>`);
 };
+if (/[?&]install=1/.test(location.search) && !standalone && !inApp) {
+  history.replaceState(null, '', location.pathname);
+  setTimeout(() => modal(`<h2>앱 아이콘 설치하기</h2><p style="font-size:1.2rem">크롬으로 잘 넘어왔습니다. 아래 단추를 한 번 더 누르면 설치 창이 뜹니다.</p><div class="modal-actions"><button type="button" class="btn green" onclick="document.getElementById('modal-root').innerHTML='';document.getElementById('install-btn').click()">설치하기</button></div>`), 600);
+}
 $('share-btn').onclick = async () => {
-  const text = '아침마다 5분, 보는 재미가 있는 곳이야. 그 시절 노래랑 그해 오늘 이야기도 나와. 한번 들어가 봐.';
+  const text = '매일 아침 5분.\n오늘, 추억, 그리고 내일.\n마음은 아직 주니어인 당신에게.\n\n오마주';
   DB.track('share');
   if (navigator.share) { try { await navigator.share({ title: '오마주', text: text + '\n' + SITE }); } catch (e) {} }
   else { try { await navigator.clipboard.writeText(text + '\n' + SITE); toast('소개 글을 복사했습니다. 카톡에 붙여 넣어 보내세요.'); } catch (e) {} }
@@ -285,7 +297,7 @@ DB.onUser((u, p) => {
   $('user-chip').hidden = !u; $('login-btn').hidden = !!u;
   $('admin-btn').hidden = !(p && p.role === 'admin');
   if (p && p.role === 'admin') $('maint').hidden = true;
-  if (u && p) { $('user-nick').textContent = p.nick + '님'; if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); }
+  if (u && p) { $('user-nick').textContent = p.nick + ' 님, ' + (new Date().getHours() < 12 ? '좋은 아침입니다.' : new Date().getHours() < 18 ? '좋은 오후입니다.' : '편안한 저녁입니다.'); if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); }
   renderStamp(p); renderCmts();
 });
 

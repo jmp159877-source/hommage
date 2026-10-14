@@ -454,3 +454,64 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 .tabs3 button[aria-pressed="true"], .tabs3 button[data-tab="g1"][aria-pressed="true"], .tabs3 button[data-tab="g2"][aria-pressed="true"], .tabs3 button[data-tab="g3"][aria-pressed="true"] { transform: scale(1.14); }
 .tabs3 button[aria-pressed="true"]::before { background: linear-gradient(to top, rgba(20,20,20,0.6) 0%, rgba(20,20,20,0.1) 55%, rgba(20,20,20,0) 100%); }
 .tabs3 { padding: 18px 8px 22px; }
+
+/* ── 휴대폰용 세로 메인 사진 ── */
+@media (max-width: 768px) {
+  .hero { background-image: url('../img/hero-mobile.jpg'); background-position: center top; min-height: 100vh; justify-content: flex-end; }
+  .hero::after { background: linear-gradient(to top, rgba(20,20,20,0.85) 0%, rgba(20,20,20,0.55) 40%, rgba(20,20,20,0.15) 65%, rgba(20,20,20,0.3) 100%); }
+}
+@media (max-width: 768px) {
+  .hero { min-height: 118vh; padding: 28px 20px 28px; gap: 0; background-size: cover; background-position: center 30%; }
+  .hero::after { background: linear-gradient(to top, rgba(20,20,20,0.8) 0%, rgba(20,20,20,0.35) 30%, rgba(20,20,20,0.05) 55%, rgba(20,20,20,0.25) 100%); }
+  .logo-wrap { max-width: 190px; margin-bottom: 14px; }
+  .brand { font-size: 1.3rem; margin: 0 0 12px; }
+  .hero-desc { font-size: 1rem; line-height: 1.6; padding: 10px 14px; background: rgba(20,20,20,0.35); }
+  .hero-foot { margin-top: 14px; font-size: 0.95rem; }
+  .hero-actions { margin-top: 12px; gap: 8px; }
+  .hero-actions .ghost { padding: 11px 16px; font-size: 1rem; }
+}
+@media (max-width: 768px) {
+  .hero { justify-content: space-between; min-height: 112vh; background-position: center 20%; }
+  .hero > div:last-child { margin-top: auto; }
+  .logo-wrap { max-width: 200px; }
+  .hero::after { background: linear-gradient(to top, rgba(20,20,20,0.85) 0%, rgba(20,20,20,0.5) 28%, rgba(20,20,20,0.1) 50%, rgba(20,20,20,0.2) 100%); }
+}
+/* 휴대폰 첫 화면: 글은 위 책장에, 단추는 왼쪽 아래 — 두 사람 다 보이게 */
+@media (max-width: 768px) {
+  .hero { min-height: 128vh; justify-content: flex-start; background-position: center 40%; padding-top: 18px; }
+  .hero > div:last-child { display: flex; flex-direction: column; flex: 1; margin-top: 0; }
+  .hero-top { margin-bottom: 10px; }
+  .logo-wrap { max-width: 170px; margin-bottom: 4px; }
+  .brand { font-size: 1.25rem; }
+  .hero-desc { font-size: 0.98rem; background: none; padding: 0; border: 0; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+  .hero-foot { margin-top: auto; }
+  .hero-actions { width: 58%; }
+  .hero-actions .ghost { width: 100%; padding: 12px 10px; font-size: 1rem; }
+  .hero::after { background: linear-gradient(to bottom, rgba(20,20,20,0.6) 0%, rgba(20,20,20,0.35) 30%, rgba(20,20,20,0.05) 50%, rgba(20,20,20,0.05) 75%, rgba(20,20,20,0.45) 100%); }
+}
+
+/* 로그인 뒤 첫 화면: 이름은 서명처럼, 메뉴는 글자로 */
+.user-chip { display: block; width: 100%; margin-bottom: 4px; }
+.user-chip b { display: block; font-family: 'Nanum Myeongjo', serif; font-weight: 700; font-size: 1.35rem; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.7); letter-spacing: 0.01em; margin-bottom: 6px; }
+.chip-links { display: flex; gap: 10px; align-items: center; font-size: 0.95rem; color: rgba(255,255,255,0.85); }
+.chip-links button, .chip-links a { background: none; border: 0; padding: 0; color: rgba(255,255,255,0.9); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(255,255,255,0.5); text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+.chip-links a[hidden] { display: none; }
+.chip-links a:not([hidden])::before { content: '·'; margin-right: 10px; text-decoration: none; display: inline-block; }
+#login-btn { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.55); backdrop-filter: blur(4px); }
+#login-btn:hover { background: rgba(255,255,255,0.25); }
+.ghost.go.kakao { background: #F9E9A8; color: #3A2E00; }
+.ghost.go.kakao:hover { background: #F5DF86; }
+.hero { padding-top: max(18px, env(safe-area-inset-top)); }
+@media (max-width: 768px) {
+  .hero { padding-top: max(22px, env(safe-area-inset-top)); }
+  .user-chip { width: 100%; }
+  .hero-actions { width: 60%; }
+}
+.chip-links { white-space: nowrap; }
+.chip-links button, .chip-links a { white-space: nowrap; }
+@media (max-width: 768px) {
+  .hero-actions { width: 100%; }
+  .hero-actions .ghost { width: 60%; }
+  .user-chip b { font-size: 1.3rem; }
+}
+@media (max-width: 768px) { .hero > div:last-child { padding-top: 7vh; } .hero::after { background: linear-gradient(to bottom, rgba(20,20,20,0.45) 0%, rgba(20,20,20,0.45) 22%, rgba(20,20,20,0.35) 42%, rgba(20,20,20,0.05) 55%, rgba(20,20,20,0.05) 75%, rgba(20,20,20,0.45) 100%); } }
