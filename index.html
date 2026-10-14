@@ -27,15 +27,15 @@
   <aside class="hero">
     <div class="hero-top">
       <span class="wx-pill" id="wx-pill"></span>
-      <button type="button" class="ghost" id="sizer">글자 보통</button>
+      <button type="button" class="ghost" id="sizer" hidden>글자 보통</button>
     </div>
     <div>
       <div class="logo-wrap"><img src="logo-light.png" alt="Omaju"><span class="logo-kr">오마주</span></div>
       <div class="brand"><span class="spot">오</span>늘도 <span class="spot">마</span>음은 <span class="spot">주</span>니어.</div>
-      <p class="hero-desc">매일 아침 5분, 운세와 추억의 노래, <br>그해 오늘, 한 끼와 퀴즈.<br>마음은 아직 주니어인 당신을 위한 아침.</p>
+      <p class="hero-desc">매일 아침 5분.<br>오늘, 추억, 그리고 내일.<br>마음은 아직 주니어인 당신에게.</p>
       <div class="hero-foot">
         <span class="when"><span id="date"></span><span id="lunar"></span></span>
-        <span><button type="button" class="btn" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
+        <span id="stamp-wrap" hidden><button type="button" class="btn" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
       </div>
       <div class="hero-actions">
         <span class="user-chip" id="user-chip" hidden><b id="user-nick"></b><button type="button" class="ghost" id="my">내 자리</button><button type="button" class="ghost" id="logout">나가기</button></span>
@@ -66,10 +66,10 @@
 
     <div class="label"><img src="leaf.png" alt="">오늘의 인사말<button type="button" class="read" data-read="cards">읽어 주기</button></div>
     <div class="cards" id="cards"></div>
-    <p class="note">마음에 드는 카드를 누르면 인사말이 복사됩니다. 카톡에 붙여 넣어 보내세요.</p>
+    <p class="note">카드를 누르면 그림 카드로 카톡에 보낼 수 있습니다.</p>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 운세<button type="button" class="read" data-read="fortune">읽어 주기</button></div>
-    <button type="button" class="banner solid" data-toggle data-corner="fortune"><div class="b-text"><div><h3>열두 띠 운세</h3><p>내 띠를 고르면 오늘의 한마디가 나옵니다</p></div><span>펼쳐 보기</span></div></button>
+    <button type="button" class="banner photo" data-toggle id="fortune-banner" data-corner="fortune" style="background-image:url('img/fortune.jpg'); background-position: center 18%"><div class="b-text"><div><h3>열두 띠 운세</h3><p>내 띠를 고르면 오늘의 한마디가 나옵니다</p></div><span>펼쳐 보기</span></div></button>
     <div class="panel"><div class="picks" id="zodiac" role="group" aria-label="띠 고르기"></div><p class="say" id="fortune"></p></div>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 한 끼</div>

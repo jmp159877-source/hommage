@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Gaegu:wght@700&display=swap');
 
 :root {
   --ivory: #F4F1EA; --ivory2: #F7F4ED; --dark-green: #0F4A35; --green2: #1C7A52;
@@ -327,3 +327,68 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 .tabsec[data-g="g1"] .label { border-bottom-color: #D99A2B; }
 .tabsec[data-g="g2"] .label { border-bottom-color: #1F3A5F; }
 .tabsec[data-g="g3"] .label { border-bottom-color: var(--leaf); }
+
+/* ── 글자 크기 위계: 탭 > 코너 제목 > 배너 제목 > 설명 ── */
+.label { font-size: 1.6rem; font-weight: 800; border-bottom-width: 3px; padding-bottom: 10px; margin: 40px 0 16px; }
+.label img { display: none; }
+.b-text h3, .banner.solid .b-text h3 { font-size: 1.2rem; font-weight: 700; }
+.b-text p, .banner.solid .b-text p { font-size: 0.95rem; }
+.b-text span { font-size: 0.95rem; }
+.banner.soon .b-text h3 { font-size: 1.1rem; }
+.gcard q { font-size: 1.05rem; }
+.wx-temp { font-size: 3rem; } .wx-desc { font-size: 1.1rem; } .wx-say { font-size: 1.1rem; } .wx-sub { font-size: 0.95rem; }
+.note { font-size: 0.95rem; }
+@media (max-width: 768px) { .label { font-size: 1.4rem; } .b-text h3 { font-size: 1.15rem; } }
+
+/* ── 시안: 탭을 간판처럼 크게, 코너 제목은 명조로 ── */
+.tabs3 { gap: 10px; padding: 12px 0 18px; }
+.tabs3 button { padding: 18px 8px; border-radius: 18px; border-width: 2px; }
+.tabs3 button b { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.02em; }
+.tabs3 button small { display: block; font-size: 0.9rem; margin-top: 6px; }
+.label { font-family: 'Nanum Myeongjo', serif; font-size: 1.35rem; font-weight: 700; border-bottom-width: 2px; }
+.b-text h3, .banner.solid .b-text h3 { font-size: 1.1rem; }
+@media (max-width: 768px) {
+  .tabs3 { gap: 6px; }
+  .tabs3 button { padding: 14px 4px; border-radius: 14px; }
+  .tabs3 button b { font-size: 1.25rem; }
+  .tabs3 button small { display: block; font-size: 0.75rem; margin-top: 4px; }
+  .label { font-size: 1.25rem; }
+  .b-text h3 { font-size: 1.05rem; }
+}
+
+/* ── 인사 카드: 사진 배경 ── */
+.gcard.photo { background-size: cover; background-position: center; border: 0; }
+.gcard.photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,45,32,0.88), rgba(10,45,32,0.15) 60%); display: block; }
+.gcard.photo q { top: auto; bottom: 58px; color: #fff; z-index: 1; text-shadow: 0 1px 4px rgba(0,0,0,0.5); font-size: 1.1rem; }
+.gcard.photo .send { color: #fff; opacity: 0.95; z-index: 1; bottom: 18px; }
+.gcard.photo img { z-index: 1; width: 64px; opacity: 0.9; }
+.hero-desc br { display: inline !important; }
+.hero-desc { font-size: 1.15rem; line-height: 1.8; }
+.gcard.photo img { top: 16px; right: 16px; bottom: auto; }
+.when { display: block; line-height: 1.5; }
+#lunar { display: block; font-size: 0.95em; opacity: 0.9; }
+
+/* ── 탭: 연둣빛 초록 하나로 ── */
+.tabs3 button[aria-pressed="true"], .tabs3 button[data-tab="g1"][aria-pressed="true"], .tabs3 button[data-tab="g2"][aria-pressed="true"], .tabs3 button[data-tab="g3"][aria-pressed="true"] { background: var(--leaf); border-color: var(--leaf); color: #fff; box-shadow: 0 6px 16px rgba(25,180,107,0.35); }
+.tabsec .label, .tabsec[data-g="g1"] .label, .tabsec[data-g="g2"] .label, .tabsec[data-g="g3"] .label { border-bottom-color: var(--leaf); }
+
+/* ── 배너 사진 밝게: 글씨 뒤만 살짝 어둡게 ── */
+.banner.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.75) 0%, rgba(20,20,20,0.35) 40%, rgba(20,20,20,0) 70%); }
+.banner.photo .b-text { text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.banner.photo .b-text h3 { font-size: 1.25rem; }
+.wx-card::after { background: linear-gradient(to right, rgba(20,20,20,0.6) 0%, rgba(20,20,20,0.3) 55%, rgba(20,20,20,0) 100%); }
+.wx-in { text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.gcard.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.7), rgba(20,20,20,0) 60%); }
+.d-hero::after { background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, transparent 45%, var(--ivory) 100%); }
+.banner.photo::after { background: linear-gradient(to top, rgba(20,20,20,0.85) 0%, rgba(20,20,20,0.55) 35%, rgba(20,20,20,0.1) 65%, rgba(20,20,20,0) 100%); }
+#fortune-banner { min-height: 300px; }
+#fortune-banner .b-text { padding-top: 190px; }
+@media (max-width: 768px) { #fortune-banner { min-height: 280px; } #fortune-banner .b-text { padding-top: 170px; } }
+
+/* ── 코너 제목: 검정 + 잎사귀 ── */
+.label { color: var(--black); border-bottom: 2px solid var(--black) !important; }
+.label img { display: inline-block; height: 34px; width: auto; }
+.read { color: var(--black); border-color: rgba(20,20,20,0.3); }
+
+/* ── 인사 카드 손글씨체 ── */
+.gcard.photo q { font-family: 'Gaegu', 'Noto Sans KR', sans-serif; font-size: 1.5rem; line-height: 1.5; font-weight: 700; letter-spacing: 0.01em; }

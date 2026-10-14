@@ -12,7 +12,7 @@ const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n' + loc
 const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
 const TODAY = DB.todayKey(now);
 $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
-try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = ` · 음력 ${m.value}월 ${d.value}일`; } catch (e) {}
+try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = `음력 ${m.value}월 ${d.value}일`; } catch (e) {}
 const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
 $('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
 
@@ -52,10 +52,33 @@ if (geo) loadWx(geo[0], geo[1], '내 동네'); else { loadWx(37.5665, 126.978, '
 function wxByRegion(p) { if (store.get('geo', null) || !p || !p.region) return; const sido = p.region.split(' ')[0], xy = REGION_XY[sido]; if (xy) loadWx(xy[0], xy[1], p.region); }
 $('wx-here').onclick = () => askHere(false);
 
-// ── 인사말 ──
+// ── 인사말 (그림 카드) ──
+const CARD_BG = ['spring', 'summer', 'autumn', 'winter'];
 const cardsEl = $('cards');
-cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard t${i % 3}" data-copy="${i}"><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="send">누르면 복사</span><img src="leaf.png" alt=""></button>`).join('');
-cardsEl.onclick = async e => { const b = e.target.closest('[data-copy]'); if (!b) return; const text = C.greetings[+b.dataset.copy].replace(/\n/g, ' ') + '\n\n' + TAGLINE; DB.bumpClick('greeting'); try { await navigator.clipboard.writeText(text); toast('인사말을 복사했습니다. 카톡에 붙여 넣으세요.'); } catch (e) { toast('복사하지 못했습니다.'); } };
+cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard photo" data-copy="${i}" style="background-image:url('img/${CARD_BG[i % 4]}.jpg')"><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="send">누르면 카톡으로 보내기</span><img src="leaf.png" alt=""></button>`).join('');
+async function makeCard(i) {
+  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
+  const img = new Image(); img.src = `img/${CARD_BG[i % 4]}.jpg`; await new Promise(r => { img.onload = r; img.onerror = r; });
+  if (img.width) { const s = Math.max(W / img.width, H / img.height); x.drawImage(img, (W - img.width * s) / 2, (H - img.height * s) / 2, img.width * s, img.height * s); } else { x.fillStyle = '#0F4A35'; x.fillRect(0, 0, W, H); }
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(10,45,32,0.15)'); g.addColorStop(1, 'rgba(10,45,32,0.85)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#F4F1EA'; x.textAlign = 'center'; x.shadowColor = 'rgba(0,0,0,0.5)'; x.shadowBlur = 12;
+  try { await document.fonts.load('700 80px Gaegu'); } catch (e) {}
+  x.font = '700 84px Gaegu, "Noto Sans KR", sans-serif'; const lines = C.greetings[i].split('\n'); lines.forEach((l, k) => x.fillText(l, W / 2, H * 0.62 + k * 96));
+  x.font = '400 38px "Noto Sans KR", sans-serif'; x.fillText(`${Y}년 ${M + 1}월 ${D}일`, W / 2, H - 210);
+  x.font = 'bold 44px "Noto Sans KR", sans-serif'; x.fillText('오마주 · 매일 아침 5분, 마음은 주니어', W / 2, H - 130);
+  x.font = '400 34px "Noto Sans KR", sans-serif'; x.fillText('omaju.kr', W / 2, H - 70);
+  return new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
+}
+cardsEl.onclick = async e => {
+  const b = e.target.closest('[data-copy]'); if (!b) return; const i = +b.dataset.copy; DB.bumpClick('greeting');
+  toast('카드를 만드는 중입니다…');
+  const blob = await makeCard(i), file = new File([blob], 'omaju-card.jpg', { type: 'image/jpeg' });
+  const text = C.greetings[i].replace(/\n/g, ' ') + '\n' + TAGLINE;
+  if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], text }); return; } catch (err) { if (err.name === 'AbortError') return; } }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'omaju-card.jpg'; a.click();
+  try { await navigator.clipboard.writeText(text); } catch (err) {}
+  modal(`<h2>카드를 저장했습니다</h2><p style="font-size:1.1rem">휴대폰 <b>사진(갤러리)</b>에 인사 카드가 저장되었습니다. 카톡에서 사진 보내기로 보내 주세요.</p><p class="note">인사말 글도 복사해 두었습니다.</p>`);
+};
 
 // ── 운세 ──
 const ZO = Object.keys(C.fortune);
@@ -233,10 +256,13 @@ async function openMy() {
   for (let d = 1; d <= last; d++) cal += `<div class="${set.has(d) ? 'on' : ''}">${d}</div>`;
   modal(`<h2>${esc(p.nick)}님의 자리</h2><p class="note">아이디 ${esc(p.username)} · 연속 ${p.streak || 0}일 · 총 ${p.checkinCount || 0}일 출석</p>
   <p class="note" style="margin-top:14px">${M + 1}월 출석</p><div class="cal">${cal}</div>
-  <div class="field" style="margin-top:22px"><label>별명 바꾸기</label><div class="in"><input id="m-nick" value="${esc(p.nick)}" maxlength="12"><button type="button" class="btn line" id="m-nick-go">바꾸기</button></div><div class="msg" id="m-nick-msg"></div></div>
+  <div class="field" style="margin-top:22px"><label>글자 크기</label><div class="in"><button type="button" class="btn line" id="m-size-big">크게</button><button type="button" class="btn line" id="m-size-normal">보통</button></div></div>
+  <div class="field"><label>별명 바꾸기</label><div class="in"><input id="m-nick" value="${esc(p.nick)}" maxlength="12"><button type="button" class="btn line" id="m-nick-go">바꾸기</button></div><div class="msg" id="m-nick-msg"></div></div>
   <div class="field"><label>비밀번호 바꾸기</label><div class="in"><input id="m-pw" type="password" inputmode="numeric" maxlength="6" placeholder="새 숫자 6개"><button type="button" class="btn line" id="m-pw-go">바꾸기</button></div><div class="msg" id="m-pw-msg"></div></div>
   <div class="field"><label>태어난 해 · 성별 (선택)</label><div class="in"><input id="m-born" inputmode="numeric" maxlength="4" placeholder="예: 1960" value="${p.born || ''}"><select id="m-sex"><option value="">성별</option><option ${p.sex === '남' ? 'selected' : ''}>남</option><option ${p.sex === '여' ? 'selected' : ''}>여</option></select><button type="button" class="btn line" id="m-born-go">저장</button></div><div class="msg" id="m-born-msg"></div></div>`,
   () => {
+    $('m-size-big').onclick = () => { applySize(true); store.set('big', true); toast('글자를 크게 했습니다.'); };
+    $('m-size-normal').onclick = () => { applySize(false); store.set('big', false); toast('글자를 보통으로 했습니다.'); };
     $('m-nick-go').onclick = async () => { const m = $('m-nick-msg'); try { await DB.changeNick($('m-nick').value); m.className = 'msg ok'; m.textContent = '바꿨습니다.'; $('user-nick').textContent = DB.currentProfile().nick; } catch (e) { m.className = 'msg err'; m.textContent = e.message; } };
     $('m-pw-go').onclick = async () => { const m = $('m-pw-msg'); try { await DB.changePw($('m-pw').value); m.className = 'msg ok'; m.textContent = '바꿨습니다.'; } catch (e) { m.className = 'msg err'; m.textContent = e.code === 'auth/requires-recent-login' ? '안전을 위해 나갔다가 다시 로그인한 뒤 바꿔 주세요.' : e.message; } };
     $('m-born-go').onclick = async () => { const m = $('m-born-msg'); const born = +$('m-born').value; if ($('m-born').value && (born < 1920 || born > 2010)) { m.className = 'msg err'; m.textContent = '태어난 해를 다시 확인해 주세요.'; return; } try { await DB.saveProfile({ born: $('m-born').value, sex: $('m-sex').value }); m.className = 'msg ok'; m.textContent = '저장했습니다.'; } catch (e) { m.className = 'msg err'; m.textContent = e.message; } };
@@ -248,6 +274,7 @@ $('my').onclick = openMy;
 
 // ── 출석 도장 ──
 function renderStamp(p) {
+  $('stamp-wrap').hidden = !p;
   const done = p && p.lastCheckin === TODAY;
   $('stamp').disabled = !!done; $('stamp').textContent = done ? '오늘 출석 완료' : '출석 도장 찍기';
   $('streak').textContent = p ? (p.streak ? `연속 ${p.streak}일째` : '매일 찍으면 기록이 쌓입니다') : '가입하면 기록이 쌓입니다';
