@@ -106,12 +106,17 @@ cardsEl.onclick = async e => {
 })();
 
 
-// 네 칸 탭: 아래로 내려가면 한 줄로 작아져 따라오고, 올라오면 다시 커진다
-(function compactTabs() {
-  const t = $('tabs3'); if (!t) return; let top = 0;
-  const measure = () => { t.classList.remove('compact'); top = t.getBoundingClientRect().top + window.scrollY; };
-  const onScroll = () => { t.classList.toggle('compact', window.scrollY > top + 40); };
-  measure(); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', () => { measure(); onScroll(); });
+// 따라오는 한 줄 메뉴: 큰 네 칸이 화면 위로 지나가면 별도의 띠가 나타난다 (화면 길이 안 바뀜)
+(function miniTabs() {
+  const t = $('tabs3'); if (!t) return;
+  const mini = document.createElement('nav'); mini.className = 'tabs-mini'; mini.id = 'tabs-mini';
+  mini.innerHTML = [...t.querySelectorAll('[data-tab]')].map(b => `<button type="button" data-tab="${b.dataset.tab}" aria-pressed="${b.getAttribute('aria-pressed')}">${b.querySelector('b').textContent}</button>`).join('');
+  document.body.appendChild(mini);
+  mini.onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; t.querySelector(`[data-tab="${b.dataset.tab}"]`).click(); };
+  const sync = () => mini.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', t.querySelector(`[data-tab="${x.dataset.tab}"]`).getAttribute('aria-pressed')));
+  new MutationObserver(sync).observe(t, { attributes: true, subtree: true, attributeFilter: ['aria-pressed'] });
+  const onScroll = () => { const r = t.getBoundingClientRect(); mini.classList.toggle('show', r.bottom < 0 && !document.body.classList.contains('in-detail')); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 })();
 
 // ── 운세 ──
@@ -334,7 +339,7 @@ DB.onUser((u, p) => {
 });
 
 // ── 세 묶음 탭 ──
-$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const sec = document.querySelector('.tabsec.on'), y = sec.getBoundingClientRect().top + window.scrollY - $('tabs3').offsetHeight - 8; if (window.scrollY > y) window.scrollTo({ top: Math.max(0, y), behavior: 'auto' }); };
+$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const sec = document.querySelector('.tabsec.on'), y = sec.getBoundingClientRect().top + window.scrollY - 70; if (window.scrollY > y) window.scrollTo({ top: Math.max(0, y), behavior: 'auto' }); };
 
 // ── 서비스 워커 ──
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

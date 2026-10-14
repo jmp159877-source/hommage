@@ -579,3 +579,24 @@ html, body { overscroll-behavior-y: none; }
 .tabs3:not(.compact) button[aria-pressed="true"] b { text-decoration: none; }
 @media (max-width: 768px) { .toc { margin-top: 18px; } .toc-l { font-size: 1.25rem; } .toc-r { font-size: 0.95rem; } }
 .toc-l em { font-style: normal; font-family: 'Nanum Myeongjo', Georgia, serif; font-weight: 700; font-size: 1.45rem; letter-spacing: 0.22em; color: #141414; }
+/* 목차 제목 다듬기 */
+.toc-l em { letter-spacing: 0.06em; font-size: 1.4rem; }
+.toc-r { font-size: 0.85rem; color: #777; font-family: 'Noto Sans KR', sans-serif; }
+.toc { border-bottom: 1px solid rgba(20,20,20,0.22); padding-bottom: 8px; }
+/* 네 칸과 아래 코너 사이 구분선 */
+.tabs3 { margin-bottom: 0; padding-bottom: 18px; }
+.tabsec { border-top: 1px solid rgba(20,20,20,0.22); padding-top: 6px; }
+/* 네 칸 글자 크기 통일: 고른 칸도 글자는 같은 크기, 테두리 빛으로만 강조 */
+.tabs3:not(.compact) button { transform: none !important; }
+.tabs3:not(.compact) button[aria-pressed="true"] { transform: none !important; box-shadow: 0 0 0 3px #fff, 0 8px 22px rgba(0,0,0,0.28); }
+.tabs3 button b, .tabs3 button[aria-pressed="true"] b { font-size: 1.35rem !important; font-weight: 700; }
+.tabs3 button small, .tabs3 button[aria-pressed="true"] small { font-size: 0.95rem !important; }
+.tabs3.compact button b { font-size: 0.84rem !important; }
+/* 큰 네 칸은 제자리에, 따라오는 메뉴는 별도의 띠 */
+.tabs3 { position: static; }
+.tabs3.compact { display: grid; grid-template-columns: 1fr 1fr; }
+.tabs-mini { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 12px; background: rgba(244,241,234,0.97); border-bottom: 1px solid rgba(20,20,20,0.15); transform: translateY(-110%); transition: transform .2s ease; padding-top: max(8px, env(safe-area-inset-top)); }
+.tabs-mini.show { transform: translateY(0); }
+.tabs-mini button { background: #fff; border: 1px solid rgba(20,20,20,0.15); border-radius: 6px; padding: 10px 2px; font-size: 0.92rem; font-weight: 700; color: #333; line-height: 1.2; }
+.tabs-mini button[aria-pressed="true"] { background: var(--dark-green); color: #fff; border-color: var(--dark-green); }
+@media (min-width: 769px) { .tabs-mini { left: 45%; } }
