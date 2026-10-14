@@ -110,7 +110,7 @@ cardsEl.onclick = async e => {
 (function miniTabs() {
   const t = $('tabs3'); if (!t) return;
   const mini = document.createElement('nav'); mini.className = 'tabs-mini'; mini.id = 'tabs-mini';
-  mini.innerHTML = [...t.querySelectorAll('[data-tab]')].map(b => `<button type="button" data-tab="${b.dataset.tab}" aria-pressed="${b.getAttribute('aria-pressed')}">${b.querySelector('b').textContent}</button>`).join('');
+  mini.innerHTML = [...t.querySelectorAll('[data-tab]')].map(b => `<button type="button" data-tab="${b.dataset.tab}" aria-pressed="${b.getAttribute('aria-pressed')}"><span>${b.querySelector('b').textContent}</span></button>`).join('');
   document.body.appendChild(mini);
   mini.onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; t.querySelector(`[data-tab="${b.dataset.tab}"]`).click(); };
   const sync = () => mini.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', t.querySelector(`[data-tab="${x.dataset.tab}"]`).getAttribute('aria-pressed')));

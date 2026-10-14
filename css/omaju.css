@@ -600,3 +600,15 @@ html, body { overscroll-behavior-y: none; }
 .tabs-mini button { background: #fff; border: 1px solid rgba(20,20,20,0.15); border-radius: 6px; padding: 10px 2px; font-size: 0.92rem; font-weight: 700; color: #333; line-height: 1.2; }
 .tabs-mini button[aria-pressed="true"] { background: var(--dark-green); color: #fff; border-color: var(--dark-green); }
 @media (min-width: 769px) { .tabs-mini { left: 45%; } }
+/* 따라오는 띠: 네 칸의 사진 미니판 */
+.tabs-mini { gap: 8px; padding: 8px 12px 8px; background: var(--ivory2); border-bottom: 1px solid rgba(20,20,20,0.12); }
+.tabs-mini button { position: relative; overflow: hidden; height: 56px; border: 0; border-radius: 8px; color: #fff; font-weight: 700; font-size: 0.86rem; line-height: 1.15; text-shadow: 0 1px 4px rgba(0,0,0,0.7); background-size: cover; background-position: center; opacity: 0.72; padding: 0 2px; }
+.tabs-mini button::before { content: ''; position: absolute; inset: 0; background: rgba(20,20,20,0.45); }
+.tabs-mini button span { position: relative; z-index: 1; }
+.tabs-mini button[data-tab="g1"] { background-image: url('../img/tab-today.jpg'); }
+.tabs-mini button[data-tab="g2"] { background-image: url('../img/tab-past.jpg'); }
+.tabs-mini button[data-tab="g3"] { background-image: url('../img/tab-future.jpg'); }
+.tabs-mini button[data-tab="g4"] { background-image: url('../img/tab-note.jpg'); background-position: center 60%; }
+.tabs-mini button[aria-pressed="true"] { opacity: 1; background-color: transparent; box-shadow: 0 0 0 2px #fff, 0 4px 12px rgba(0,0,0,0.25); }
+.tabs-mini button[aria-pressed="true"]::before { background: rgba(20,20,20,0.3); }
+.tabs-mini button[aria-pressed="true"] span { text-decoration: underline; text-underline-offset: 4px; }
