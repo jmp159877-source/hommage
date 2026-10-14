@@ -302,7 +302,7 @@ DB.onUser((u, p) => {
 });
 
 // ── 세 묶음 탭 ──
-$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const top = $('tabs3').getBoundingClientRect().top + window.scrollY - 8; if (window.scrollY > top) window.scrollTo({ top, behavior: 'smooth' }); };
+$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const sec = document.querySelector('.tabsec.on'), y = sec.getBoundingClientRect().top + window.scrollY - $('tabs3').offsetHeight - 8; if (window.scrollY > y) window.scrollTo({ top: Math.max(0, y), behavior: 'auto' }); };
 
 // ── 서비스 워커 ──
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
