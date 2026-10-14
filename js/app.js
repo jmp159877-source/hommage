@@ -5,8 +5,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const store = { get(k, d) { try { const v = localStorage.getItem('omaju.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('omaju.' + k, JSON.stringify(v)); } catch (e) {} } };
 let toastT, readingBtn = null; function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2800); }
-const SITE = 'https://omaju.kr';
-const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n네이버에서 "오마주"를 검색하세요';
+const SITE = location.origin + '/';
+const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n' + location.origin + '/';
 
 // ── 날짜 ──
 const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
@@ -148,20 +148,28 @@ document.addEventListener('click', e => {
 // ── 앱 설치 · 알리기 ──
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
+window.addEventListener('appinstalled', () => { DB.track('installed'); $('install-btn').hidden = true; modal(`<h2>설치되었습니다</h2><p style="font-size:1.2rem">휴대폰 <b>바탕화면</b>에서 <b>오마주</b> 아이콘을 누르면 바로 열립니다.</p><p class="note">바탕화면에 안 보이면 화면을 위로 쓸어 올려 앱 목록에서 "오마주"를 찾으세요.</p><div class="modal-actions"><button type="button" class="btn green" onclick="document.getElementById('modal-root').innerHTML=''">알겠습니다</button></div>`); });
 const UA = navigator.userAgent, isIOS = /iPhone|iPad|iPod/.test(UA), inApp = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\//i.test(UA), standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 if (standalone) $('install-btn').hidden = true;
 $('install-btn').onclick = async () => {
   DB.track('install_click');
   if (inApp) return modal(`<h2>크롬으로 열어 주세요</h2><p>지금은 카톡이나 네이버 앱 안에서 열려 있어서 앱 아이콘을 설치할 수 없습니다.</p>${isIOS ? '<p>오른쪽 아래(또는 위) <b>⋯</b> 또는 <b>공유</b> 버튼을 누르고 <b>"Safari로 열기"</b>를 고르세요.</p>' : `<div class="modal-actions"><a class="btn green" style="text-align:center;text-decoration:none" href="intent://${location.host}${location.pathname}#Intent;scheme=https;package=com.android.chrome;end">크롬으로 열기</a></div>`}`);
-  if (deferredPrompt) { deferredPrompt.prompt(); const r = await deferredPrompt.userChoice; deferredPrompt = null; if (r.outcome === 'accepted') { toast('설치되었습니다. 휴대폰 바탕화면에서 오마주 아이콘을 누르세요.'); $('install-btn').hidden = true; } return; }
+  if (deferredPrompt) {
+    modal(`<h2>앱 아이콘 설치하기</h2><p style="font-size:1.2rem">화면 <b>위쪽(또는 아래쪽)</b>에 뜨는 <b>"설치"</b> 버튼을 눌러 주세요.</p><p class="note">안 보이면 이 창을 닫고 다시 눌러 주세요.</p>`);
+    const p = deferredPrompt; deferredPrompt = null;
+    p.prompt(); const r = await p.userChoice;
+    if (r.outcome === 'accepted') { modal(`<h2>설치하는 중입니다…</h2><p style="font-size:1.2rem">잠시만 기다려 주세요.</p>`); }
+    else { closeModal(); toast('설치를 취소했습니다. 언제든 다시 누르시면 됩니다.'); }
+    return;
+  }
   if (isIOS) return modal(`<h2>앱 아이콘 설치하기</h2><div class="steps-ios">1. 화면 아래 가운데 <b>네모에 화살표 (공유)</b> 버튼을 누르세요.<br>2. 아래로 내려 <b>"홈 화면에 추가"</b>를 누르세요.<br>3. 오른쪽 위 <b>"추가"</b>를 누르세요.</div><p class="note">바탕화면에 오마주 아이콘이 생깁니다.</p>`);
   modal(`<h2>앱 아이콘 설치하기</h2><p>크롬 오른쪽 위 <b>⋮</b> 메뉴를 누르고 <b>"홈 화면에 추가"</b> 또는 <b>"앱 설치"</b>를 누르세요.</p><p class="note">이미 설치되어 있으면 바탕화면에서 오마주 아이콘을 찾아 주세요.</p>`);
 };
 $('share-btn').onclick = async () => {
-  const text = `아침마다 5분 보는 건데 재밌어. 운세, 옛날 노래, 그해 오늘 소식. 네이버에서 "오마주" 검색해 봐.\n${SITE}`;
+  const text = '아침마다 5분, 보는 재미가 있는 곳이야. 그 시절 노래랑 그해 오늘 이야기도 나와. 한번 들어가 봐.';
   DB.track('share');
-  if (navigator.share) { try { await navigator.share({ title: '오마주', text, url: SITE }); } catch (e) {} }
-  else { try { await navigator.clipboard.writeText(text); toast('소개 글을 복사했습니다. 카톡에 붙여 넣어 보내세요.'); } catch (e) {} }
+  if (navigator.share) { try { await navigator.share({ title: '오마주', text: text + '\n' + SITE }); } catch (e) {} }
+  else { try { await navigator.clipboard.writeText(text + '\n' + SITE); toast('소개 글을 복사했습니다. 카톡에 붙여 넣어 보내세요.'); } catch (e) {} }
 };
 
 // ── 모달 ──
