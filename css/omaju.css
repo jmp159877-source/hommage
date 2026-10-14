@@ -612,3 +612,40 @@ html, body { overscroll-behavior-y: none; }
 .tabs-mini button[aria-pressed="true"] { opacity: 1; background-color: transparent; box-shadow: 0 0 0 2px #fff, 0 4px 12px rgba(0,0,0,0.25); }
 .tabs-mini button[aria-pressed="true"]::before { background: rgba(20,20,20,0.3); }
 .tabs-mini button[aria-pressed="true"] span { text-decoration: underline; text-underline-offset: 4px; }
+/* 크기 균형: 네 칸 ↑, 날씨·인사 카드 ↓ */
+@media (max-width: 768px) {
+  .tabs3:not(.compact) button { aspect-ratio: 1.2 / 1; }
+  .tabs3:not(.compact) { gap: 12px; }
+  .wx-card { min-height: 0; }
+  .wx-in { padding: 18px 20px 16px; }
+  .wx-temp { font-size: 2.4rem; }
+  .wx-desc { font-size: 1rem; }
+  .wx-sub { font-size: 0.9rem; margin-top: 2px; }
+  .wx-say { font-size: 1rem; line-height: 1.6; margin: 8px 0 0; }
+  .wx-in .linkbtn { margin-top: 8px; font-size: 0.95rem; }
+  .gcard { width: 200px; height: 240px; }
+  .gcard.photo q { font-size: 1.05rem; line-height: 1.5; bottom: 16px; left: 14px; right: 14px; }
+  .note.tip { font-size: 0.95rem; padding: 10px 14px; }
+}
+@media (max-width: 768px) {
+  .wx-in { padding: 14px 18px 14px; }
+  .wx-temp { font-size: 2.2rem; }
+  .wx-sub { display: inline; margin-left: 8px; }
+  .wx-say { font-size: 0.98rem; margin-top: 6px; }
+  .wx-in .linkbtn { margin-top: 4px; }
+  .gcard { width: 184px; height: 220px; }
+  .gcard.photo q { font-size: 1.02rem; }
+}
+@media (max-width: 768px) {
+  .wx-sub { display: block; margin-left: 0; }
+  .gcard { width: 200px; height: 236px; }
+  .gcard.photo q { font-size: 1.05rem; }
+}
+/* Contents는 코너 제목보다 크게, 날짜는 바로 옆에 작게 */
+.toc { justify-content: flex-start; align-items: baseline; gap: 14px; }
+.toc-l em { font-size: 1.75rem; letter-spacing: 0.05em; }
+.toc-l img { width: 40px; align-self: center; }
+.toc-r { font-size: 0.9rem; color: #8a8a8a; letter-spacing: 0.06em; padding-bottom: 0; }
+@media (max-width: 768px) { .toc-l em { font-size: 1.65rem; } .toc-r { font-size: 0.88rem; } }
+.toc { justify-content: space-between; align-items: baseline; }
+.toc-r { font-size: 0.85rem; color: #8a8a8a; letter-spacing: 0.02em; }
