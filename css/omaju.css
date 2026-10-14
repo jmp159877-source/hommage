@@ -221,3 +221,55 @@ body.in-detail #detail { display: block; } body.in-detail #main { display: none;
   .hero-desc { font-size: 1.1rem; }
   .hero-foot > span:last-child { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 0; }
 }
+
+/* ── 시니어 가독성 개편: 고딕 통일, 묶음 띠, 묶음별 색 ── */
+html { font-size: 18px; } html.big { font-size: 21px; }
+h2, h3, .label, .b-text h3, .lede, .say, .wx-say, .gcard q, .subhead, .picks button, .tag, .quiz-q, .d-title h1, .modal-box h2, .mine, .wx-temp { font-family: 'Noto Sans KR', sans-serif; }
+.group { display: block; margin: 64px 0 0; padding: 22px 26px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+.group:first-child { margin-top: 0; }
+.group span { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: 1.9rem; font-weight: 700; letter-spacing: 0; line-height: 1.3; }
+.group small { display: block; font-size: 1.05rem; margin-top: 6px; font-weight: 400; opacity: 0.95; }
+.group i { display: none; }
+.group.g1 { background: linear-gradient(135deg, #E3B04B, #F2CB6E); color: var(--black); }
+.group.g1 small { color: #4a3a10; }
+.group.g2 { background: linear-gradient(135deg, var(--dark-green), var(--green2)); color: var(--ivory); }
+.group.g2 small { color: var(--ivory); }
+.group.g3 { background: linear-gradient(135deg, #0D7A47, #19B46B); color: #fff; }
+.group.g3 small { color: #fff; }
+.label { font-size: 1.3rem; border-bottom-width: 1px; margin: 38px 0 18px; font-weight: 700; }
+.label img { height: 26px; }
+.b-text h3 { font-size: 1.5rem; font-weight: 700; line-height: 1.35; }
+.b-text p { font-size: 1rem; font-weight: 400; }
+.b-text span { font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+.banner.soon .b-text h3 { font-size: 1.3rem; color: #555; }
+.banner.soon .b-text { gap: 12px; }
+/* 즐기기 묶음: 따뜻한 색 */
+.banner.solid { background: linear-gradient(135deg, #B8862F, #E3B04B); }
+.banner.solid .b-text h3 { color: #fff; } .banner.solid .b-text p { color: #fff; } .banner.solid .b-text span { color: #fff; border-color: #fff; }
+.gcard.t1 { background: #B8862F; }
+.hero-foot { flex-direction: column; align-items: flex-start; gap: 10px; }
+.hero-foot > span:last-child { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+.streak { margin-left: 0; }
+.hero-desc br { display: none; }
+@media (max-width: 768px) {
+  .hero { background-position: 62% center; min-height: 0; }
+  .group { padding: 18px 20px; margin-top: 50px; }
+  .group span { font-size: 1.6rem; }
+  .label { font-size: 1.2rem; }
+  .b-text h3 { font-size: 1.35rem; }
+  .banner.photo { height: 190px; }
+}
+
+/* 묶음 띠 글자색, 사진 배너 글 흐름 */
+.group span, .group small { color: inherit !important; }
+.b-text h3 b { font-weight: inherit; }
+.banner.photo { height: auto; min-height: 200px; }
+.banner.photo .b-text { position: relative; padding: 120px 24px 24px; left: auto; right: auto; bottom: auto; flex-wrap: wrap; }
+.banner.photo .b-text > div { flex: 1 1 200px; }
+.banner.photo .b-text > span { flex: none; margin-left: auto; }
+.banner.photo::after { background: linear-gradient(to top, rgba(10,45,32,0.95) 0%, rgba(10,45,32,0.75) 45%, rgba(10,45,32,0.05) 100%); }
+.gcard { width: 250px; height: 300px; }
+.gcard q { font-size: 1.1rem; line-height: 1.7; }
+@media (max-width: 768px) { .banner.photo .b-text { padding: 100px 20px 20px; } .banner.photo { min-height: 190px; } }
+body { word-break: keep-all; overflow-wrap: anywhere; }
+.banner.soon .b-text { flex-wrap: wrap; }

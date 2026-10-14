@@ -18,7 +18,7 @@ $('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
 
 // ── 글자 크기 ──
 function applySize(b) { document.documentElement.classList.toggle('big', b); $('sizer').textContent = b ? '글자 보통' : '글자 크게'; }
-applySize(store.get('big', false)); $('sizer').onclick = () => { const b = !document.documentElement.classList.contains('big'); applySize(b); store.set('big', b); };
+applySize(store.get('big', true)); $('sizer').onclick = () => { const b = !document.documentElement.classList.contains('big'); applySize(b); store.set('big', b); };
 
 // ── 콘텐츠 ──
 let C = DEFAULT_CONTENT;

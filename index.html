@@ -27,12 +27,12 @@
   <aside class="hero">
     <div class="hero-top">
       <span class="wx-pill" id="wx-pill"></span>
-      <button type="button" class="ghost" id="sizer">글자 크게</button>
+      <button type="button" class="ghost" id="sizer">글자 보통</button>
     </div>
     <div>
       <div class="logo-wrap"><img src="logo-light.png" alt="Omaju"><span class="logo-kr">오마주</span></div>
       <div class="brand"><span class="spot">오</span>늘도 <span class="spot">마</span>음은 <span class="spot">주</span>니어.</div>
-      <p class="hero-desc">매일 아침 5분, 운세와 추억의 노래,<br>그해 오늘, 한 끼와 퀴즈.<br>마음은 아직 주니어인 당신을 위한 아침.</p>
+      <p class="hero-desc">매일 아침 5분, 운세와 추억의 노래, <br>그해 오늘, 한 끼와 퀴즈.<br>마음은 아직 주니어인 당신을 위한 아침.</p>
       <div class="hero-foot">
         <span class="when"><span id="date"></span><span id="lunar"></span></span>
         <span><button type="button" class="btn" id="stamp">출석 도장 찍기</button><span class="streak" id="streak"></span></span>
@@ -49,7 +49,7 @@
   <main class="content">
     <div class="notice" id="notice" hidden><b>공지</b><span id="notice-text"></span></div>
 
-    <div class="group"><span>오늘 즐기기</span><i></i><small>오늘 하루를 기분 좋게</small></div>
+    <div class="group g1"><span>오늘 즐기기</span><small>오늘 하루를 기분 좋게</small></div>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 날씨</div>
     <div class="wx-card" id="wx-card"><div class="wx-in">
@@ -79,16 +79,18 @@
       <div class="quiz-exp" id="quiz-exp" hidden></div>
     </div>
 
-    <div class="label"><img src="leaf.png" alt="">오늘의 질문</div>
+    <div id="poll-sec" hidden><div class="label"><img src="leaf.png" alt="">오늘의 질문</div>
     <p class="lede" id="poll-q"></p>
     <div class="poll" id="poll"></div>
     <form class="cmt-form" id="cmt-form"><input type="text" id="cmt-in" maxlength="200" placeholder="한마디 남기기"><button type="submit" class="btn green">남기기</button></form>
     <div class="cmts" id="cmts"></div>
 
-    <div class="group"><span>그때 돌아보기</span><i></i><small>젊었던 때를 꺼낸다</small></div>
+    </div>
+
+    <div class="group g2"><span>그때 돌아보기</span><small>젊었던 그 시절을 꺼내 봅니다</small></div>
 
     <div class="label"><img src="leaf.png" alt="">그해 오늘</div>
-    <button type="button" class="banner photo" data-open="history" data-corner="history" style="background-image:url('img/history.jpg')"><div class="b-text"><div><h3><span id="cat-year"></span>년, 그해 오늘</h3><p>그때 그 시절의 소식과 나의 기억</p></div><span>들어가기</span></div></button>
+    <button type="button" class="banner photo" data-open="history" data-corner="history" style="background-image:url('img/history.jpg')"><div class="b-text"><div><h3><b id="cat-year"></b>년, 그해 오늘</h3><p>그때 그 시절의 소식과 나의 기억</p></div><span>들어가기</span></div></button>
 
     <div class="label"><img src="leaf.png" alt="">그 시절 노래</div>
     <button type="button" class="banner photo" data-open="music" data-corner="music" style="background-image:url('img/music.jpg')"><div class="b-text"><div><h3>그해 사랑받은 노래</h3><p>턴테이블에 바늘을 올리듯, 한 곡씩</p></div><span>들어가기</span></div></button>
@@ -96,10 +98,10 @@
     <div class="label"><img src="leaf.png" alt="">오늘의 사연</div>
     <button type="button" class="banner photo" data-open="story" data-corner="story" style="background-image:url('img/detail_music.jpg')"><div class="b-text"><div><h3 id="story-title"></h3><p id="story-sub"></p></div><span>읽어 보기</span></div></button>
 
-    <div class="group"><span>앞으로 나아가기</span><i></i><small>지금 젊다, 배운다</small></div>
+    <div class="group g3"><span>앞으로 나아가기</span><small>지금도 젊다, 오늘도 배운다</small></div>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 따라하기</div>
-    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>아침 체조 · 노래 교실 · 라인댄스 · 악기 · 요가</h3><p>항목마다 매일 새 영상. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>체조 · 노래 교실 · 댄스 · 골프</h3><p>항목마다 매일 새 영상. 곧 열립니다.</p></div><span>준비 중</span></div></button>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 회화 학습</div>
     <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>영어 · 일본어 · 중국어</h3><p>하루 한 문장, 읽어 주고 따라 말하기. 곧 열립니다.</p></div><span>준비 중</span></div></button>
