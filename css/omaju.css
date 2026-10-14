@@ -308,3 +308,13 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 .group { display: none; }
 @media (max-width: 768px) { .tabs3 { gap: 6px; } .tabs3 button { padding: 10px 4px; border-radius: 12px; } .tabs3 button b { font-size: 1rem; } .tabs3 button small { display: none; } }
 @media (min-width: 769px) { .content { max-width: 900px; } .layout { justify-content: flex-start; } .hero { flex: none; } .content { flex: 1; } }
+
+/* ── 왼쪽 화면: 초록 덮개 제거, 사진 밝게 ── */
+.hero { background-color: #3a3a3a; }
+.hero::after { background: linear-gradient(to top, rgba(20,20,20,0.78) 0%, rgba(20,20,20,0.45) 45%, rgba(20,20,20,0.10) 75%, rgba(20,20,20,0.25) 100%); }
+.hero-desc { background: rgba(20,20,20,0.45); border-left-color: var(--leaf); }
+.hero > * { text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.spot::before { color: var(--leaf); }
+.ghost { background: rgba(255,255,255,0.92); }
+#stamp { background: var(--leaf); color: #fff; } #stamp:disabled { background: rgba(255,255,255,0.9); color: var(--dark-green); opacity: 1; }
+@media (max-width: 768px) { .hero::after { background: linear-gradient(to top, rgba(20,20,20,0.82) 0%, rgba(20,20,20,0.5) 50%, rgba(20,20,20,0.15) 80%, rgba(20,20,20,0.3) 100%); } }
