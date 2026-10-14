@@ -649,3 +649,8 @@ html, body { overscroll-behavior-y: none; }
 @media (max-width: 768px) { .toc-l em { font-size: 1.65rem; } .toc-r { font-size: 0.88rem; } }
 .toc { justify-content: space-between; align-items: baseline; }
 .toc-r { font-size: 0.85rem; color: #8a8a8a; letter-spacing: 0.02em; }
+/* 고른 칸: 3% 앞으로 나오고 사진이 살짝 당겨진다 */
+.tabs3:not(.compact) button { transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease; }
+.tabs3:not(.compact) button[aria-pressed="true"] { transform: scale(1.03) !important; z-index: 1; }
+.tabs3:not(.compact) button[aria-pressed="true"] { background-size: 108% auto !important; }
+.tabs3:not(.compact) button[aria-pressed="true"] { transform: scale(1.06) !important; }
