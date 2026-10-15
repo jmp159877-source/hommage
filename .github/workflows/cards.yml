@@ -1,6 +1,9 @@
 name: 인사 카드 사진 모으기
 on:
   workflow_dispatch:
+    inputs:
+      only: { description: '이 계절만 (예: autumn)', required: false }
+      queries: { description: '검색어 (autumn:a|b;spring:c)', required: false }
 permissions:
   contents: write
 jobs:
@@ -16,9 +19,9 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set +e
-          rm -rf img/cards
+          if [ -n "${{ github.event.inputs.only }}" ]; then export ONLY="${{ github.event.inputs.only }}" OUT=img/cards_new MINB=140 QUERIES="${{ github.event.inputs.queries }}"; rm -rf img/cards_new; else rm -rf img/cards; fi
           python -u tools/card_photos.py 2>&1 | tee tools/last-cards.log
           git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
-          git add img/cards data/card_photos.json tools/last-cards.log
+          git add -A img/cards img/cards_new data/card_photos.json tools/last-cards.log
           git commit -m "인사 카드 사진 모음" || true
           git pull --rebase origin main && git push

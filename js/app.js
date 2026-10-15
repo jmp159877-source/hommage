@@ -2,6 +2,7 @@ import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
 import * as NB from './notebook.js';
 import { drawCard, photoFor } from './cards.js';
+let modalPushed = false, skipPop = false, exitOpen = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -381,8 +382,27 @@ $('share-btn').onclick = async () => {
 };
 
 // ── 모달 ──
-function modal(html, onReady) { const r = $('modal-root'); r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><button type="button" class="x" id="modal-x" aria-label="닫기">×</button>${html}</div></div>`; $('modal-x').onclick = closeModal; $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); }; if (onReady) onReady(); }
-function closeModal() { $('modal-root').innerHTML = ''; }
+function modal(html, onReady) { const r = $('modal-root'); if (!modalPushed && !r.innerHTML) { history.pushState({ m: 1 }, '', location.href); modalPushed = true; } exitOpen = false; r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><button type="button" class="x" id="modal-x" aria-label="닫기">×</button>${html}</div></div>`; $('modal-x').onclick = closeModal; $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); }; if (onReady) onReady(); }
+function closeModal() { $('modal-root').innerHTML = ''; exitOpen = false; if (modalPushed) { modalPushed = false; skipPop = true; history.back(); } }
+
+// ── 휴대폰 뒤로 가기: 창이 떠 있으면 창만 닫고, 첫 화면에서 나갈 땐 한 번 묻기 ──
+(function backGuard() {
+  const here = location.pathname + location.search;
+  history.replaceState({ root: 1 }, '', here);
+  history.pushState({ guard: 1 }, '', here + location.hash);
+  window.addEventListener('popstate', e => {
+    if (skipPop) { skipPop = false; return; }
+    const r = $('modal-root');
+    if (r.innerHTML && modalPushed) { modalPushed = false; r.innerHTML = ''; return; }
+    if (e.state && e.state.root && !location.hash) {
+      r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><h2>오마주를 나가시겠습니까?</h2><p style="font-size:1.1rem">내일 아침에 또 만나요.</p><div class="modal-actions"><button type="button" class="btn green" id="exit-stay">계속 보기</button><button type="button" class="btn line" id="exit-go">나가기</button></div></div></div>`;
+      exitOpen = true;
+      const stay = () => { r.innerHTML = ''; exitOpen = false; history.pushState({ guard: 1 }, '', here); };
+      $('exit-stay').onclick = stay; $('modal').onclick = ev => { if (ev.target.id === 'modal') stay(); };
+      $('exit-go').onclick = () => { r.innerHTML = ''; history.back(); };
+    }
+  });
+})();
 let afterLogin = null;
 function openGate(why) {
   afterLogin = null;
