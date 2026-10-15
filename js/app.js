@@ -1,6 +1,7 @@
 import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
 import * as NB from './notebook.js';
+import { drawCard } from './cards.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -12,7 +13,7 @@ const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n' + loc
 // ── 날짜 ──
 const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
 const TODAY = DB.todayKey(now);
-$('toc-date').textContent = `${M + 1}월 ${D}일 ${['일','월','화','수','목','금','토'][new Date().getDay()]}요일`; $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
+$('toc-date').innerHTML = `<b>${M + 1}월 ${D}일</b><span>${['일','월','화','수','목','금','토'][new Date().getDay()]}요일</span>`; $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
 try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = `음력 ${m.value}월 ${d.value}일`; } catch (e) {}
 const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
 $('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
@@ -76,21 +77,13 @@ function wxByRegion(p) { if (store.get('geo', null) || !p || !p.region) return; 
 $('wx-here').onclick = () => askHere(false);
 
 // ── 인사말 (그림 카드) ──
-const CARD_BG = ['spring', 'summer', 'autumn', 'winter'];
 const cardsEl = $('cards');
-cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard photo" data-copy="${i}" style="background-image:url('img/${CARD_BG[i % 4]}.jpg')"><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="send">누르면 카톡으로 보내기</span><img src="leaf.png" alt=""></button>`).join('');
+const WDK = ['일', '월', '화', '수', '목', '금', '토'];
+cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard drawn" data-copy="${i}" aria-label="${esc(c.replace(/\n/g, ' '))} — 누르면 카톡으로 보내기"><canvas></canvas></button>`).join('');
+(async () => { for (const [i, c] of C.greetings.entries()) { const cv = await drawCard(c, i, { W: 540, H: 675, month: M + 1 }); const slot = cardsEl.querySelector(`[data-copy="${i}"] canvas`); if (slot) slot.replaceWith(cv); } })();
 async function makeCard(i) {
-  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
-  const img = new Image(); img.src = `img/${CARD_BG[i % 4]}.jpg`; await new Promise(r => { img.onload = r; img.onerror = r; });
-  if (img.width) { const s = Math.max(W / img.width, H / img.height); x.drawImage(img, (W - img.width * s) / 2, (H - img.height * s) / 2, img.width * s, img.height * s); } else { x.fillStyle = '#0F4A35'; x.fillRect(0, 0, W, H); }
-  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(10,45,32,0.15)'); g.addColorStop(1, 'rgba(10,45,32,0.85)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
-  x.fillStyle = '#F4F1EA'; x.textAlign = 'center'; x.shadowColor = 'rgba(0,0,0,0.5)'; x.shadowBlur = 12;
-  try { await document.fonts.load('700 80px Gaegu'); } catch (e) {}
-  x.font = '700 84px Gaegu, "Noto Sans KR", sans-serif'; const lines = C.greetings[i].split('\n'); lines.forEach((l, k) => x.fillText(l, W / 2, H * 0.62 + k * 96));
-  x.font = '400 38px "Noto Sans KR", sans-serif'; x.fillText(`${Y}년 ${M + 1}월 ${D}일`, W / 2, H - 210);
-  x.font = 'bold 44px "Noto Sans KR", sans-serif'; x.fillText('오마주 · 매일 아침 5분, 마음은 주니어', W / 2, H - 130);
-  x.font = '400 34px "Noto Sans KR", sans-serif'; x.fillText('omaju.kr', W / 2, H - 70);
-  return new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
+  const cv = await drawCard(C.greetings[i], i, { month: M + 1, full: true, dateText: `${M + 1}월 ${D}일 ${WDK[new Date().getDay()]}요일` });
+  return new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
 }
 cardsEl.onclick = async e => {
   const b = e.target.closest('[data-copy]'); if (!b) return; const i = +b.dataset.copy; DB.bumpClick('greeting');
