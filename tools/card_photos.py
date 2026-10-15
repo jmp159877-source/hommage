@@ -1,9 +1,9 @@
-"""인사 카드용 무료 사진(Pexels) 계절별로 모아 저장. 한 번 모아 두고 날마다 돌려 씀.
-Pexels 사진은 출처 표기 없이 무료로 쓸 수 있음. 키: PEXELS_API_KEY"""
+"""인사 카드용 무료 사진(Pixabay) 계절별로 모아 저장. 한 번 모아 두고 날마다 돌려 씀.
+Pixabay 사진은 출처 표기 없이 무료로 쓸 수 있고, 내려받아 우리 서버에 두는 방식이 규정에 맞음. 키: PIXABAY_API_KEY"""
 import json, os, sys, io, urllib.request, urllib.parse
 from PIL import Image, ImageStat
 
-KEY = os.environ.get("PEXELS_API_KEY", "")
+KEY = os.environ.get("PIXABAY_API_KEY", "")
 PER = 30  # 계절마다 모을 장 수
 Q = {
     "spring": ["spring blossom sunlight", "cherry blossom morning", "spring flowers field sunny", "tulips bright"],
@@ -30,7 +30,7 @@ def good(img):
 
 def main():
     if not KEY:
-        print("PEXELS_API_KEY 없음"); sys.exit(1)
+        print("PIXABAY_API_KEY 없음"); sys.exit(1)
     meta = {}
     for season, qs in Q.items():
         os.makedirs(f"img/cards/{season}", exist_ok=True)
@@ -38,13 +38,13 @@ def main():
         for q in qs:
             for page in (1, 2):
                 if len(got) >= PER: break
-                u = "https://api.pexels.com/v1/search?" + urllib.parse.urlencode({"query": q, "orientation": "portrait", "per_page": 40, "page": page, "size": "large"})
-                j = json.loads(get(u, {"Authorization": KEY}))
-                for p in j.get("photos", []):
+                u = "https://pixabay.com/api/?" + urllib.parse.urlencode({"key": KEY, "q": q, "image_type": "photo", "orientation": "vertical", "per_page": 60, "page": page, "safesearch": "true", "editors_choice": "false", "min_width": 900, "order": "popular"})
+                j = json.loads(get(u))
+                for p in j.get("hits", []):
                     if len(got) >= PER or p["id"] in seen: continue
                     seen.add(p["id"])
                     try:
-                        im = Image.open(io.BytesIO(get(p["src"]["portrait"])))
+                        im = Image.open(io.BytesIO(get(p["largeImageURL"])))
                     except Exception as e:
                         print("skip", p["id"], e); continue
                     ok, br, sat = good(im)
@@ -54,7 +54,7 @@ def main():
                     if h > th: top = (h - th) // 2; im = im.crop((0, top, w, top + th))
                     im = im.convert("RGB").resize((800, 1000), Image.LANCZOS)
                     im.save(f"img/cards/{season}/{n:02d}.jpg", "JPEG", quality=84, optimize=True, progressive=True)
-                    got.append({"f": f"img/cards/{season}/{n:02d}.jpg", "id": p["id"], "by": p["photographer"], "alt": p.get("alt", ""), "q": q, "bright": br, "sat": sat})
+                    got.append({"f": f"img/cards/{season}/{n:02d}.jpg", "id": p["id"], "by": p.get("user", ""), "tags": p.get("tags", ""), "q": q, "bright": br, "sat": sat})
             print(season, q, len(got))
         meta[season] = got
     json.dump(meta, open("data/card_photos.json", "w"), ensure_ascii=False, indent=1)

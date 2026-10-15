@@ -16,7 +16,7 @@ jobs:
       - run: pip install pillow
       - name: 사진 모으기
         env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set +e
           rm -rf img/cards
