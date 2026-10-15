@@ -1174,3 +1174,19 @@ body.in-detail.nav-solid .top-nav img { display: none; }
   .tabs3:not(.compact) button b { font-size: min(1.85rem, 7.2vw) !important; word-break: keep-all; }
   .tabs3:not(.compact) button small { font-size: min(1.05rem, 4.2vw) !important; word-break: keep-all; }
 }
+/* ── 장(章) 안으로 들어가기 ── */
+.ch-zoom { position: fixed; z-index: 60; background-size: cover; background-position: center; border-radius: 16px; transition: left .42s cubic-bezier(.2,.7,.2,1), top .42s cubic-bezier(.2,.7,.2,1), width .42s cubic-bezier(.2,.7,.2,1), height .42s cubic-bezier(.2,.7,.2,1), border-radius .42s, opacity .35s; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.ch-zoom::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.45)); }
+.ch-zoom.out { opacity: 0; }
+body.in-chapter .toc, body.in-chapter #tabs3 { display: none; }
+@media (max-width: 768px) { body.in-chapter .hero { display: none; } body.in-chapter main.content { padding-top: 0; } }
+.ch-head { position: relative; margin: 0 -18px 26px; min-height: 46vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 22px 26px; color: #fff; animation: chin .5s ease-out; }
+.ch-head::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 35%, rgba(20,16,10,0.72) 100%); }
+.ch-head > * { position: relative; }
+.ch-back { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.45); color: #fff; border-radius: 999px; padding: 9px 16px; font-size: 1rem; backdrop-filter: blur(6px); }
+.ch-k { display: block; font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: 0.32em; font-size: 0.85rem; opacity: 0.9; margin-bottom: 6px; }
+.ch-t h2 { font-family: 'Nanum Myeongjo', serif; font-size: min(2.6rem, 10vw); line-height: 1.2; margin: 0 0 6px; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.35); word-break: keep-all; }
+.ch-t p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+@keyframes chin { from { opacity: 0.4; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+@media (min-width: 769px) { .ch-head { margin: 0 0 30px; border-radius: 18px; min-height: 340px; } }
+body:not(.in-chapter) .ch-head { display: none; }

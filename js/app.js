@@ -115,10 +115,10 @@ cardsEl.onclick = async e => {
   const mini = document.createElement('nav'); mini.className = 'tabs-mini'; mini.id = 'tabs-mini';
   mini.innerHTML = [...t.querySelectorAll('[data-tab]')].map(b => `<button type="button" data-tab="${b.dataset.tab}" aria-pressed="${b.getAttribute('aria-pressed')}"><span>${b.querySelector('b').textContent}</span></button>`).join('');
   document.body.appendChild(mini);
-  mini.onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; t.querySelector(`[data-tab="${b.dataset.tab}"]`).click(); };
+  mini.onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; if (document.body.classList.contains('in-chapter')) { history.replaceState(history.state, '', '#' + b.dataset.tab); setChapter(b.dataset.tab); window.scrollTo(0, 0); } else t.querySelector(`[data-tab="${b.dataset.tab}"]`).click(); };
   const sync = () => mini.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', t.querySelector(`[data-tab="${x.dataset.tab}"]`).getAttribute('aria-pressed')));
   new MutationObserver(sync).observe(t, { attributes: true, subtree: true, attributeFilter: ['aria-pressed'] });
-  const onScroll = () => { const r = t.getBoundingClientRect(); mini.classList.toggle('show', r.bottom < 0 && !document.body.classList.contains('in-detail')); };
+  const onScroll = () => { const h = document.getElementById('ch-head'), inCh = document.body.classList.contains('in-chapter'), r = (inCh && h ? h : t).getBoundingClientRect(); mini.classList.toggle('show', r.bottom < 0 && !document.body.classList.contains('in-detail')); };
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 })();
 
@@ -344,6 +344,7 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 const GAME = { malmoi: () => MM.mount($('mm-root'), { toast, esc }), shisen: async () => (await import('./games/shisen.js')).mount($('ss-root')), num50: async () => (await import('./games/num50.js')).mount($('n5-root')), sudoku: async () => (await import('./games/sudoku.js')).mount($('sd-root')) };
 const gameDone = {};
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
+  if (/^g[1-4]$/.test(k)) setChapter(k); else if (!k) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
   document.body.classList.toggle('game-mode', !!GAME[cur] || cur === 'play'); if (!GAME[cur]) PLAY.stopAll();
   if (cur === 'play') PLAY.hub($('play-root'));
   if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
@@ -556,7 +557,30 @@ DB.onUser((u, p) => {
 });
 
 // ── 세 묶음 탭 ──
-$('tabs3').onclick = e => { const b = e.target.closest('[data-tab]'); if (!b) return; document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === b.dataset.tab)); DB.track('tab', { tab: b.dataset.tab }); const sec = document.querySelector('.tabsec.on'), y = sec.getBoundingClientRect().top + window.scrollY - 70; if (window.scrollY > y) window.scrollTo({ top: Math.max(0, y), behavior: 'auto' }); };
+// 네 칸을 누르면 그 장(章) 안으로 들어간다: 사진이 화면 가득 커지며 넘어가고, 맨 위에 그 장의 표지
+const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
+function setChapter(g) {
+  document.body.classList.toggle('in-chapter', !!g);
+  const tabG = g || 'g1';
+  document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x.dataset.tab === tabG));
+  document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === tabG));
+  let head = $('ch-head');
+  if (g) {
+    if (!head) { head = document.createElement('header'); head.id = 'ch-head'; head.className = 'ch-head'; document.querySelector('.tabsec').before(head); }
+    const [t, sub, img] = CH[g];
+    head.style.backgroundImage = `url('img/${img}.jpg')`;
+    head.innerHTML = `<button type="button" class="ch-back" id="ch-back">← 처음으로</button><div class="ch-t"><span class="ch-k">CHAPTER ${g.slice(1)}</span><h2>${t}</h2><p>${sub}</p></div>`;
+    $('ch-back').onclick = () => history.back();
+  }
+}
+$('tabs3').onclick = e => {
+  const b = e.target.closest('[data-tab]'); if (!b) return; const g = b.dataset.tab; DB.track('tab', { tab: g });
+  const r = b.getBoundingClientRect(), z = document.createElement('div'); z.className = 'ch-zoom';
+  z.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(b).backgroundImage}`;
+  document.body.appendChild(z);
+  requestAnimationFrame(() => { z.style.left = '0px'; z.style.top = '0px'; z.style.width = innerWidth + 'px'; z.style.height = innerHeight + 'px'; z.style.borderRadius = '0'; });
+  setTimeout(() => { location.hash = g; window.scrollTo(0, 0); z.classList.add('out'); setTimeout(() => z.remove(), 380); }, 420);
+};
 
 // ── 서비스 워커 ──
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
