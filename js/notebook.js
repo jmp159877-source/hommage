@@ -147,6 +147,7 @@ function renderCal() {
 }
 window.addEventListener('hashchange', () => { if (location.hash === '#g4' && DB.currentUser()) refresh(); });
 document.addEventListener('click', e => {
+  const cb = e.target.closest('#nb-calbtn'); if (cb) { const open = cb.getAttribute('aria-expanded') !== 'true'; cb.setAttribute('aria-expanded', open); $('nb-calwrap').classList.toggle('open', open); cb.querySelector('span').textContent = open ? '달력 닫기' : '달력 보기'; return; }
   const d = e.target.closest('[data-cal]'); if (d) { calSel = d.dataset.cal; renderCal(); return; }
   const m = e.target.closest('[data-calm]'); if (m) { calM += +m.dataset.calm; if (calM < 0) { calM = 11; calY--; } if (calM > 11) { calM = 0; calY++; } renderCal(); }
 });

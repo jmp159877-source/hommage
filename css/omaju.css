@@ -1278,3 +1278,13 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .cu-poem-page .cu-by { color: rgba(255,255,255,0.85) !important; margin-bottom: 30px; }
 .cu-poem-page .cu-poem { background: transparent !important; box-shadow: none !important; border: 0 !important; padding: 0 !important; color: #fff !important; font-family: 'Nanum Myeongjo', serif; font-size: 1.22rem; line-height: 2.05; white-space: pre-line; text-shadow: 0 1px 6px rgba(0,0,0,0.45); }
 @media (min-width: 769px) { .cu-poem-page { margin: 6px 0 30px; border-radius: 18px; } }
+/* 달력: 접어 두었다가 펼치기 */
+.nb-calbtn { display: flex; align-items: center; gap: 10px; width: 100%; margin: 4px 0 18px; padding: 14px 16px; background: #FFFDF8; border: 1px solid #E6DCC6; border-radius: 12px; font-family: 'Nanum Myeongjo', serif; font-size: 1.1rem; font-weight: 700; color: #1f1f1f; text-align: left; }
+.nb-calbtn svg { color: #8a6d2c; flex: none; }
+.nb-calbtn span { flex: 1; }
+.nb-calbtn i { font-style: normal; color: #a08a5a; transition: transform .3s; }
+.nb-calbtn[aria-expanded="true"] i { transform: rotate(180deg); }
+.nb-calwrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s ease; }
+.nb-calwrap > .nb-calcard { overflow: hidden; min-height: 0; padding-top: 0; padding-bottom: 0; border-width: 0; transition: padding .4s; }
+.nb-calwrap.open { grid-template-rows: 1fr; margin-bottom: 22px; }
+.nb-calwrap.open > .nb-calcard { padding: 22px 16px 18px; border-width: 1px; }
