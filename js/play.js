@@ -133,8 +133,14 @@ export async function showRank(game, period = 'day') {
     const me = withSeeds(game, k, me0, me0.score);
     const uid = DB.currentUser() && DB.currentUser().uid;
     const meEl = document.getElementById('rk-me'), list = document.getElementById('rk-list'); if (!meEl) return;
-    meEl.innerHTML = me.rank ? (T => `<b>내 기록</b> ${H.esc(me.label)} · <em>${T.t}</em><br><span class="rk-cheer">${T.m}</span>`)(tier(me.rank, me.total)) : DB.currentUser() ? `아직 ${period === 'day' ? '오늘' : '이번 주'} 기록이 없어요. 한 판 해 보세요!` : '로그인하면 내 순위를 볼 수 있어요.';
-    list.innerHTML = top.length ? top.map((r, i) => `<li class="${r.uid === uid ? 'me' : ''}${i < 3 ? ' top' : ''}"><span class="rk-n">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</span><span class="rk-nick">${H.esc(r.nick)}</span><span class="rk-rec">${H.esc(r.label)}</span></li>`).join('') : '<li class="rk-empty">아직 아무도 없어요. 첫 1등이 되어 보세요!</li>';
+    const inTop = !!uid && top.some(r => r.uid === uid);
+    if (me.rank) { const T = tier(me.rank, me.total); meEl.innerHTML = `<div class="rk-me-h"><b>내 순위</b><em>${T.t}</em></div><div class="rk-me-r">내 기록 ${H.esc(me.label)}</div><span class="rk-cheer">${T.m}</span>${inTop ? '<button type="button" class="rk-go" id="rk-go">순위표에서 내 자리 보기 ↓</button>' : ''}`; }
+    else if (DB.currentUser()) meEl.innerHTML = `<div class="rk-me-h"><b>내 순위</b></div>아직 ${period === 'day' ? '오늘' : '이번 주'} 기록이 없어요. 한 판 해 보세요!`;
+    else { meEl.innerHTML = `<div class="rk-me-h"><b>내 순위</b></div>로그인하면 내 순위를 볼 수 있어요.<button type="button" class="rk-go" id="rk-login">로그인하고 내 순위 보기</button>`; }
+    list.innerHTML = (top.length ? top.map((r, i) => `<li class="${r.uid === uid ? 'me' : ''}${i < 3 ? ' top' : ''}"><span class="rk-n">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</span><span class="rk-nick">${H.esc(r.nick)}${r.uid === uid ? ' <small>(나)</small>' : ''}</span><span class="rk-rec">${H.esc(r.label)}</span></li>`).join('') : '<li class="rk-empty">아직 아무도 없어요. 첫 1등이 되어 보세요!</li>')
+      + (me.rank && !inTop ? `<li class="rk-gap">⋯</li><li class="me"><span class="rk-n">나</span><span class="rk-nick">${H.esc((DB.currentProfile() || {}).nick || '나')} <small>(${tier(me.rank, me.total).t})</small></span><span class="rk-rec">${H.esc(me.label)}</span></li>` : '');
+    const go = document.getElementById('rk-go'); if (go) go.onclick = () => { const li = list.querySelector('li.me'); if (li) li.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+    const lg = document.getElementById('rk-login'); if (lg) lg.onclick = () => { H.closeModal(); setTimeout(() => H.openGate('내 순위를 보려면'), 50); };
   } catch (e) { const meEl = document.getElementById('rk-me'); if (meEl) meEl.textContent = '순위를 불러오지 못했습니다.'; }
 }
 

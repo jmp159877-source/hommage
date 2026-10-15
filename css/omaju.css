@@ -1123,3 +1123,10 @@ body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 .pl-txt b { font-family: 'Nanum Myeongjo', serif; font-size: 1.25rem; color: #1f1f1f; margin: 0; }
 .pl-txt span { font-size: 0.9rem; color: #666; line-height: 1.45; word-break: keep-all; }
 .pl-txt em { font-style: normal; font-size: 0.8rem; color: #8a6d2c; margin-top: 4px; }
+.rk-me-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+.rk-me-h b { font-size: 1.05rem; color: #1f1f1f; }
+.rk-me-h em { font-style: normal; font-weight: 800; color: var(--dark-green); font-size: 1.3rem; }
+.rk-me-r { font-size: 0.98rem; color: #444; }
+.rk-go { display: block; width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; border: 1px solid var(--warm-line); background: var(--warm); color: var(--warm-ink); font-size: 0.98rem; font-weight: 700; }
+.rk-list li small { font-size: 0.8em; color: #8a6d2c; font-weight: 600; }
+.rk-gap { display: block !important; text-align: center; color: #bbb; border-bottom: 0 !important; padding: 4px 0 !important; }
