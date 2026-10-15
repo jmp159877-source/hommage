@@ -74,7 +74,7 @@ function askHere(silent) {
 const REGION_XY = { '서울': [37.5665, 126.978], '경기': [37.4138, 127.5183], '인천': [37.4563, 126.7052], '부산': [35.1796, 129.0756], '대구': [35.8714, 128.6014], '광주': [35.1595, 126.8526], '대전': [36.3504, 127.3845], '울산': [35.5384, 129.3114], '세종': [36.48, 127.289], '강원': [37.8813, 127.7298], '충북': [36.6424, 127.489], '충남': [36.6588, 126.6728], '전북': [35.8242, 127.148], '전남': [34.8161, 126.4629], '경북': [36.576, 128.5056], '경남': [35.2383, 128.6924], '제주': [33.4996, 126.5312] };
 const geo = store.get('geo', null);
 if (geo) loadWx(geo[0], geo[1], store.get('geoName', '내 동네')); else { loadWx(37.5665, 126.978, '서울'); askHere(true); }
-function wxByRegion(p) { if (store.get('geo', null) || !p || !p.region) return; const sido = p.region.split(' ')[0], xy = REGION_XY[sido]; if (xy) loadWx(xy[0], xy[1], p.region); }
+function wxByRegion(p) { try { if (p && p.region && !store.get('outRegion', null)) { outRegion = p.region.split(' ')[0]; renderOuting(); } } catch (e) {} if (store.get('geo', null) || !p || !p.region) return; const sido = p.region.split(' ')[0], xy = REGION_XY[sido]; if (xy) loadWx(xy[0], xy[1], p.region); }
 $('wx-here').onclick = () => askHere(false);
 
 // ── 인사말 (그림 카드) ──
@@ -147,6 +147,12 @@ function renderOuting() {
 }
 $('outing-tabs').onclick = e => { const b = e.target.closest('[data-region]'); if (!b) return; outRegion = b.dataset.region; store.set('outRegion', outRegion); renderOuting(); };
 renderFollow(); renderPhrase(); renderOuting();
+// 이번 주말 나들이는 주 단위로 쌓이는 data/outing.json 에서 (지역이 채워지는 대로 늘어남)
+fetch('data/outing.json', { cache: 'no-cache' }).then(r => r.json()).then(w => {
+  if (!w || !w.regions || !Object.keys(w.regions).length) return;
+  const wk = new Date(w.week + 'T23:59:59+09:00'); if (wk.getTime() + 864e5 < Date.now()) return; // 지난 주말 것은 쓰지 않음
+  C.outing = Object.assign({}, C.outing || {}, w.regions); renderOuting();
+}).catch(() => {});
 // 나들이 배너·상세 사진은 계절에 따라 (봄·여름·겨울 전용 사진이 오면 outing-spring.jpg 등으로 교체)
 (function seasonOuting() { const m = new Date().getMonth() + 1; const pic = m >= 9 && m <= 11 ? 'outing' : m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : 'winter'; const b = document.querySelector('[data-open="outing"]'); if (b) b.style.backgroundImage = `url('img/${pic}.jpg')`; })();
 

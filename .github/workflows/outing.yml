@@ -1,47 +1,36 @@
-# 오늘의 나들이: 17개 지역을 두 묶음으로 나눠 01:10·02:10 에 만든다 (시간이 오래 걸려 따로 돌림)
+# 이번 주말 나들이: 주 단위로 지역별로 쌓는다(data/outing.json). 아직 없는 지역만 하루 몇 번 나눠 채움.
 name: outing
 on:
   schedule:
-    - cron: '10 16 * * *'   # 01:10 KST  앞 묶음
-    - cron: '10 17 * * *'   # 02:10 KST  뒤 묶음
+    - cron: '30 8 * * *'    # 17:30 KST  (AI 하루 한도가 새로 채워진 직후)
+    - cron: '30 11 * * *'   # 20:30 KST
+    - cron: '10 16 * * *'   # 01:10 KST
   workflow_dispatch:
     inputs:
-      date:
-        description: '만들 날짜 (YYYY-MM-DD, 비우면 오늘)'
-        required: false
-      regions:
-        description: '지역 (쉼표, 비우면 전체를 두 번 나눠 실행)'
+      limit:
+        description: '한 번에 만들 지역 수 (기본 9)'
         required: false
 permissions:
   contents: write
 jobs:
   make:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
-      - run: pip install -q google-cloud-firestore
-      - name: 나들이 만들기
+      - name: 나들이 채우기
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          LIMIT: ${{ github.event.inputs.limit || '9' }}
         run: |
-          ARGS="${{ github.event.inputs.date }}"
-          R="${{ github.event.inputs.regions }}"
-          if [ -z "$R" ]; then
-            H=$(date -u +%H)
-            if [ "$H" = "16" ] || [ -z "${{ github.event.schedule }}" ]; then R="서울,경기,인천,부산,대구,광주,대전,울산,세종"; else R="강원,충북,충남,전북,전남,경북,경남,제주"; fi
-          fi
           set +e
-          timeout 50m python -u tools/gen_daily.py $ARGS --only=outing --regions=$R 2>&1 | tee /tmp/outing.log; rc=${PIPESTATUS[0]}
-          mkdir -p daily; sed -E 's/key=[A-Za-z0-9_\-]+/key=[키]/g' /tmp/outing.log | tail -300 > daily/last-outing.log
-          exit $rc
+          timeout 35m python -u tools/outing_week.py 2>&1 | sed -E 's/key=[A-Za-z0-9_\-]+/key=[키]/g' | tail -200 | tee daily/last-outing.log
       - name: 기록
         if: always()
         run: |
           git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
-          git pull -q --rebase origin main || true
-          git add daily/ || true
-          git diff --cached --quiet || (git commit -m "나들이 기록 [skip ci]" && git push)
+          git add data/outing.json daily/last-outing.log || true
+          git diff --cached --quiet || git commit -m "이번 주말 나들이 [skip ci]"
+          git pull -q --rebase origin main && git push
