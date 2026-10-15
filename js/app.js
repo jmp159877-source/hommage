@@ -146,6 +146,9 @@ function renderOuting() {
 }
 $('outing-tabs').onclick = e => { const b = e.target.closest('[data-region]'); if (!b) return; outRegion = b.dataset.region; store.set('outRegion', outRegion); renderOuting(); };
 renderFollow(); renderPhrase(); renderOuting();
+// 나들이 배너·상세 사진은 계절에 따라 (봄·여름·겨울 전용 사진이 오면 outing-spring.jpg 등으로 교체)
+(function seasonOuting() { const m = new Date().getMonth() + 1; const pic = m >= 9 && m <= 11 ? 'outing' : m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : 'winter'; const b = document.querySelector('[data-open="outing"]'); if (b) b.style.backgroundImage = `url('img/${pic}.jpg')`; })();
+
 
 NB.init({ toast, modal, closeModal, openGate });
 
