@@ -45,7 +45,9 @@ def today():
     return datetime.datetime.now(KST).date()
 
 
-def gemini(prompt, json_mode=True, search=False, max_retry=3):
+def gemini(prompt, json_mode=True, search=False, max_retry=None):
+    if max_retry is None:
+        max_retry = 1 if search else 3
     """Gemini REST 호출. json_mode면 JSON 객체를 파싱해 돌려준다."""
     if not GEMINI_KEY:
         raise RuntimeError("GEMINI_API_KEY 없음")
@@ -67,7 +69,7 @@ def gemini(prompt, json_mode=True, search=False, max_retry=3):
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
             try:
-                with urllib.request.urlopen(req, timeout=120) as r:
+                with urllib.request.urlopen(req, timeout=90) as r:
                     res = json.load(r)
                 text = "".join(p.get("text", "") for p in res["candidates"][0]["content"]["parts"])
                 if not json_mode:
@@ -241,9 +243,10 @@ def gen_phrase(d):
 
 
 def gen_outing(d):
+    from concurrent.futures import ThreadPoolExecutor
     out = {}
     wk = d + datetime.timedelta(days=(5 - d.weekday()) % 7)  # 이번 토요일
-    for region in REGIONS:
+    def one(region):
         prompt = f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 한국 '{region}' 지역에서 이번 주말({wk.month}월 {wk.day}일 전후)에 가볼 만한 곳 3개를 구글 검색으로 찾아라.
 전시·공연·축제·장터·단풍길·둘레길·공원 등 실제로 지금 열리고 있거나 갈 수 있는 곳만. 확인 안 되는 건 넣지 마라. 각 항목: title(이름, 16자 이내), where(장소, 20자 이내), when(기간이나 시간, 20자 이내), why(가 볼 이유 한 문장 40~70자), kind(전시|공연|축제|나들이 중 하나).
 형식(JSON만): {{"items": [{{"title":"...","where":"...","when":"...","why":"...","kind":"..."}}, ...]}}"""
@@ -254,10 +257,14 @@ def gen_outing(d):
                 print(f"[outing] {region} 검색 실패: {str(e)[:100]}", file=sys.stderr)
                 j = gemini(prompt.replace("구글 검색으로 찾아라", "네가 아는 범위에서 골라라") + "\n확실하지 않으면 그 지역에서 늘 갈 수 있는 공원·산책길·시장 위주로.", json_mode=True)
             items = [x for x in j.get("items", []) if x.get("title")][:3]
-            if items:
-                out[region] = items
+            return region, items
         except Exception as e:
             print(f"[outing] {region} 실패: {e}", file=sys.stderr)
+            return region, []
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        for region, items in ex.map(one, REGIONS):
+            if items:
+                out[region] = items
     assert out, "나들이 전부 실패"
     return out
 
@@ -292,9 +299,11 @@ def main():
         print(f"{key} 관리자가 직접 쓴 내용이 있음. 건너뜀."); return
 
     out, errors = {}, []
+    ref.set({"source": "auto", "startedAt": datetime.datetime.now(KST).isoformat()}, merge=True)
     for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("outing", gen_outing)]:
         try:
             out[name] = fn(d)
+            ref.set({name: out[name]}, merge=True)
             print(f"[ok] {name}")
         except Exception as e:
             errors.append(f"{name}: {e}")
