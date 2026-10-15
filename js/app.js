@@ -179,12 +179,11 @@ async function loadCulture() {
 }
 function renderCulture() {
   const c = CULT; if (!c) return;
-  if (c.painting && c.painting.thumb) $('culture-banner').style.backgroundImage = `url('${c.painting.thumb}')`;
   $('culture-title').textContent = `「${c.poem.title}」 · ${c.painting ? c.painting.title : ''}`;
   $('culture-sub').textContent = `${c.poem.author}의 시와 ${c.painting ? c.painting.artist + '의 그림' : '오늘의 그림'}`;
   $('culture-body').innerHTML = `
     <div class="cu-block"><p class="cu-kind">오늘의 시</p><h2 class="cu-title">${esc(c.poem.title)}</h2><p class="cu-by">${esc(c.poem.author)} · ${esc(c.poem.year)}</p><div class="cu-poem">${esc(c.poem.text)}</div>${c.poem.note ? `<p class="cu-note">${esc(c.poem.note)}</p>` : ''}</div>
-    ${c.painting ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(c.painting.img)}" alt="${esc(c.painting.title)}" loading="lazy"></figure><h2 class="cu-title">${esc(c.painting.title)}</h2><p class="cu-by">${esc(c.painting.artist)} · ${esc(c.painting.year)}</p>${c.painting.story ? `<p class="cu-note">${esc(c.painting.story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : ''}
+    ${c.painting ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(c.painting.img)}" alt="${esc(c.painting.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/\/\d+px-/,'/960px-')}else if(this.dataset.f==1){this.dataset.f=2;this.src=this.src.replace(/\/thumb(\/.+?)\/[^/]+$/,'$1')}"></figure><h2 class="cu-title">${esc(c.painting.title)}</h2><p class="cu-by">${esc(c.painting.artist)} · ${esc(c.painting.year)}</p>${c.painting.story ? `<p class="cu-note">${esc(c.painting.story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : ''}
     <div class="cu-block cu-quote"><p class="cu-kind">오늘의 한 문장</p><blockquote>${esc(c.quote.text)}</blockquote><p class="cu-by">— ${esc(c.quote.who)}</p>${c.quote.note ? `<p class="cu-note">${esc(c.quote.note)}</p>` : ''}</div>`;
 }
 loadCulture();
