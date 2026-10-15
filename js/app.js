@@ -161,12 +161,12 @@ renderFollow(); renderPhrase(); renderOuting();
 
 // 위키 그림 사진이 안 열리면 다른 크기 → 원본 순서로 다시 시도
 window.imgRetry = el => { const f = +(el.dataset.f || 0); el.dataset.f = f + 1; if (f === 0) el.src = el.src.replace(/\/\d+px-/, '/960px-'); else if (f === 1) el.src = el.src.replace(/\/thumb(\/.+?)\/[^/]+$/, '$1'); };
-// ── 오늘의 문화: 시 · 그림 · 한 문장 ──
+// ── 오늘의 문화: 시 · 그림 · 명언 ──
 let CULT = null;
 async function wikiImg(ref) {
   try { const [lang, title] = ref.split(/:(.+)/); const j = await (await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)).json(); const th = (j.thumbnail || {}).source || ''; return th ? { img: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/1280px-') : th, thumb: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/640px-') : th } : null; } catch (e) { return null; }
 }
-const CU_TABS = [['poem', '시'], ['painting', '그림'], ['quote', '한 문장'], ['essay', '에세이'], ['bible', '성경'], ['dharma', '법문'], ['music', '음악']];
+const CU_TABS = [['poem', '시'], ['painting', '그림'], ['quote', '명언'], ['essay', '에세이'], ['bible', '성경'], ['dharma', '법문'], ['music', '음악']];
 let cuTab = store.get('cuTab', 'poem'), muGenre = store.get('muGenre', '발라드');
 const MU_GENRES = ['발라드', '트로트', '댄스', '팝', '클래식'];
 function dayN() { return Math.floor(new Date(Y, M, D).getTime() / 86400000) + 719163; }
@@ -179,13 +179,11 @@ async function loadCulture() {
 }
 function renderCulture() {
   const c = CULT; if (!c || !c.poem) return;
-  $('culture-title').textContent = `「${c.poem.title}」 · ${c.painting ? c.painting.title : ''}`;
-  $('culture-sub').textContent = '시 · 그림 · 한 문장 · 에세이 · 성경 · 법문 · 음악';
   const tabs = `<div class="cu-tabs" id="cu-tabs">${CU_TABS.map(([k, l]) => `<button type="button" data-cu="${k}" aria-pressed="${k === cuTab}">${l}</button>`).join('')}</div>`;
   let body = '';
   if (cuTab === 'poem') { const p = c.poem; body = `<div class="cu-block"><p class="cu-kind">오늘의 시</p><h2 class="cu-title">${esc(p.title)}</h2><p class="cu-by">${esc(p.author)} · ${esc(p.year)}</p><div class="cu-poem">${esc(p.text)}</div>${p.bg ? `<p class="is-sub">이 시가 나온 때</p><p class="cu-note">${esc(p.bg)}</p>` : ''}${p.words && p.words.length ? `<p class="is-sub">낱말 풀이</p><dl class="cu-words">${p.words.map(w => `<dt>${esc(w[0])}</dt><dd>${esc(w[1])}</dd>`).join('')}</dl>` : ''}${p.note ? `<p class="is-sub">감상</p><p class="cu-note">${esc(p.note)}</p>` : ''}</div>`; }
   else if (cuTab === 'painting') { const p = c.painting; body = p ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(p.img)}" alt="${esc(p.title)}" referrerpolicy="no-referrer" onerror="imgRetry(this)"></figure><h2 class="cu-title">${esc(p.title)}</h2><p class="cu-by">${esc(p.artist)} · ${esc(p.year)}</p>${p.about ? `<p class="is-sub">작품 이야기</p><p class="cu-note">${esc(p.about)}</p>` : (p.story ? `<p class="cu-note">${esc(p.story)}</p>` : '')}${p.points && p.points.length ? `<p class="is-sub">눈여겨볼 곳</p><ol class="cu-points">${p.points.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}${p.artist_story ? `<p class="is-sub">화가 이야기</p><p class="cu-note">${esc(p.artist_story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : '<p class="note">그림을 불러오는 중입니다.</p>'; }
-  else if (cuTab === 'quote') { const q = c.quote; body = `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 한 문장</p><blockquote>${esc(q.text)}</blockquote><p class="cu-by">— ${esc(q.who)}</p>${q.note ? `<p class="cu-note">${esc(q.note)}</p>` : ''}</div>`; }
+  else if (cuTab === 'quote') { const q = c.quote; body = `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 명언</p><blockquote>${esc(q.text)}</blockquote><p class="cu-by">— ${esc(q.who)}</p>${q.note ? `<p class="cu-note">${esc(q.note)}</p>` : ''}</div>`; }
   else if (cuTab === 'essay') { const e = c.essay; body = e ? `<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><h2 class="cu-title">${esc(e.title)}</h2><div class="cu-essay">${e.paras.map(x => `<p>${esc(x)}</p>`).join('')}</div><p class="cu-by" style="text-align:right">${esc(e.by || '오마주 편집실')}</p></div>` : '<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><p class="cu-note">계절에 맞는 짧은 글이 내일 아침부터 매일 새로 실립니다.</p></div>'; }
   else if (cuTab === 'bible') { const b = c.bible; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 성경</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.ref)} (개역한글)</p>${b.note ? `<p class="is-sub">묵상</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
   else if (cuTab === 'dharma') { const b = c.dharma; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 법문</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.src)}</p>${b.note ? `<p class="is-sub">풀이</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
@@ -296,7 +294,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편, 그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
