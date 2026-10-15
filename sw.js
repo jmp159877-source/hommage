@@ -1,5 +1,5 @@
 // 오마주 서비스 워커: 앱 설치용. 사진만 저장하고, 화면과 코드는 항상 새로 받는다.
-const VER = 'omaju-v3';
+const VER = 'omaju-v4';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
