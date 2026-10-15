@@ -463,7 +463,8 @@ function openSignup() {
   <div class="field"><label>연락처</label><input id="s-phone" type="tel" inputmode="tel" placeholder="010-1234-5678" maxlength="13"><div class="hint">아이디나 비밀번호를 잊으셨을 때 찾는 데 필요합니다.</div></div>
   <div class="field"><label>성별</label><div class="seg2" id="s-gender"><button type="button" data-g="남">남성</button><button type="button" data-g="여">여성</button></div></div>
   <div class="field"><label>태어난 해</label><select id="s-birth"><option value="">태어난 해를 고르세요</option>${Array.from({ length: new Date().getFullYear() - 14 - 1925 + 1 }, (_, i) => 1925 + i).map(y => `<option value="${y}">${y}년생</option>`).join('')}</select><div class="hint">나이에 맞는 소식을 고르는 데만 씁니다.</div></div>
-  <label class="chk"><input type="checkbox" id="s-agree"><span>개인정보 수집에 동의합니다. 아이디·비밀번호 찾기와 서비스 안내에만 쓰고, 다른 곳에 주지 않습니다. <a href="privacy.html" target="_blank">자세히</a></span></label>
+  <label class="chk"><input type="checkbox" id="s-terms"><span>(필수) <b>이용약관</b>에 동의합니다. 무단 복제·비방·광고 글은 예고 없이 지워지고 탈퇴 처리될 수 있습니다. <a href="terms.html" target="_blank">약관 보기</a></span></label>
+  <label class="chk"><input type="checkbox" id="s-agree"><span>(필수) 개인정보 수집에 동의합니다. 아이디·비밀번호 찾기와 서비스 안내에만 쓰고, 다른 곳에 주지 않습니다. <a href="privacy.html" target="_blank">자세히</a></span></label>
   <label class="chk"><input type="checkbox" id="s-mkt"><span>(선택) 매일 아침 오마주 소식을 <b>알림</b>으로 받겠습니다.</span></label>
   <div class="modal-actions"><button type="button" class="btn green" id="s-go">가입하기</button></div><div class="err-box" id="s-err" hidden></div>`,
   () => {
@@ -476,6 +477,7 @@ function openSignup() {
       const err = $('s-err'); err.hidden = true;
       if (!gender) { err.textContent = '성별을 골라 주세요.'; err.hidden = false; return; }
       if (!$('s-birth').value) { err.textContent = '태어난 해를 골라 주세요.'; err.hidden = false; return; }
+      if (!$('s-terms').checked) { err.textContent = '이용약관 동의에 체크해 주세요.'; err.hidden = false; return; }
       if (!$('s-agree').checked) { err.textContent = '개인정보 수집 동의에 체크해 주세요.'; err.hidden = false; return; }
       $('s-go').disabled = true; $('s-go').textContent = '가입하는 중…';
       try {

@@ -1107,3 +1107,5 @@ body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 .seg2 button[aria-pressed="true"] { background: var(--warm); border-color: var(--warm-line); color: var(--warm-ink); }
 .chk input { width: 24px; height: 24px; flex: none; accent-color: #3E8A63; }
 .rk-note { font-size: 0.72rem; color: #aaa; text-align: center; margin: 14px 0 0; }
+.rk-cheer { font-size: 0.92rem; color: #6b665c; }
+.pl-done-s b { color: var(--dark-green); font-size: 1.15em; }

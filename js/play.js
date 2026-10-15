@@ -100,10 +100,19 @@ export async function finish(game, score, label, el) {
   try {
     const r = await DB.submitScore(game, score, label);
     const k = DB.rankKeys(game), m0 = await DB.myRank(k.day), me = withSeeds(game, k.day, m0, m0.score);
-    box.querySelector('#pl-done-s').textContent = me.rank ? `오늘 ${me.total.toLocaleString()}명 중 ${me.rank.toLocaleString()}등${r && r.day ? '' : ' (오늘 더 좋은 기록이 이미 있어요)'}` : '순위에 올렸습니다.';
+    if (me.rank) { const T = tier(me.rank, me.total); box.querySelector('#pl-done-s').innerHTML = `오늘 <b>${T.t}</b>${r && r.day ? '' : ' (오늘 더 좋은 기록이 이미 있어요)'}<br>${T.m}`; } else box.querySelector('#pl-done-s').textContent = '순위에 올렸습니다.';
   } catch (e) { box.querySelector('#pl-done-s').textContent = '순위에 올리지 못했습니다. 잠시 뒤 다시 해 주세요.'; }
 }
 
+// 몇 명 중 몇 등 대신 상위·중위·하위 % 와 한마디 (이용자 수가 드러나지 않게)
+export function tier(rank, total) {
+  const p = Math.max(1, Math.ceil(rank / Math.max(total, 1) * 100));
+  if (rank === 1) return { t: '오늘 1등이에요!', m: '정말 대단합니다. 내일도 이 자리를 지켜 보세요 👏' };
+  if (p <= 10) return { t: `상위 ${p}%`, m: '대단해요! 최상위권입니다 👏' };
+  if (p <= 40) return { t: `상위 ${p}%`, m: '훌륭해요! 조금만 더 하면 최상위권이에요.' };
+  if (p <= 70) return { t: '중위권', m: '좋아요! 한 판 더 하면 쑥 올라갈 거예요. 화이팅!' };
+  return { t: `하위 ${Math.max(1, 101 - p)}%`, m: '오늘은 몸풀기! 내일은 더 잘하실 거예요. 화이팅!' };
+}
 function withSeeds(game, k, me, myScore) {
   if (me.total >= REAL_ENOUGH) return me;
   const sd = seeds(game, k); if (!sd.length) return me;
@@ -124,7 +133,7 @@ export async function showRank(game, period = 'day') {
     const me = withSeeds(game, k, me0, me0.score);
     const uid = DB.currentUser() && DB.currentUser().uid;
     const meEl = document.getElementById('rk-me'), list = document.getElementById('rk-list'); if (!meEl) return;
-    meEl.innerHTML = me.rank ? `<b>내 순위</b> ${me.total.toLocaleString()}명 중 <em>${me.rank.toLocaleString()}등</em> · ${H.esc(me.label)}` : DB.currentUser() ? `아직 ${period === 'day' ? '오늘' : '이번 주'} 기록이 없어요. 한 판 해 보세요!` : '로그인하면 내 순위를 볼 수 있어요.';
+    meEl.innerHTML = me.rank ? (T => `<b>내 기록</b> ${H.esc(me.label)} · <em>${T.t}</em><br><span class="rk-cheer">${T.m}</span>`)(tier(me.rank, me.total)) : DB.currentUser() ? `아직 ${period === 'day' ? '오늘' : '이번 주'} 기록이 없어요. 한 판 해 보세요!` : '로그인하면 내 순위를 볼 수 있어요.';
     list.innerHTML = top.length ? top.map((r, i) => `<li class="${r.uid === uid ? 'me' : ''}${i < 3 ? ' top' : ''}"><span class="rk-n">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</span><span class="rk-nick">${H.esc(r.nick)}</span><span class="rk-rec">${H.esc(r.label)}</span></li>`).join('') : '<li class="rk-empty">아직 아무도 없어요. 첫 1등이 되어 보세요!</li>';
   } catch (e) { const meEl = document.getElementById('rk-me'); if (meEl) meEl.textContent = '순위를 불러오지 못했습니다.'; }
 }
