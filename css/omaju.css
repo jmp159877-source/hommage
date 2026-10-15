@@ -774,3 +774,21 @@ body.in-detail .tabs-mini { display: none; }
 .toc-r { flex: 1 0 auto; text-align: right; }
 .mk-item .mk-v { font-size: 1rem; }
 .mk-item .mk-c { font-size: 0.74rem; }
+/* 오늘의 경제: 한 줄에 이름·숫자·등락, 두 칸 → 높이 절반 */
+.mk-card { padding: 2px 14px 6px; }
+.mk-grid { grid-template-columns: 1fr 1fr; column-gap: 18px; }
+.mk-item { display: grid !important; grid-template-columns: auto 1fr; column-gap: 8px; align-items: baseline; padding: 7px 0; }
+.mk-item .mk-l { display: block; grid-column: 1; font-size: 0.86rem; color: #555; margin: 0; white-space: nowrap; }
+.mk-item .mk-v { display: block; grid-column: 2; justify-self: end; font-size: 0.98rem; margin: 0; white-space: nowrap; }
+.mk-item .mk-c { display: block; grid-column: 1 / -1; justify-self: end; font-size: 0.72rem; line-height: 1; margin-top: -2px; }
+.mk-item:not(:has(.mk-c)) .mk-v { grid-column: 2; }
+@media (max-width: 400px) { .mk-grid { grid-template-columns: 1fr; } .mk-item { grid-template-columns: auto 1fr auto; } .mk-item .mk-c { grid-column: 3; margin-top: 0; } }
+.mk-grid { grid-template-columns: 1fr !important; }
+.mk-item { grid-template-columns: 1fr auto auto !important; column-gap: 10px; padding: 6px 0; }
+.mk-item .mk-l { font-size: 0.92rem; }
+.mk-item .mk-v { font-size: 1rem; grid-column: 2 !important; }
+.mk-item .mk-c { grid-column: 3 !important; margin-top: 0; font-size: 0.78rem; min-width: 64px; text-align: right; line-height: inherit; }
+.mk-item:not(:has(.mk-c)) .mk-v { grid-column: 2 / 4 !important; }
+.mk-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(20,20,20,0.08); }
+.mk-item:last-child { border-bottom: 0 !important; }
+.mk-card { overflow: hidden; }
