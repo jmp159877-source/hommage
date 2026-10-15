@@ -1,6 +1,7 @@
 import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
 import * as NB from './notebook.js';
+import { drawCard, photoFor } from './cards.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -76,20 +77,12 @@ function wxByRegion(p) { if (store.get('geo', null) || !p || !p.region) return; 
 $('wx-here').onclick = () => askHere(false);
 
 // ── 인사말 (그림 카드) ──
-const CARD_BG = ['spring', 'summer', 'autumn', 'winter'];
 const cardsEl = $('cards');
-cardsEl.innerHTML = C.greetings.map((c, i) => `<button type="button" class="gcard photo" data-copy="${i}" style="background-image:url('img/${CARD_BG[i % 4]}.jpg')"><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="send">누르면 카톡으로 보내기</span><img src="leaf.png" alt=""></button>`).join('');
+const GREET = C.greetings.slice(0, 2);
+cardsEl.innerHTML = GREET.map((c, i) => `<button type="button" class="gcard photo pic" data-copy="${i}"><img class="g-logo" src="logo-light.png" alt=""><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="g-send">눌러서 보내기</span></button>`).join('');
+GREET.forEach(async (c, i) => { const b = cardsEl.querySelector(`[data-copy="${i}"]`); if (b) b.style.backgroundImage = `url('${await photoFor(i)}')`; });
 async function makeCard(i) {
-  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
-  const img = new Image(); img.src = `img/${CARD_BG[i % 4]}.jpg`; await new Promise(r => { img.onload = r; img.onerror = r; });
-  if (img.width) { const s = Math.max(W / img.width, H / img.height); x.drawImage(img, (W - img.width * s) / 2, (H - img.height * s) / 2, img.width * s, img.height * s); } else { x.fillStyle = '#0F4A35'; x.fillRect(0, 0, W, H); }
-  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(10,45,32,0.15)'); g.addColorStop(1, 'rgba(10,45,32,0.85)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
-  x.fillStyle = '#F4F1EA'; x.textAlign = 'center'; x.shadowColor = 'rgba(0,0,0,0.5)'; x.shadowBlur = 12;
-  try { await document.fonts.load('700 80px Gaegu'); } catch (e) {}
-  x.font = '700 84px Gaegu, "Noto Sans KR", sans-serif'; const lines = C.greetings[i].split('\n'); lines.forEach((l, k) => x.fillText(l, W / 2, H * 0.62 + k * 96));
-  x.font = '400 38px "Noto Sans KR", sans-serif'; x.fillText(`${Y}년 ${M + 1}월 ${D}일`, W / 2, H - 210);
-  x.font = 'bold 44px "Noto Sans KR", sans-serif'; x.fillText('오마주 · 매일 아침 5분, 마음은 주니어', W / 2, H - 130);
-  x.font = '400 34px "Noto Sans KR", sans-serif'; x.fillText('omaju.kr', W / 2, H - 70);
+  const cv = await drawCard(C.greetings[i], i, { dateText: `${M + 1}월 ${D}일 ${['일', '월', '화', '수', '목', '금', '토'][new Date().getDay()]}요일` });
   return new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
 }
 cardsEl.onclick = async e => {
