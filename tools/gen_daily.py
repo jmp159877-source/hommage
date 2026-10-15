@@ -6,7 +6,7 @@
 # 사이트(js/app.js)는 daily 문서가 있으면 그것을, 없으면 js/content.js 기본값을 쓴다.
 # 필요한 비밀값(GitHub Secrets): GEMINI_API_KEY, FIREBASE_SERVICE_ACCOUNT(서비스 계정 JSON 전체)
 
-import os, sys, json, re, time, datetime, urllib.request, urllib.error, random
+import os, sys, json, re, time, datetime, urllib.request, urllib.error, urllib.parse, random
 
 KST = datetime.timezone(datetime.timedelta(hours=9))
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -49,7 +49,10 @@ def gemini(prompt, json_mode=True, search=False, max_retry=3):
     """Gemini REST 호출. json_mode면 JSON 객체를 파싱해 돌려준다."""
     if not GEMINI_KEY:
         raise RuntimeError("GEMINI_API_KEY 없음")
+    if search and getattr(gemini, "search_ok", True) is False:
+        raise RuntimeError("검색 기능 사용 불가(앞서 확인됨)")
     last = None
+    hard_fail = 0
     for model in gemini.models:
         for attempt in range(max_retry):
             body = {
@@ -77,12 +80,15 @@ def gemini(prompt, json_mode=True, search=False, max_retry=3):
                 last = RuntimeError(f"{model} HTTP {e.code}: {detail}")
                 print(f"[gemini] {last}", file=sys.stderr)
                 if e.code in (400, 404):
+                    hard_fail += 1
                     break  # 이 모델은 이 요청을 못 받음 → 다음 모델로
                 time.sleep(8 * (attempt + 1)); continue
             except Exception as e:  # 파싱 실패 등 → 잠시 쉬고 재시도
                 last = e
                 print(f"[gemini] {model} 시도 {attempt + 1} 실패: {e}", file=sys.stderr)
                 time.sleep(8 * (attempt + 1))
+    if search and hard_fail >= len(gemini.models):
+        gemini.search_ok = False  # 모든 모델이 검색 요청을 거절 → 이후엔 바로 대체 경로로
     raise RuntimeError(f"Gemini 실패: {last}")
 
 
@@ -178,6 +184,84 @@ def gen_story(d):
     return s
 
 
+
+# ── 앞으로 나아가기 ────────────────────────────────────────
+
+FOLLOW = [("gym", "아침 체조", "10분 안팎의 아침 스트레칭·체조. 서서 또는 의자에 앉아서 따라 하는 것"),
+          ("sing", "노래 교실", "노래 교실 강사가 트로트·가요 한 곡을 가르쳐 주는 영상"),
+          ("dance", "댄스", "라인댄스나 생활 댄스 기초 동작을 천천히 가르쳐 주는 영상"),
+          ("golf", "골프 레슨", "드라이버·아이언·퍼팅 등 골프 기본기를 알려 주는 레슨 영상"),
+          ("park", "파크골프", "파크골프 기본 자세·스윙·규칙을 알려 주는 영상")]
+REGIONS = ["서울", "경기", "인천", "부산", "대구", "광주", "대전", "울산", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]
+
+
+def youtube_pick(query):
+    """유튜브에서 영상 하나 고르기. 키가 안 되면 None (검색 링크로 대체)."""
+    key = os.environ.get("YOUTUBE_API_KEY") or GEMINI_KEY
+    try:
+        q = urllib.parse.urlencode({"part": "snippet", "q": query, "type": "video", "videoEmbeddable": "true", "videoDuration": "medium", "relevanceLanguage": "ko", "regionCode": "KR", "maxResults": 8, "order": "relevance", "key": key})
+        j = get_json(f"https://www.googleapis.com/youtube/v3/search?{q}")
+        items = j.get("items", [])
+        if not items:
+            return None
+        pick = items[datetime.date.today().toordinal() % len(items)]
+        return {"videoId": pick["id"]["videoId"], "title": pick["snippet"]["title"], "channel": pick["snippet"]["channelTitle"], "thumb": pick["snippet"]["thumbnails"].get("medium", {}).get("url", "")}
+    except Exception as e:
+        print(f"[youtube] 사용 불가: {str(e)[:120]}", file=sys.stderr)
+        return None
+
+
+def get_json(url):
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "omaju"}), timeout=30) as r:
+        return json.load(r)
+
+
+def gen_follow(d):
+    j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. '오늘의 따라하기' 다섯 항목 각각에 대해 유튜브 검색어 하나와 한 줄 권유 문구를 만들어라.
+항목: {json.dumps([(k, n, desc) for k, n, desc in FOLLOW], ensure_ascii=False)}
+검색어는 한국어 유튜브에서 실제로 좋은 영상이 나올 만한 자연스러운 말(8~16자), 날마다 조금씩 다르게. "시니어·어르신·노인" 금지.
+권유(say)는 20~40자, 오늘 기분에 맞게.
+형식: {{"follow": {{"gym": {{"query":"...", "say":"..."}}, "sing": {{...}}, "dance": {{...}}, "golf": {{...}}, "park": {{...}}}}}}""")
+    out = {}
+    for k, name, _ in FOLLOW:
+        it = j["follow"][k]
+        v = youtube_pick(it["query"])
+        out[k] = {"name": name, "query": it["query"].strip(), "say": it["say"].strip(), **(v or {})}
+    return out
+
+
+def gen_phrase(d):
+    j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. '오늘의 회화' — 영어·일본어·중국어 각 한 문장. 여행·식당·인사·쇼핑·길 묻기 등 실제로 쓸 상황 하나를 정해 세 언어가 같은 뜻이 되게.
+각 언어: text(원문), reading(한국어로 적은 발음, 띄어쓰기로 음절 구분), meaning(우리말 뜻), tip(쓰는 상황이나 한 가지 요령, 30자 이내).
+중국어는 간체와 함께 reading에 성조 없이 한국어 발음만. 일본어는 한자 포함 원문.
+형식: {{"phrase": {{"topic":"상황(6자 이내)", "en": {{"text":"...","reading":"...","meaning":"...","tip":"..."}}, "ja": {{...}}, "zh": {{...}}}}}}""")
+    p = j["phrase"]
+    assert all(k in p and p[k].get("text") for k in ("en", "ja", "zh")), "회화 형식 오류"
+    return p
+
+
+def gen_outing(d):
+    out = {}
+    wk = d + datetime.timedelta(days=(5 - d.weekday()) % 7)  # 이번 토요일
+    for region in REGIONS:
+        prompt = f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 한국 '{region}' 지역에서 이번 주말({wk.month}월 {wk.day}일 전후)에 가볼 만한 곳 3개를 구글 검색으로 찾아라.
+전시·공연·축제·장터·단풍길·둘레길·공원 등 실제로 지금 열리고 있거나 갈 수 있는 곳만. 확인 안 되는 건 넣지 마라. 각 항목: title(이름, 16자 이내), where(장소, 20자 이내), when(기간이나 시간, 20자 이내), why(가 볼 이유 한 문장 40~70자), kind(전시|공연|축제|나들이 중 하나).
+형식(JSON만): {{"items": [{{"title":"...","where":"...","when":"...","why":"...","kind":"..."}}, ...]}}"""
+        try:
+            try:
+                j = gemini(prompt, json_mode=True, search=True)
+            except Exception as e:
+                print(f"[outing] {region} 검색 실패: {str(e)[:100]}", file=sys.stderr)
+                j = gemini(prompt.replace("구글 검색으로 찾아라", "네가 아는 범위에서 골라라") + "\n확실하지 않으면 그 지역에서 늘 갈 수 있는 공원·산책길·시장 위주로.", json_mode=True)
+            items = [x for x in j.get("items", []) if x.get("title")][:3]
+            if items:
+                out[region] = items
+        except Exception as e:
+            print(f"[outing] {region} 실패: {e}", file=sys.stderr)
+    assert out, "나들이 전부 실패"
+    return out
+
+
 # ── 저장 ────────────────────────────────────────────────
 
 def firestore():
@@ -208,7 +292,7 @@ def main():
         print(f"{key} 관리자가 직접 쓴 내용이 있음. 건너뜀."); return
 
     out, errors = {}, []
-    for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story)]:
+    for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("outing", gen_outing)]:
         try:
             out[name] = fn(d)
             print(f"[ok] {name}")

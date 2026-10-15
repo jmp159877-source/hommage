@@ -121,6 +121,32 @@ cardsEl.onclick = async e => {
 })();
 
 
+
+// ── 앞으로 나아가기: 따라하기 · 회화 · 나들이 ──
+const FOLLOW_ORDER = ['gym', 'sing', 'dance', 'golf', 'park'];
+function renderFollow() {
+  const f = C.follow; if (!f) { $('follow-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 영상이 준비되지 않았습니다. 내일 다시 들러 주세요.</p>'; return; }
+  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k]; const yt = it.videoId ? `https://www.youtube.com/watch?v=${it.videoId}` : `https://www.youtube.com/results?search_query=${encodeURIComponent(it.query)}`;
+    return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<div class="fl-video"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${esc(it.videoId)}?rel=0" title="${esc(it.title || it.name)}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="fl-cap">${esc(it.title || '')}${it.channel ? ' · ' + esc(it.channel) : ''}</p>` : ''}<a class="btn line fl-go" href="${yt}" target="_blank" rel="noopener" data-track="follow_${k}">${it.videoId ? '크게 보기 (유튜브)' : '유튜브에서 "' + esc(it.query) + '" 보기'}</a></div>`; }).join('') + '</div>';
+}
+const LANG = { en: ['영어', 'en-US'], ja: ['일본어', 'ja-JP'], zh: ['중국어', 'zh-CN'] };
+function renderPhrase() {
+  const p = C.phrase; if (!p) { $('phrase-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 문장이 준비되지 않았습니다.</p>'; return; }
+  $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read">${esc(x.reading || '')}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
+  if (C.phrase.topic) $('phrase-title').textContent = '오늘의 상황: ' + C.phrase.topic;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-say]'); if (!b) return; const k = b.dataset.say, x = C.phrase[k]; if (!('speechSynthesis' in window)) return toast('이 기기에서는 듣기를 쓸 수 없습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(x.text); u.lang = LANG[k][1]; u.rate = +b.dataset.rate; const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(LANG[k][1].slice(0, 2).toLowerCase())).sort((a, b) => (/google|natural|neural|premium/i.test(b.name) ? 1 : 0) - (/google|natural|neural|premium/i.test(a.name) ? 1 : 0))[0]; if (v) u.voice = v; speechSynthesis.speak(u); DB.track('phrase_listen', { lang: k }); });
+let outRegion = store.get('outRegion', '서울');
+function renderOuting() {
+  const o = C.outing; if (!o || !Object.keys(o).length) { $('outing-tabs').innerHTML = ''; $('outing-body').innerHTML = '<p class="note" style="margin-top:30px">이번 주 소식이 준비되지 않았습니다.</p>'; return; }
+  const regions = Object.keys(REGION_XY).filter(r => o[r]); if (!o[outRegion]) outRegion = regions[0];
+  $('outing-tabs').innerHTML = regions.map(r => `<button type="button" data-region="${r}" aria-pressed="${r === outRegion}">${r}</button>`).join('');
+  $('outing-body').innerHTML = '<div class="rows" style="margin-top:20px">' + o[outRegion].map(it => `<div class="row ot-row"><span class="ot-kind">${esc(it.kind || '나들이')}</span><b>${esc(it.title)}</b><p class="ot-meta">${esc(it.where || '')}${it.when ? ' · ' + esc(it.when) : ''}</p><p>${esc(it.why || '')}</p><a class="linkbtn" href="https://map.naver.com/p/search/${encodeURIComponent(it.where || it.title)}" target="_blank" rel="noopener">지도에서 보기</a></div>`).join('') + '</div><p class="note">내용은 매일 아침 새로 찾아 넣습니다. 가기 전에 날짜와 시간을 한 번 더 확인해 주세요.</p>';
+  $('outing-title').textContent = `${outRegion} · 이번 주말 가볼 만한 곳`;
+}
+$('outing-tabs').onclick = e => { const b = e.target.closest('[data-region]'); if (!b) return; outRegion = b.dataset.region; store.set('outRegion', outRegion); renderOuting(); };
+renderFollow(); renderPhrase(); renderOuting();
+
 NB.init({ toast, modal, closeModal, openGate });
 
 // ── 오늘의 시세 ──
@@ -167,7 +193,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_music', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_music', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], follow: ['tab-future', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_culture', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['spring', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
@@ -347,7 +373,7 @@ DB.onUser((u, p) => {
   $('user-chip').hidden = !u; $('login-btn').hidden = !!u;
   $('admin-btn').hidden = !(p && p.role === 'admin');
   if (p && p.role === 'admin') $('maint').hidden = true;
-  if (u && p) { $('user-nick').textContent = p.nick + ' 님, ' + (new Date().getHours() < 12 ? '좋은 아침입니다.' : new Date().getHours() < 18 ? '좋은 오후입니다.' : '편안한 저녁입니다.'); if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); }
+  if (u && p) { $('user-nick').textContent = p.nick + ' 님, ' + (new Date().getHours() < 12 ? '좋은 아침입니다.' : new Date().getHours() < 18 ? '좋은 오후입니다.' : '편안한 저녁입니다.'); if (p.zodiac && !myZ) { myZ = p.zodiac; renderZ(); } wxByRegion(p); if (p.region && !store.get('outRegion', null)) { outRegion = p.region.split(' ')[0]; renderOuting(); } }
   renderStamp(p); renderCmts();
 });
 

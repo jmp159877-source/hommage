@@ -106,13 +106,13 @@
     <section class="tabsec" data-g="g3">
 
     <div class="label"><img src="leaf.png" alt="">오늘의 따라하기</div>
-    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>체조 · 노래 교실 · 댄스 · 골프</h3><p>항목마다 매일 새 영상. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+    <button type="button" class="banner photo" data-open="follow" data-corner="follow" style="background-image:url('img/tab-future.jpg')"><div class="b-text"><div><h3>체조 · 노래 교실 · 댄스 · 골프 · 파크골프</h3><p id="follow-sub">항목마다 오늘의 영상 하나씩</p></div><span>따라 하기</span></div></button>
 
-    <div class="label"><img src="leaf.png" alt="">오늘의 회화 학습</div>
-    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>영어 · 일본어 · 중국어</h3><p>하루 한 문장, 읽어 주고 따라 말하기. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+    <div class="label"><img src="leaf.png" alt="">오늘의 회화</div>
+    <button type="button" class="banner photo" data-open="phrase" data-corner="phrase" style="background-image:url('img/detail_culture.jpg')"><div class="b-text"><div><h3 id="phrase-title">영어 · 일본어 · 중국어</h3><p id="phrase-sub">하루 한 문장, 듣고 따라 말하기</p></div><span>들어가기</span></div></button>
 
     <div class="label"><img src="leaf.png" alt="">오늘의 나들이</div>
-    <button type="button" class="banner soon" disabled><div class="b-text"><div><h3>산 · 공연 · 전시 · 여행</h3><p>내 지역 소식부터, 예매까지 한 번에. 곧 열립니다.</p></div><span>준비 중</span></div></button>
+    <button type="button" class="banner photo" data-open="outing" data-corner="outing" style="background-image:url('img/spring.jpg')"><div class="b-text"><div><h3 id="outing-title">이번 주말 가볼 만한 곳</h3><p id="outing-sub">전시 · 공연 · 축제 · 산책길</p></div><span>들어가기</span></div></button>
 
     </section>
     <section class="tabsec" data-g="g4">
@@ -155,6 +155,9 @@
     <section class="dsec" data-k="food"><div id="meal"></div></section>
     <section class="dsec" data-k="fortune"><p class="lead" style="margin-top:30px">내 띠를 누르세요. 한 번 고르면 다음부터는 바로 나옵니다.</p><div class="picks" id="zodiac" role="group" aria-label="띠 고르기"></div><p class="say" id="fortune"></p></section>
     <section class="dsec" data-k="quiz"><p class="quiz-q" id="quiz-q" style="margin-top:30px"></p><div class="opts" id="opts"></div><div class="quiz-foot"><button type="button" class="btn green" id="quiz-check" disabled>정답 확인</button><span id="quiz-result"></span></div><div class="quiz-exp" id="quiz-exp" hidden></div></section>
+    <section class="dsec" data-k="follow"><div id="follow-body"></div></section>
+    <section class="dsec" data-k="phrase"><div id="phrase-body"></div></section>
+    <section class="dsec" data-k="outing"><div class="picks" id="outing-tabs" role="group"></div><div id="outing-body"></div></section>
     <section class="dsec" data-k="story"><div id="story"></div></section>
   </div>
 </div>

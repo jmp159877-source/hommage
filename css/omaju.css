@@ -706,3 +706,33 @@ html, body { overscroll-behavior-y: none; }
 .mic-ic { flex: 0 0 auto; }
 .mic-big { display: inline-flex; width: 96px; height: 96px; border-radius: 50%; background: var(--dark-green); color: #fff; align-items: center; justify-content: center; animation: nbpulse 1.2s ease-in-out infinite; }
 .today-line { margin: 4px 0 10px; }
+/* 따라하기 */
+.fl-list { display: grid; gap: 22px; margin-top: 26px; }
+.fl-item { background: #fff; border-radius: 10px; padding: 16px 16px 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.fl-head { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.fl-head b { font-family: 'Nanum Myeongjo', serif; font-size: 1.3rem; color: #141414; }
+.fl-head span { color: #555; font-size: 1rem; }
+.fl-video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000; }
+.fl-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.fl-cap { font-size: 0.9rem; color: #777; margin: 8px 0 10px; }
+.fl-go { display: block; text-align: center; text-decoration: none; margin-top: 8px; }
+/* 회화 */
+.ph-card { background: #fff; border-radius: 10px; padding: 18px 18px 16px; margin-top: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.ph-lang { font-size: 0.9rem; color: #2f6b4f; font-weight: 700; letter-spacing: 0.04em; }
+.ph-text { font-family: 'Nanum Myeongjo', Georgia, serif; font-size: 1.5rem; line-height: 1.5; color: #141414; margin: 8px 0 4px; font-weight: 700; }
+.ph-read { font-size: 1.1rem; color: #444; margin: 0 0 6px; }
+.ph-mean { font-size: 1.05rem; color: #333; margin: 0; }
+.ph-tip { font-size: 0.95rem; color: #777; margin: 8px 0 0; }
+.ph-actions { display: flex; gap: 10px; margin-top: 14px; }
+.ph-actions .btn { flex: 1; }
+/* 나들이 */
+.ot-row { position: relative; }
+.ot-kind { display: inline-block; font-size: 0.82rem; color: #2f6b4f; border: 1px solid rgba(47,107,79,0.4); border-radius: 4px; padding: 1px 8px; margin-bottom: 6px; }
+.ot-row b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 1.25rem; color: #141414; }
+.ot-meta { color: #666; font-size: 0.95rem; margin: 2px 0 6px; }
+#outing-tabs { margin-top: 20px; gap: 0 18px; }
+#outing-tabs button { font-size: 1rem; padding: 8px 0; }
+body.in-detail .tabs-mini { display: none; }
+.ot-row { display: block; }
+.ot-row p { margin: 0 0 4px; }
+.ot-row .linkbtn { display: inline-block; margin-top: 6px; }
