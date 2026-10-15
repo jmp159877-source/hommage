@@ -1142,7 +1142,7 @@ body.in-detail.nav-solid .top-nav img { display: none; }
 .pl-hidden { filter: blur(9px); pointer-events: none; user-select: none; }
 .pl-cd { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(244,241,234,0.35); pointer-events: none; }
 .pl-cd-n { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 6rem; line-height: 1; color: var(--dark-green); text-shadow: 0 2px 0 #fff; animation: plpop 0.9s ease-out; }
-.pl-cd-n.go { font-size: 3.6rem; color: #B8862F; }
+.pl-cd-n.go { font-size: 2.6rem; white-space: nowrap; color: #B8862F; }
 .pl-cd-t { font-size: 1.05rem; color: #555; background: rgba(255,255,255,0.85); padding: 4px 12px; border-radius: 999px; }
 @keyframes plpop { 0% { transform: scale(1.5); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1); } }
 /* 말모이 놀이 방법 */
