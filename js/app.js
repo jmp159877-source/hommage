@@ -269,7 +269,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편, 그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편, 그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['detail_culture', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
@@ -278,7 +278,9 @@ window.addEventListener('hashchange', route);
 renderEra(); route();
 
 // ── 퀴즈 ──
-$('quiz-kind').textContent = '오늘의 ' + (C.quiz.kind || '퀴즈');
+$('quiz-kind').textContent = C.quiz.term ? C.quiz.term : '오늘의 ' + (C.quiz.kind || '퀴즈');
+if (C.quiz.meaning) $('quiz-sub').textContent = C.quiz.meaning;
+$('issue-card').innerHTML = C.quiz.term ? `<div class="is-card"><p class="cu-kind">오늘의 시사 상식</p><h2 class="is-term">${esc(C.quiz.term)}</h2><p class="is-mean">${esc(C.quiz.meaning || '')}</p><p class="is-exp">${esc(C.quiz.explain || '')}</p>${C.quiz.why ? `<p class="is-sub">요즘 자주 들리는 까닭</p><p class="is-exp">${esc(C.quiz.why)}</p>` : ''}${C.quiz.example ? `<p class="is-sub">이렇게 씁니다</p><p class="is-ex">“${esc(C.quiz.example)}”</p>` : ''}</div>` : '';
 $('quiz-q').textContent = C.quiz.question;
 let pick = null;
 function renderQuiz() {
@@ -287,7 +289,7 @@ function renderQuiz() {
   $('opts').innerHTML = C.quiz.options.map((o, i) => `<button type="button" data-o="${i}" aria-pressed="${pick === i}" class="${done ? (i === C.quiz.answer ? 'ok' : 'no') : ''}" ${done ? 'disabled' : ''}>${i + 1}. ${esc(o)}</button>`).join('');
   $('quiz-check').disabled = done || pick == null; $('quiz-check').hidden = done;
   $('quiz-result').textContent = done ? (s.pick === C.quiz.answer ? '정답입니다.' : `아쉽습니다. 정답은 ${C.quiz.answer + 1}번입니다.`) : '';
-  $('quiz-exp').hidden = !done; $('quiz-exp').textContent = C.quiz.explain;
+  $('quiz-exp').hidden = !done || !!C.quiz.term; $('quiz-exp').textContent = C.quiz.explain;
 }
 $('opts').onclick = e => { const b = e.target.closest('[data-o]'); if (!b || b.disabled) return; pick = +b.dataset.o; renderQuiz(); };
 $('quiz-check').onclick = () => { if (pick == null) return; store.set('quiz', { day: TODAY, pick }); DB.track('quiz_answer', { correct: pick === C.quiz.answer }); renderQuiz(); };

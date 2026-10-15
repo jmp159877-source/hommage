@@ -846,3 +846,10 @@ body.in-detail .tabs-mini { display: none; }
 .cu-fig { margin: 4px 0 14px; background: #1a1a1a; border-radius: 8px; overflow: hidden; }
 .cu-fig img { display: block; width: 100%; height: auto; max-height: 70vh; object-fit: contain; margin: 0 auto; }
 .cu-quote blockquote { font-family: 'Nanum Myeongjo', serif; font-size: 1.35rem; line-height: 1.7; margin: 6px 0 10px; padding: 0 0 0 16px; border-left: 3px solid #C9A24A; color: #141414; }
+/* 시사 상식 카드 */
+.is-card { background: #fff; border-radius: 10px; padding: 22px 20px 20px; margin-top: 26px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.is-term { font-family: 'Nanum Myeongjo', serif; font-size: 1.8rem; margin: 2px 0 6px; color: #141414; }
+.is-mean { font-size: 1.12rem; font-weight: 700; color: #1F5A43; margin: 0 0 14px; }
+.is-exp { font-size: 1.05rem; line-height: 1.8; color: #222; margin: 0; }
+.is-sub { font-size: 0.85rem; font-weight: 700; color: #8a7a4a; margin: 18px 0 4px; letter-spacing: 0.04em; }
+.is-ex { font-family: 'Nanum Myeongjo', serif; font-size: 1.1rem; color: #333; margin: 0; padding-left: 12px; border-left: 3px solid #C9A24A; }

@@ -188,18 +188,25 @@ def gen_meal(d):
 
 
 def gen_quiz(d):
-    kind = QUIZ_KINDS[d.timetuple().tm_yday % len(QUIZ_KINDS)]
-    j = gemini(f"""오늘의 퀴즈 한 문제. 종류: {kind}.
-사자성어면 뜻을 풀어 주고 사자성어를 고르게, 속담이면 상황을 주고 속담을 고르게, 우리말이면 뜻을 주고 낱말을 고르게, 상식·역사면 쉬우면서도 "아, 그렇지" 싶은 문제.
-보기 4개, 정답은 하나, 오답도 그럴듯하게. 정답 번호(answer)는 0~3 중 무작위.
-해설(explain)은 정답을 다시 말하고 유래나 뜻을 2~3문장(100~160자)으로. 사자성어는 한자와 글자별 뜻을 함께.
-형식: {{"quiz": {{"kind":"{kind}", "question":"...", "options":["...","...","...","..."], "answer":0, "explain":"..."}}}}""")
+    """오늘의 시사 상식: 최근 뉴스에 자주 나오는 말 하나를 골라 풀어 주고, 확인 문제 하나."""
+    prompt = f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 최근 일주일 한국 뉴스·방송·인터넷에서 자주 나오는 시사 용어 하나를 구글 검색으로 골라라.
+경제·기술·생활·문화·건강·사회 현상 중에서. 정치인 이름·정당 논쟁·사건사고·특정 기업 홍보는 피한다. 60~70대가 "아, 요즘 이걸 이렇게 부르는구나" 하고 배울 만한 말.
+형식(JSON만):
+{{"quiz": {{"kind":"시사 상식", "term":"용어(15자 이내)", "meaning":"한 줄 뜻(30자 이내)",
+ "explain":"쉬운 풀이 세 문장(120~200자). 영어·줄임말이면 원래 말과 뜻을 함께.",
+ "why":"요즘 왜 자주 들리는지 한두 문장(60~110자). 확인된 사실만.",
+ "example":"이 말을 실제로 쓰는 예문 한 문장(대화체, 40자 이내)",
+ "question":"이 용어의 뜻을 묻는 확인 문제", "options":["보기1","보기2","보기3","보기4"], "answer":0}}}}
+정답 번호(answer)는 0~3 중 무작위."""
+    try:
+        j = gemini(prompt, json_mode=True, search=True)
+    except Exception as e:
+        print(f"[quiz] 검색 실패, 검색 없이: {str(e)[:100]}", file=sys.stderr)
+        j = gemini(prompt.replace("구글 검색으로 골라라", "네가 확실히 아는 최근 몇 년 사이 자주 쓰이는 말로 골라라").replace("확인된 사실만.", "일반적으로 알려진 사실만."), json_mode=True)
     q = j["quiz"]
-    assert len(q.get("options", [])) == 4 and 0 <= int(q.get("answer", -1)) <= 3, "퀴즈 형식 오류"
-    q["answer"] = int(q["answer"])
-    q["kind"] = kind
+    assert q.get("term") and len(q.get("options", [])) == 4 and 0 <= int(q.get("answer", -1)) <= 3, "시사 상식 형식 오류"
+    q["answer"] = int(q["answer"]); q["kind"] = "시사 상식"
     return q
-
 
 def gen_story(d):
     theme = random.Random(d.toordinal()).choice(["서랍 속 물건", "동네 가게", "첫 월급", "라디오", "소풍", "편지", "시장", "겨울 난로", "자전거", "사진 한 장", "전화", "다방", "극장", "기차", "텃밭", "친구"])
