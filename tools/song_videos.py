@@ -14,7 +14,16 @@ def norm(s): return re.sub(r"[\s\W_]+", "", s or "").lower()
 
 songs = json.load(open(os.path.join(HERE, "songs.json"), encoding="utf-8"))
 have = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {}
-todo = [(t, a) for y, lst in songs.items() if not y.startswith("_") for t, a in lst if f"{t}|{a}" not in have]
+import datetime
+Y = datetime.date.today().year
+now_years = {str(Y - n) for n in (50, 40, 30, 20)}
+def prio(k):  # 올해 화면에 나오는 해(가요·팝송) → 장르 → 내년 것
+    yr = k.split(":")[-1]
+    return 0 if yr in now_years else 1 if k.startswith("genre:") else 2
+todo, seen = [], set()
+for y in sorted([k for k in songs if not k.startswith("_")], key=prio):
+    for t, a in songs[y]:
+        if f"{t}|{a}" not in have and (t, a) not in seen: seen.add((t, a)); todo.append((t, a))
 print("남은 노래", len(todo))
 for t, a in todo[:90]:
     try:
