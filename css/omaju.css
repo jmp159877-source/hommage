@@ -792,3 +792,19 @@ body.in-detail .tabs-mini { display: none; }
 .mk-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(20,20,20,0.08); }
 .mk-item:last-child { border-bottom: 0 !important; }
 .mk-card { overflow: hidden; }
+/* 노래 목록·재생기 */
+.song-row { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 14px 2px; cursor: pointer; }
+.song-row p { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.song-row strong { font-size: 1.12rem; color: #141414; }
+.song-row p span { font-size: 0.95rem; color: #666; }
+.song-no { font-family: 'Nanum Myeongjo', serif; font-weight: 700; font-size: 1.1rem; color: #2f6b4f; text-align: center; }
+.song-play { width: 40px; height: 40px; border-radius: 50%; background: var(--dark-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; padding-left: 3px; }
+.pl-head { margin-bottom: 12px; }
+.pl-head h2 { margin: 4px 0 2px; }
+.pl-head p { margin: 0; color: #666; }
+.pl-no { font-size: 0.85rem; color: #2f6b4f; font-weight: 700; }
+.pl-video { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; }
+.pl-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.pl-nav { display: flex; gap: 10px; margin-top: 14px; }
+.pl-nav .btn { flex: 1; padding: 14px; font-size: 1.05rem; }
+.pl-nav .btn[disabled] { opacity: 0.35; }

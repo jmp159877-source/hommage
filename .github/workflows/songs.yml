@@ -1,0 +1,26 @@
+# 노래 영상 고르기: 노래 목록이 바뀌면, 그리고 매일 새벽 4시에 남은 곡만
+name: song-videos
+on:
+  push:
+    branches: [main]
+    paths: ['tools/songs.json']
+  schedule:
+    - cron: '0 19 * * *'   # 04:00 KST
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python tools/song_videos.py
+      - run: |
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git pull -q --rebase origin main || true
+          git add data/song_videos.json; git diff --cached --quiet || (git commit -m "노래 영상 목록 [skip ci]" && git push)

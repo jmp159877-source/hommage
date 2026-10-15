@@ -31,6 +31,7 @@ jobs:
       - name: 콘텐츠 만들기 (나들이 제외)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           ARGS="${{ github.event.inputs.date }}"
