@@ -9,10 +9,11 @@ async function pool() {
 
 // 오늘 i번째 카드 사진 (같은 계절 안에서 날마다 바뀜)
 export async function photoFor(i, date = new Date()) {
-  const list = (await pool())[SEASON(date.getMonth() + 1)] || [];
+  // 1·2번은 계절 사진, 3·4번(위트 있는 인사)은 웃음 나는 사진
+  const P = await pool(), fun = i >= 2 && (P.fun || []).length, list = (fun ? P.fun : P[SEASON(date.getMonth() + 1)]) || [];
   if (!list.length) return 'img/autumn.jpg';
   const day = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 864e5) + date.getFullYear() * 7;
-  return list[(day * 2 + i) % list.length].f;
+  return list[(day * 2 + (fun ? i - 2 : i)) % list.length].f;
 }
 
 function load(src) { return new Promise(r => { const im = new Image(); im.onload = () => r(im); im.onerror = () => r(null); im.src = src; }); }

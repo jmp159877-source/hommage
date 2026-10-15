@@ -79,7 +79,7 @@ $('wx-here').onclick = () => askHere(false);
 
 // ── 인사말 (그림 카드) ──
 const cardsEl = $('cards');
-const GREET = C.greetings.slice(0, 2);
+const GREET = C.greetings.slice(0, 4);
 cardsEl.innerHTML = GREET.map((c, i) => `<button type="button" class="gcard photo pic" data-copy="${i}"><img class="g-logo" src="logo-light.png" alt=""><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="g-send">눌러서 보내기</span></button>`).join('');
 GREET.forEach(async (c, i) => { const b = cardsEl.querySelector(`[data-copy="${i}"]`); if (b) b.style.backgroundImage = `url('${await photoFor(i)}')`; });
 async function makeCard(i) {

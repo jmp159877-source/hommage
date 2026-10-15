@@ -744,5 +744,151 @@
    "bright": 164,
    "sat": 69
   }
+ ],
+ "fun": [
+  {
+   "f": "img/cards/fun/01.jpg",
+   "id": 814141,
+   "by": "Kapa65",
+   "tags": "cat, domestic cat, female, dear, attentive, pet, proudly, puss, mackerel, animal, cat eyes, cat face, crazy, funny",
+   "q": "funny cat",
+   "bright": 155,
+   "sat": 73
+  },
+  {
+   "f": "img/cards/fun/02.jpg",
+   "id": 5918751,
+   "by": "rajabilal_2009",
+   "tags": "dog, puppy, canine, happy, funny, pet, cute, animal, domestic, adorable, mammal, portrait",
+   "q": "cute puppy",
+   "bright": 189,
+   "sat": 57
+  },
+  {
+   "f": "img/cards/fun/03.jpg",
+   "id": 4701059,
+   "by": "Faridaridhwan",
+   "tags": "paint, pet, cute, animal, portrait, red, costume, fur, funny, lovely, white, meow, spartan, concept, elegant, face, male, nature, cat, hair",
+   "q": "funny cat",
+   "bright": 177,
+   "sat": 60
+  },
+  {
+   "f": "img/cards/fun/04.jpg",
+   "id": 8299262,
+   "by": "Shanetennison",
+   "tags": "dog, puppy, pet, cute, nature, mammal, animal",
+   "q": "cute puppy",
+   "bright": 166,
+   "sat": 121
+  },
+  {
+   "f": "img/cards/fun/05.jpg",
+   "id": 5543222,
+   "by": "MagicTV",
+   "tags": "cat, tabby cat, pet, orange tabby cat, animal, domestic cat, cute cat, feline, nature, house cat, mammal",
+   "q": "funny cat",
+   "bright": 149,
+   "sat": 96
+  },
+  {
+   "f": "img/cards/fun/06.jpg",
+   "id": 9830812,
+   "by": "Jackielsy",
+   "tags": "dog, animal, pet, puppy, cute, nature, shiba",
+   "q": "cute puppy",
+   "bright": 147,
+   "sat": 78
+  },
+  {
+   "f": "img/cards/fun/07.jpg",
+   "id": 8065540,
+   "by": "RebaSpike",
+   "tags": "persian cat, cat, pet, animal, nature, domestic cat, feline, mammal, portrait",
+   "q": "funny cat",
+   "bright": 156,
+   "sat": 76
+  },
+  {
+   "f": "img/cards/fun/08.jpg",
+   "id": 9830841,
+   "by": "Jackielsy",
+   "tags": "dog, animal, pet, nature, puppy, cute",
+   "q": "cute puppy",
+   "bright": 161,
+   "sat": 152
+  },
+  {
+   "f": "img/cards/fun/09.jpg",
+   "id": 5259328,
+   "by": "guvo59",
+   "tags": "kitten, cat baby, small, cute, domestic animal, domestic cat, cat, cub, animal, cat portrait, puss, cat face, pet, view, eyes, fur, cat child",
+   "q": "funny cat",
+   "bright": 167,
+   "sat": 51
+  },
+  {
+   "f": "img/cards/fun/10.jpg",
+   "id": 4881942,
+   "by": "sweetle1",
+   "tags": "puppy, dog, pet, animal, nature, cute, adorable, doggy, young, portrait, purebred, white, brown puppy",
+   "q": "cute puppy",
+   "bright": 180,
+   "sat": 49
+  },
+  {
+   "f": "img/cards/fun/11.jpg",
+   "id": 10247508,
+   "by": "Couleur",
+   "tags": "shih-tzu, dog, muzzle, portrait, outside, grass, fluffy, small, animal, pet, fur, black, white flowers, cute, pose, day, light, nature, summer",
+   "q": "cute puppy",
+   "bright": 161,
+   "sat": 73
+  },
+  {
+   "f": "img/cards/fun/12.jpg",
+   "id": 5723334,
+   "by": "Printeboek",
+   "tags": "dog, puppy, canine, white dog, fur, furry, white fur, japanese striker, purebred, nature, pet, muzzle, adorable, mammal, cute, portrait, dog portrait, animal, dog, dog, dog, dog, dog, puppy",
+   "q": "cute puppy",
+   "bright": 148,
+   "sat": 68
+  },
+  {
+   "f": "img/cards/fun/13.jpg",
+   "id": 8096885,
+   "by": "HFGVDCSS",
+   "tags": "pomeranian, nature, dog, puppy, mammal, animal, pet, domestic dog, brown dog, cute, portrait",
+   "q": "cute puppy",
+   "bright": 171,
+   "sat": 51
+  },
+  {
+   "f": "img/cards/fun/14.jpg",
+   "id": 4698266,
+   "by": "adilla_lala97",
+   "tags": "orange, cat, eye, animal, pet, cute, paw, kitten, fur, nature, portrait, feline, eyes, kitty, adorable, yellow, funny, face",
+   "q": "funny cat",
+   "bright": 166,
+   "sat": 83
+  },
+  {
+   "f": "img/cards/fun/15.jpg",
+   "id": 4695100,
+   "by": "johnbreton13",
+   "tags": "golden, retriever, nature, dog, puppy, animal, pet, animals, cute, brown puppy",
+   "q": "cute puppy",
+   "bright": 150,
+   "sat": 188
+  },
+  {
+   "f": "img/cards/fun/16.jpg",
+   "id": 8647857,
+   "by": "Edyttka1388",
+   "tags": "shih tzu, dog, animal, mammal, canine, pet, domestic, nature, portrait, puppy, cute, fur",
+   "q": "cute puppy",
+   "bright": 153,
+   "sat": 46
+  }
  ]
 }
