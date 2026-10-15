@@ -1314,3 +1314,5 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .tabs3 button.soon { filter: grayscale(0.65) brightness(0.88) !important; }
 .tabs3 button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.7) 0%, rgba(30,28,24,0.42) 55%, rgba(30,28,24,0.35) 100%) !important; }
 .tabs3 button.soon small { display: inline-block; margin-top: 4px; padding: 3px 12px; border: 1px solid rgba(255,255,255,0.7); border-radius: 999px; font-size: min(0.9rem, 3.6vw) !important; }
+body .tabs3:not(.compact) button.soon { filter: grayscale(0.7) brightness(0.82) contrast(0.92) !important; }
+body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.72) 0%, rgba(30,28,24,0.45) 55%, rgba(30,28,24,0.38) 100%) !important; }
