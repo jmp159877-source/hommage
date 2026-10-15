@@ -1,0 +1,27 @@
+name: 인사 카드 사진 모으기
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/card_photos.py']
+permissions:
+  contents: write
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pillow
+      - name: 사진 모으기
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          set +e
+          rm -rf img/cards
+          python -u tools/card_photos.py 2>&1 | tee tools/last-cards.log
+          git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
+          git add img/cards data/card_photos.json tools/last-cards.log
+          git commit -m "인사 카드 사진 모음" || true
+          git pull --rebase origin main && git push
