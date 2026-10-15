@@ -427,7 +427,7 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 .tabs3 button { position: relative; overflow: hidden; background-size: cover; background-position: center; color: #fff; border: 0; min-height: 150px; padding: 0; text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,0.5); }
 .tabs3 button[data-tab="g1"] { background-image: url('../img/tab-today.jpg'); }
 .tabs3 button[data-tab="g2"] { background-image: url('../img/tab-past.jpg'); }
-.tabs3 button[data-tab="g3"] { background-image: url('../img/tab-future.jpg'); }
+.tabs3 button[data-tab="g3"] { background-image: url('../img/tab-future2.jpg'); }
 .tabs3 button::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,20,20,0.75) 0%, rgba(20,20,20,0.45) 55%, rgba(20,20,20,0.35) 100%); transition: background .2s; }
 .tabs3 button b, .tabs3 button small { position: relative; z-index: 1; }
 .tabs3 button b { font-size: 1.3rem; }
@@ -440,7 +440,7 @@ body { word-break: keep-all; overflow-wrap: anywhere; }
 @media (max-width: 768px) { .tabs3 button { min-height: 130px; } .tabs3 button b { font-size: 1.1rem; padding-bottom: 38px; } .tabs3 button small { font-size: 0.72rem; bottom: 12px; } }
 .tabs3 button[data-tab="g1"][aria-pressed="true"] { background-image: url('../img/tab-today.jpg') !important; }
 .tabs3 button[data-tab="g2"][aria-pressed="true"] { background-image: url('../img/tab-past.jpg') !important; }
-.tabs3 button[data-tab="g3"][aria-pressed="true"] { background-image: url('../img/tab-future.jpg') !important; }
+.tabs3 button[data-tab="g3"][aria-pressed="true"] { background-image: url('../img/tab-future2.jpg') !important; }
 .tabs3 button[aria-pressed="true"] { background-color: #333 !important; }
 .tabs3 button[aria-pressed="true"] { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
 
@@ -607,7 +607,7 @@ html, body { overscroll-behavior-y: none; }
 .tabs-mini button span { position: relative; z-index: 1; }
 .tabs-mini button[data-tab="g1"] { background-image: url('../img/tab-today.jpg'); }
 .tabs-mini button[data-tab="g2"] { background-image: url('../img/tab-past.jpg'); }
-.tabs-mini button[data-tab="g3"] { background-image: url('../img/tab-future.jpg'); }
+.tabs-mini button[data-tab="g3"] { background-image: url('../img/tab-future2.jpg'); }
 .tabs-mini button[data-tab="g4"] { background-image: url('../img/tab-note.jpg'); background-position: center 60%; }
 .tabs-mini button[aria-pressed="true"] { opacity: 1; background-color: transparent; box-shadow: 0 0 0 2px #fff, 0 4px 12px rgba(0,0,0,0.25); }
 .tabs-mini button[aria-pressed="true"]::before { background: rgba(20,20,20,0.3); }
@@ -1298,3 +1298,4 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 /* 오늘의 경제: 운영자 제공 배경(펼친 모눈 노트와 경제 지면) */
 .mk-card { background: #F6F1E7 url('../img/market-bg.jpg') 0% 40% / 124% auto no-repeat !important; border: 1px solid #E6DCC6; padding: 10px 16px 10px !important; }
 .mk-card::before { background: linear-gradient(to right, rgba(250,247,240,0.72) 0%, rgba(250,247,240,0.6) 60%, rgba(250,247,240,0.4) 100%) !important; }
+.tabs3 button[data-tab="g3"], .tabs-mini button[data-tab="g3"] { background-position: center 35% !important; }

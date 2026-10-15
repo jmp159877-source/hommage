@@ -4,7 +4,7 @@ import * as NB from './notebook.js';
 import { drawCard, photoFor } from './cards.js';
 import * as MM from './malmoi.js';
 import * as PLAY from './play.js';
-const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
+const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future2'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
 let modalPushed = false, skipPop = false, exitOpen = false;
 
 const $ = id => document.getElementById(id);
