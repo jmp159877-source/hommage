@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Gaegu:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@1,500&family=Gaegu:wght@700&display=swap');
 
 :root {
   --ivory: #F4F1EA; --ivory2: #F7F4ED; --dark-green: #0F4A35; --green2: #1C7A52;
@@ -877,16 +877,21 @@ body.in-detail .tabs-mini { display: none; }
 .gate-modal .linkbtn, .gate-modal a { color: #6b5410; }
 .gate-modal .modal-box button:not(.btn):not(.x) { background: transparent; color: #6b5410; }
 .gate-modal .modal-box h2 { font-size: 1.5rem; }
-/* ── 단추 색 통일: 따뜻한 연노랑 (카카오톡에 익숙한 느낌) ── */
-:root { --warm: #F9E9A8; --warm-line: #E8D58A; --warm-ink: #3A2E00; --warm-hover: #F5DF86; }
-.btn.green, .modal-actions .btn.green, .cmt-form .btn.green, .memo .btn.green { background: var(--warm) !important; color: var(--warm-ink) !important; border: 1px solid var(--warm-line) !important; font-weight: 800; }
-.btn.green:hover { background: var(--warm-hover) !important; }
-.btn.green[disabled] { opacity: 0.5; }
-.song-play { background: var(--warm); color: var(--warm-ink); border: 1px solid var(--warm-line); }
-.nb-mic { background: var(--warm); color: var(--warm-ink); border: 1px solid var(--warm-line); }
-.nb-mic .mic-ic { color: var(--warm-ink); }
-.mic-big { background: var(--warm); color: var(--warm-ink); }
-.genre button[aria-pressed="true"], .cu-tabs button[aria-pressed="true"] { background: var(--warm); color: var(--warm-ink); border-color: var(--warm-line); }
-.opts button[aria-pressed="true"] { border-color: #C9A24A; background: #FFF8E3; }
-.ph-actions .btn.green { background: var(--warm) !important; }
-.pl-nav .btn.green { background: var(--warm) !important; color: var(--warm-ink) !important; }
+/* ── 맨 아래: 매거진 판권면 ── */
+.foot.colophon { margin-top: 90px; padding: 38px 0 50px; border-top: 0; text-align: center; color: #6b665c; position: relative; }
+.colophon .co-orn { display: block; height: 1px; background: linear-gradient(90deg, transparent, #C9A24A 30%, #C9A24A 70%, transparent); margin: 0 auto 34px; width: 100%; }
+.colophon .co-orn::after { content: "✦"; position: absolute; left: 50%; top: 38px; transform: translate(-50%, -52%); background: var(--ivory); color: #C9A24A; font-size: 0.8rem; padding: 0 12px; }
+.colophon .co-logo { display: block; width: 190px; max-width: 60%; margin: 0 auto 18px; }
+.colophon .co-en { font-family: 'Cormorant Garamond', 'Nanum Myeongjo', serif; font-style: italic; font-size: 1.05rem; letter-spacing: 0.04em; color: #8a6d2c; margin: 0 0 6px; }
+.colophon .co-kr { font-family: 'Nanum Myeongjo', serif; font-size: 0.98rem; color: #555; margin: 0 0 26px; }
+.colophon .co-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-size: 0.92rem; }
+.colophon .co-links a { margin: 0; color: var(--dark-green); text-decoration: none; border-bottom: 1px solid rgba(30,70,50,0.25); }
+.colophon .co-links span { color: #bbb; }
+.colophon .co-copy { margin: 22px 0 0; font-size: 0.72rem; letter-spacing: 0.25em; color: #a29d92; }
+.colophon .co-orn { display: flex; align-items: center; gap: 14px; height: auto; background: none; margin: 0 0 34px; }
+.colophon .co-orn::after { content: none; }
+.colophon .co-orn i { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #C9A24A); }
+.colophon .co-orn i:last-child { background: linear-gradient(90deg, #C9A24A, transparent); }
+.colophon .co-orn b { color: #C9A24A; font-size: 0.8rem; font-weight: 400; }
+.colophon .co-en { line-height: 1.45; }
+.colophon .co-kr { line-height: 1.7; word-break: keep-all; }
