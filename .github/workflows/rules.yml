@@ -3,21 +3,27 @@ name: firestore-rules
 on:
   push:
     branches: [main]
-    paths: ['firestore.rules', 'firebase.json']
+    paths: ['firestore.rules']
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm install -g firebase-tools
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q google-auth requests
       - name: 규칙 게시
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/sa.json
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
-          firebase deploy --only firestore:rules --project omaju-d7862 --non-interactive
+          set +e
+          python tools/deploy_rules.py > /tmp/rules.log 2>&1; rc=$?
+          sed -E 's/(AIza|ya29\.)[A-Za-z0-9_\-]+/[키]/g' /tmp/rules.log > tools/last-rules.log
+          cat tools/last-rules.log
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git add tools/last-rules.log; git diff --cached --quiet || (git commit -m "규칙 게시 기록 [skip ci]" && git push)
+          exit $rc
