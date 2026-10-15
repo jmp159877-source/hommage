@@ -1217,3 +1217,7 @@ body:not(.in-chapter) .tabs3:not(.compact) button b, body:not(.in-chapter) .tabs
 @keyframes chfade { from { opacity: 0.6; } to { opacity: 1; } }
 body.in-chapter .tabsec.on { animation: chbody .6s ease .1s both; }
 @keyframes chbody { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* 연도 고르기: 다섯 개가 한 줄에 */
+#tabs, #tabs2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; border-bottom: 0; }
+#tabs button, #tabs2 button { padding: 10px 2px; border: 1px solid #E3DAC6; border-radius: 10px; background: #fff; font-family: 'Noto Sans KR', sans-serif; font-size: min(1rem, 3.9vw); font-weight: 700; color: #555; white-space: nowrap; margin: 0; }
+#tabs button[aria-pressed="true"], #tabs2 button[aria-pressed="true"] { background: var(--warm); border-color: var(--warm-line); color: var(--warm-ink); }

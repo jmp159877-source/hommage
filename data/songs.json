@@ -1,5 +1,5 @@
 {
- "_설명": "해마다 사랑받은 노래 목록. 매일 10곡씩 돌아가며 보여 준다. [제목, 가수]. 올해(2026) 필요한 해는 1976·1986·1996·2006, 내년은 1977·1987·1997·2007. 내년 목록은 연말에 확인해서 채운다. 팝은 'pop:연도' 키.",
+ "_설명": "해마다 사랑받은 노래 목록. 매일 10곡씩 돌아가며 보여 준다. [제목, 가수]. 올해(2026) 필요한 해는 1976·1986·1996·2006·2016, 내년은 1977·1987·1997·2007·2017. 내년 목록은 연말에 확인해서 채운다. 팝은 'pop:연도' 키.",
  "1976": [
   [
    "돌아와요 부산항에",
@@ -1072,6 +1072,206 @@
   [
    "아름답고 푸른 도나우",
    "요한 슈트라우스 2세"
+  ]
+ ],
+ "2016": [
+  [
+   "Cheer Up",
+   "TWICE"
+  ],
+  [
+   "TT",
+   "TWICE"
+  ],
+  [
+   "피 땀 눈물",
+   "방탄소년단"
+  ],
+  [
+   "우주를 줄게",
+   "볼빨간사춘기"
+  ],
+  [
+   "시간을 달려서",
+   "여자친구"
+  ],
+  [
+   "휘파람",
+   "BLACKPINK"
+  ],
+  [
+   "Russian Roulette",
+   "Red Velvet"
+  ],
+  [
+   "이 사랑",
+   "다비치"
+  ],
+  [
+   "You Are My Everything",
+   "거미"
+  ],
+  [
+   "하늘바라기",
+   "정은지"
+  ],
+  [
+   "Very Very Very",
+   "I.O.I"
+  ],
+  [
+   "Stay With Me",
+   "찬열, 펀치"
+  ]
+ ],
+ "2017": [
+  [
+   "밤편지",
+   "아이유"
+  ],
+  [
+   "팔레트",
+   "아이유"
+  ],
+  [
+   "좋니",
+   "윤종신"
+  ],
+  [
+   "봄날",
+   "방탄소년단"
+  ],
+  [
+   "DNA",
+   "방탄소년단"
+  ],
+  [
+   "빨간 맛",
+   "Red Velvet"
+  ],
+  [
+   "Knock Knock",
+   "TWICE"
+  ],
+  [
+   "Likey",
+   "TWICE"
+  ],
+  [
+   "에너제틱",
+   "워너원"
+  ],
+  [
+   "Beautiful",
+   "크러쉬"
+  ],
+  [
+   "마지막처럼",
+   "BLACKPINK"
+  ],
+  [
+   "Signal",
+   "TWICE"
+  ]
+ ],
+ "pop:2016": [
+  [
+   "Love Yourself",
+   "Justin Bieber"
+  ],
+  [
+   "One Dance",
+   "Drake"
+  ],
+  [
+   "Closer",
+   "The Chainsmokers"
+  ],
+  [
+   "Stressed Out",
+   "Twenty One Pilots"
+  ],
+  [
+   "Can't Stop the Feeling!",
+   "Justin Timberlake"
+  ],
+  [
+   "Cheap Thrills",
+   "Sia"
+  ],
+  [
+   "Treat You Better",
+   "Shawn Mendes"
+  ],
+  [
+   "Work",
+   "Rihanna"
+  ],
+  [
+   "I Took a Pill in Ibiza",
+   "Mike Posner"
+  ],
+  [
+   "We Don't Talk Anymore",
+   "Charlie Puth"
+  ],
+  [
+   "This Is What You Came For",
+   "Calvin Harris"
+  ],
+  [
+   "7 Years",
+   "Lukas Graham"
+  ]
+ ],
+ "pop:2017": [
+  [
+   "Shape of You",
+   "Ed Sheeran"
+  ],
+  [
+   "Perfect",
+   "Ed Sheeran"
+  ],
+  [
+   "Despacito",
+   "Luis Fonsi"
+  ],
+  [
+   "That's What I Like",
+   "Bruno Mars"
+  ],
+  [
+   "Believer",
+   "Imagine Dragons"
+  ],
+  [
+   "Feel It Still",
+   "Portugal. The Man"
+  ],
+  [
+   "Attention",
+   "Charlie Puth"
+  ],
+  [
+   "Havana",
+   "Camila Cabello"
+  ],
+  [
+   "New Rules",
+   "Dua Lipa"
+  ],
+  [
+   "Something Just Like This",
+   "The Chainsmokers & Coldplay"
+  ],
+  [
+   "Look What You Made Me Do",
+   "Taylor Swift"
+  ],
+  [
+   "HUMBLE.",
+   "Kendrick Lamar"
   ]
  ]
 }

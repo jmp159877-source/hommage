@@ -295,7 +295,8 @@ document.addEventListener('click', e => {
 // ── 그해 오늘 · 노래 ──
 let ago = store.get('ago', 40);
 function renderEra() {
-  const tabs = [50, 40, 30, 20].map(n => `<button type="button" data-ago="${n}" aria-pressed="${ago === n}">${n}년 전</button>`).join('');
+  if (!C.era[ago]) ago = [40, 30, 20, 10, 50].find(n => C.era[n]) || ago;
+  const tabs = [50, 40, 30, 20, 10].filter(n => C.era[n]).map(n => `<button type="button" data-ago="${n}" aria-pressed="${ago === n}">${n}년 전</button>`).join('');
   $('tabs').innerHTML = tabs; $('tabs2').innerHTML = tabs;
   const yr = Y - ago, e = C.era[ago], memo = store.get('memo' + ago, ''); $('cat-year').textContent = yr;
   let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
