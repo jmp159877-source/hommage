@@ -294,6 +294,46 @@ def gen_outing(d):
     return out
 
 
+# ── 오늘의 문화: 시 · 그림 · 한 문장 ──────────────────────
+def wiki_image(ref):
+    lang, title = ref.split(":", 1)
+    try:
+        url = f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(title)}"
+        j = get_json(url)
+        img = (j.get("originalimage") or {}).get("source") or (j.get("thumbnail") or {}).get("source")
+        th = (j.get("thumbnail") or {}).get("source")
+        if img and th:
+            # 너무 큰 원본 대신 1280px 썸네일 주소로
+            big = re.sub(r"/(\d+)px-", "/1280px-", th) if "/thumb/" in th else img
+            return {"img": big, "thumb": re.sub(r"/(\d+)px-", "/640px-", th) if "/thumb/" in th else th, "page": j.get("content_urls", {}).get("desktop", {}).get("page", "")}
+    except Exception as e:
+        print(f"[culture] 그림 사진 실패 {ref}: {e}", file=sys.stderr)
+    return None
+
+
+def gen_culture(d):
+    data = json.load(open(os.path.join(HERE, "..", "data", "culture.json"), encoding="utf-8"))
+    n = d.toordinal()
+    poem = data["poems"][n % len(data["poems"])]
+    quote = data["quotes"][(n * 7) % len(data["quotes"])]
+    ps = data["paintings"]; paint = None
+    for k in range(len(ps)):
+        cand = ps[(n * 3 + k) % len(ps)]
+        im = wiki_image(cand["wiki"])
+        if im:
+            paint = {**cand, **im}; break
+    j = gemini(f"""오늘의 문화 코너 글 세 가지를 써라.
+1) 시 감상 (poem_note): 아래 시를 처음 읽는 사람에게 건네는 감상 두세 문장(80~140자). 시의 핵심 정서와 오늘 읽기 좋은 까닭. 시 구절을 길게 인용하지 말 것.
+   시: {poem["author"]} 「{poem["title"]}」 ({poem["year"]})
+2) 그림 이야기 (painting_story): {paint["artist"] if paint else ""}의 「{paint["title"] if paint else ""}」({paint["year"] if paint else ""})에 대해, 무엇을 보면 좋은지와 얽힌 이야기 세 문장(120~200자). 확실한 사실만.
+3) 한 문장 풀이 (quote_note): "{quote["text"]}" ({quote["who"]})를 오늘 하루에 어떻게 쓸지 두 문장(60~100자).
+형식: {{"poem_note":"...","painting_story":"...","quote_note":"..."}}""")
+    out = {"poem": {**poem, "note": j.get("poem_note", "").strip()}, "quote": {**quote, "note": j.get("quote_note", "").strip()}}
+    if paint:
+        out["painting"] = {**paint, "story": j.get("painting_story", "").strip()}
+    return out
+
+
 # ── 저장 ────────────────────────────────────────────────
 
 def firestore():
@@ -329,7 +369,7 @@ def main():
 
     out, errors = {}, []
     ref.set({"source": "auto", "startedAt": datetime.datetime.now(KST).isoformat()}, merge=True)
-    for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("outing", gen_outing)]:
+    for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("culture", gen_culture), ("outing", gen_outing)]:
         if only and name not in only:
             continue
         try:

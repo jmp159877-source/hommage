@@ -158,6 +158,37 @@ renderFollow(); renderPhrase(); renderOuting();
 
 
 
+
+// ── 오늘의 문화: 시 · 그림 · 한 문장 ──
+let CULT = null;
+async function wikiImg(ref) {
+  try { const [lang, title] = ref.split(/:(.+)/); const j = await (await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)).json(); const th = (j.thumbnail || {}).source || ''; return th ? { img: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/1280px-') : th, thumb: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/640px-') : th } : null; } catch (e) { return null; }
+}
+async function loadCulture() {
+  if (C.culture && C.culture.poem) { CULT = C.culture; }
+  else {
+    try {
+      const d = await (await fetch('data/culture.json', { cache: 'no-cache' })).json();
+      const n = Math.floor(new Date(Y, M, D).getTime() / 86400000) + 719163; // 파이썬 toordinal 과 같은 값
+      const ps = d.paintings; let paint = null;
+      for (let k = 0; k < 4 && !paint; k++) { const c = ps[(n * 3 + k) % ps.length]; const im = await wikiImg(c.wiki); if (im) paint = { ...c, ...im }; }
+      CULT = { poem: d.poems[n % d.poems.length], quote: d.quotes[(n * 7) % d.quotes.length], painting: paint };
+    } catch (e) { return; }
+  }
+  renderCulture();
+}
+function renderCulture() {
+  const c = CULT; if (!c) return;
+  if (c.painting && c.painting.thumb) $('culture-banner').style.backgroundImage = `url('${c.painting.thumb}')`;
+  $('culture-title').textContent = `「${c.poem.title}」 · ${c.painting ? c.painting.title : ''}`;
+  $('culture-sub').textContent = `${c.poem.author}의 시와 ${c.painting ? c.painting.artist + '의 그림' : '오늘의 그림'}`;
+  $('culture-body').innerHTML = `
+    <div class="cu-block"><p class="cu-kind">오늘의 시</p><h2 class="cu-title">${esc(c.poem.title)}</h2><p class="cu-by">${esc(c.poem.author)} · ${esc(c.poem.year)}</p><div class="cu-poem">${esc(c.poem.text)}</div>${c.poem.note ? `<p class="cu-note">${esc(c.poem.note)}</p>` : ''}</div>
+    ${c.painting ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(c.painting.img)}" alt="${esc(c.painting.title)}" loading="lazy"></figure><h2 class="cu-title">${esc(c.painting.title)}</h2><p class="cu-by">${esc(c.painting.artist)} · ${esc(c.painting.year)}</p>${c.painting.story ? `<p class="cu-note">${esc(c.painting.story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : ''}
+    <div class="cu-block cu-quote"><p class="cu-kind">오늘의 한 문장</p><blockquote>${esc(c.quote.text)}</blockquote><p class="cu-by">— ${esc(c.quote.who)}</p>${c.quote.note ? `<p class="cu-note">${esc(c.quote.note)}</p>` : ''}</div>`;
+}
+loadCulture();
+
 // ── 가요 / 팝송 ──
 let genre = store.get('genre', 'kpop'), SONGS_ALL = null;
 fetch('data/songs.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGS_ALL = j; renderSongs(); }).catch(() => {});
@@ -239,7 +270,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
+const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '오늘의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['detail_outing', '오늘의 문화', () => '시 한 편, 그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['detail_culture', '오늘의 퀴즈', () => esc('오늘의 ' + (C.quiz.kind || '퀴즈'))] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
