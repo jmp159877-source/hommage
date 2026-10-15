@@ -155,7 +155,7 @@ NB.init({ toast, modal, closeModal, openGate });
 // ── 오늘의 시세 ──
 (async function market() {
   const m = await DB.loadMarket(); if (!m || !m.items || !m.items.length) return;
-  const fmt = (v, u) => (u === '' ? v.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(v).toLocaleString('ko-KR') + u);
+  const fmt = (v, u) => { if (u === '') return v.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); const n = Math.round(v); if (n >= 100000000) { const eok = Math.floor(n / 100000000), man = Math.round((n % 100000000) / 10000); return `${eok}억${man ? ' ' + man.toLocaleString('ko-KR') + '만' : ''}${u}`; } if (n >= 10000000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만' + u; return n.toLocaleString('ko-KR') + u; };
   $('mk-grid').innerHTML = m.items.map(i => `<div class="mk-item"><span class="mk-l">${esc(i.label)}</span><b class="mk-v">${fmt(i.value, i.unit)}</b>${i.change == null ? '' : `<span class="mk-c ${i.change > 0 ? 'up' : i.change < 0 ? 'down' : ''}">${i.change > 0 ? '▲' : i.change < 0 ? '▼' : '－'} ${Math.abs(i.change).toFixed(2)}%</span>`}</div>`).join('');
   const t = new Date(m.updatedAt); $('mk-foot').textContent = `${t.getMonth() + 1}월 ${t.getDate()}일 ${t.getHours()}시 기준 · 금·은은 국제 시세를 원/돈으로 환산한 값`;
   $('mk-sec').hidden = false;

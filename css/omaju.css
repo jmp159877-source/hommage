@@ -740,3 +740,37 @@ body.in-detail .tabs-mini { display: none; }
 .mk-card { background: #fff url('../img/market.jpg') center 30% / cover no-repeat; position: relative; overflow: hidden; }
 .mk-card::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.86); }
 .mk-card > * { position: relative; }
+/* ── 큰 글자 설정 휴대폰 대응: 칸이 글자를 따라 늘어나게 ── */
+.banner.photo { height: auto; min-height: 200px; display: flex; flex-direction: column; justify-content: flex-end; }
+.banner.photo .b-text { position: static; padding: 150px 22px 22px; margin: 0; flex-wrap: wrap; row-gap: 10px; }
+#fortune-banner .b-text { padding-top: 170px; }
+.b-text > div { min-width: 0; flex: 1 1 200px; }
+.b-text h3, .b-text p { overflow-wrap: anywhere; }
+.tabs3:not(.compact) button { aspect-ratio: auto; min-height: 150px; height: auto; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 14px 8px 12px; }
+.tabs3:not(.compact) button b { position: static; height: auto; padding: 0 0 8px; display: block; text-align: center; }
+.tabs3:not(.compact) button small { position: static; display: block; text-align: center; }
+.tabs-mini button { height: auto; min-height: 56px; padding: 8px 2px; }
+.label { flex-wrap: wrap; row-gap: 6px; }
+.gcard { height: auto; min-height: 236px; }
+.gcard.photo q { position: static; display: block; padding: 150px 14px 16px; }
+/* ── 시세: 두 칸으로 촘촘하게 ── */
+.mk-card { padding: 4px 14px 8px; }
+.mk-grid { grid-template-columns: 1fr 1fr; column-gap: 14px; }
+.mk-item { grid-template-columns: 1fr auto; column-gap: 8px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(20,20,20,0.08); }
+.mk-item:last-child, .mk-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(20,20,20,0.08); }
+.mk-item:nth-last-child(-n+2):not(:nth-child(-n+2)) { border-bottom: 0; }
+.mk-l { grid-column: 1 / -1; font-size: 0.82rem; color: #666; margin-bottom: 1px; }
+.mk-v { font-size: 1.05rem; justify-self: start; }
+.mk-c { min-width: 0; font-size: 0.78rem; justify-self: end; }
+.mk-item:not(:has(.mk-c)) .mk-v { grid-column: 1 / -1; }
+.mk-foot { font-size: 0.78rem; margin-top: 6px; }
+.toc-l em { white-space: nowrap; font-size: clamp(1.2rem, 7vw, 1.65rem); }
+.toc-r { white-space: nowrap; }
+.mk-item { display: block; }
+.mk-item .mk-v { display: inline; margin-right: 6px; }
+.mk-item .mk-c { display: inline; white-space: nowrap; }
+.mk-item .mk-l { display: block; }
+.toc { flex-wrap: wrap; row-gap: 2px; }
+.toc-r { flex: 1 0 auto; text-align: right; }
+.mk-item .mk-v { font-size: 1rem; }
+.mk-item .mk-c { font-size: 0.74rem; }
