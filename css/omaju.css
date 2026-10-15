@@ -1203,3 +1203,17 @@ body:not(.in-chapter) .tabs3:not(.compact) button { opacity: 1 !important; filte
 body:not(.in-chapter) .tabs3:not(.compact) button::before { background: linear-gradient(to top, rgba(20,16,10,0.62) 0%, rgba(20,16,10,0.12) 50%, rgba(20,16,10,0) 100%) !important; }
 body:not(.in-chapter) .tabs3:not(.compact) button { transform: none !important; box-shadow: 0 6px 18px rgba(60,40,10,0.16) !important; }
 body:not(.in-chapter) .tabs3:not(.compact) button b, body:not(.in-chapter) .tabs3:not(.compact) button small { text-shadow: 0 1px 3px rgba(0,0,0,0.55), 0 2px 14px rgba(0,0,0,0.45); }
+.nb-guide { margin: 0 0 12px; padding: 10px 12px; background: #FFFCF0; border: 1px dashed #E3D29A; border-radius: 10px; font-size: 0.98rem; line-height: 1.6; color: #3A2E00; }
+.nb-guide small { color: #8a6d2c; }
+.nb-say-tip { text-align: center; font-size: 1.05rem; line-height: 1.6; margin: 6px 0 10px; }
+.nb-live { min-height: 4.5em; max-height: 40vh; overflow: auto; padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid #E3DAC6; font-size: 1.15rem; line-height: 1.6; color: #1f1f1f; }
+.nb-live .ph { color: #aaa; font-size: 1rem; }
+.nb-live .itm { color: #8a8a8a; }
+.mic-big.on { animation: micpulse 1.4s ease-in-out infinite; }
+@keyframes micpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(232,213,138,0.7); } 50% { box-shadow: 0 0 0 14px rgba(232,213,138,0); } }
+/* 장 넘어가기를 부드럽게: 커진 사진이 천천히 걷히며 표지로 이어짐 */
+.ch-zoom { transition: left .46s cubic-bezier(.22,.61,.36,1), top .46s cubic-bezier(.22,.61,.36,1), width .46s cubic-bezier(.22,.61,.36,1), height .46s cubic-bezier(.22,.61,.36,1), border-radius .46s, opacity .6s ease; }
+.ch-head { animation: chfade .6s ease both; }
+@keyframes chfade { from { opacity: 0.6; } to { opacity: 1; } }
+body.in-chapter .tabsec.on { animation: chbody .6s ease .1s both; }
+@keyframes chbody { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }

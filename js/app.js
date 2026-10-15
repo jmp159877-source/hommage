@@ -579,7 +579,7 @@ $('tabs3').onclick = e => {
   z.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(b).backgroundImage}`;
   document.body.appendChild(z);
   requestAnimationFrame(() => { z.style.left = '0px'; z.style.top = '0px'; z.style.width = innerWidth + 'px'; z.style.height = innerHeight + 'px'; z.style.borderRadius = '0'; });
-  setTimeout(() => { location.hash = g; window.scrollTo(0, 0); z.classList.add('out'); setTimeout(() => z.remove(), 380); }, 420);
+  setTimeout(() => { location.hash = g; window.scrollTo(0, 0); requestAnimationFrame(() => requestAnimationFrame(() => { z.classList.add('out'); setTimeout(() => z.remove(), 650); })); }, 460);
 };
 
 // ── 서비스 워커 ──

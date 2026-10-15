@@ -40,7 +40,12 @@ function fmtTime(t) { if (!t) return ''; const [h, m] = t.split(':').map(Number)
 
 // ── 말에서 날짜·시간 뽑기 ──
 export function parseSpeech(text, kind) {
-  const r = { text: text.trim() }; let s = ' ' + text + ' ';
+  const r = { text: text.trim() };
+  // 우리말 시각을 숫자로: '세 시 반' → '3시 반', '열두 시' → '12시'
+  const KH = [['열두', 12], ['열한', 11], ['열', 10], ['아홉', 9], ['여덟', 8], ['일곱', 7], ['여섯', 6], ['다섯', 5], ['네', 4], ['세', 3], ['두', 2], ['한', 1]];
+  let norm = ' ' + text + ' ';
+  for (const [w, n] of KH) norm = norm.replace(new RegExp('(^|[^가-힣])' + w + '\\s*시(?![가-힣]*[작간])', 'g'), `$1${n}시`);
+  let s = norm;
   const now = new Date();
   if (kind === 'anniv') {
     r.lunar = /음력/.test(s); s = s.replace(/음력|양력/g, ' ');
@@ -70,12 +75,23 @@ export function parseSpeech(text, kind) {
 function listen(onText) {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { toast('이 브라우저에서는 말로 적기를 쓸 수 없습니다. 크롬으로 열어 주세요.'); return; }
-  const rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = false; rec.maxAlternatives = 1;
-  modal(`<h2>듣고 있습니다</h2><div class="nb-listen"><span class="mic-big"><svg class="mic-ic" viewBox="0 0 24 24" width="56" height="56" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5M8.5 21.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></div><p style="text-align:center;font-size:1.1rem">편하게 말씀하세요.<br>말이 끝나면 저절로 멈춥니다.</p><div class="modal-actions"><button type="button" class="btn line" id="nb-stop">그만</button></div>`, () => { $('nb-stop').onclick = () => { try { rec.abort(); } catch (e) {} closeModal(); }; });
-  rec.onresult = e => { const t = e.results[0][0].transcript; closeModal(); onText(t); };
-  rec.onerror = e => { closeModal(); toast(e.error === 'not-allowed' ? '마이크 사용을 허용해 주세요.' : '잘 못 들었습니다. 다시 눌러 말씀해 주세요.'); };
-  rec.onend = () => { if ($('nb-stop')) closeModal(); };
-  try { rec.start(); } catch (e) { closeModal(); toast('마이크를 켤 수 없습니다.'); }
+  // 끊기지 않게: 계속 듣기 + 중간에 멈추면 저절로 다시 켜기, 말한 내용은 화면에 바로바로 글로
+  let done = false, finalText = '', live = '', rec = null, restarts = 0;
+  const mic = '<svg class="mic-ic" viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5M8.5 21.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  modal(`<h2>듣고 있습니다</h2><div class="nb-listen"><span class="mic-big on">${mic}</span></div><p class="nb-say-tip">아무렇게나 편하게 말씀하세요.<br>다 말씀하시면 <b>다 했어요</b>를 누르세요.</p><div class="nb-live" id="nb-live"><span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span></div><div class="modal-actions"><button type="button" class="btn green" id="nb-done">다 했어요</button><button type="button" class="btn line" id="nb-stop">그만</button></div>`, () => {
+    $('nb-done').onclick = () => { done = true; try { rec && rec.stop(); } catch (e) {} finish(); };
+    $('nb-stop').onclick = () => { done = true; try { rec && rec.abort(); } catch (e) {} closeModal(); };
+  });
+  const show = () => { const el = $('nb-live'); if (el) el.innerHTML = (finalText + ' ' + live).trim() ? `${(finalText).replace(/</g, '&lt;')}<span class="itm">${live.replace(/</g, '&lt;')}</span>` : '<span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span>'; };
+  const finish = () => { const t = (finalText + ' ' + live).replace(/\s+/g, ' ').trim(); closeModal(); if (t) onText(t); else toast('말씀이 들리지 않았습니다. 다시 눌러 말씀해 주세요.'); };
+  const start = () => {
+    rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
+    rec.onresult = e => { live = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finalText += (finalText ? ' ' : '') + r[0].transcript.trim(); else live += r[0].transcript; } show(); };
+    rec.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { done = true; closeModal(); toast('마이크 사용을 허용해 주세요.'); } };
+    rec.onend = () => { if (done || !$('nb-done')) return; if (live) { finalText += (finalText ? ' ' : '') + live.trim(); live = ''; } if (restarts++ < 40) setTimeout(() => { if (!done && $('nb-done')) try { start(); } catch (e) {} }, 150); else finish(); };
+    try { rec.start(); } catch (e) { done = true; closeModal(); toast('마이크를 켤 수 없습니다.'); }
+  };
+  start();
 }
 
 // ── 적기·고치기 창 ──
