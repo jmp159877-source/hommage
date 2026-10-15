@@ -1199,3 +1199,7 @@ body:not(.in-chapter) .tabs-mini { display: none !important; }
   body:not(.in-chapter) .foot.colophon { margin-top: 44px; }
 }
 body:not(.in-chapter) .tabs3:not(.compact) button { opacity: 1 !important; filter: none !important; }
+/* 첫 화면 네 칸: 모두 환하게 (글씨 아래만 살짝 어둡게) */
+body:not(.in-chapter) .tabs3:not(.compact) button::before { background: linear-gradient(to top, rgba(20,16,10,0.62) 0%, rgba(20,16,10,0.12) 50%, rgba(20,16,10,0) 100%) !important; }
+body:not(.in-chapter) .tabs3:not(.compact) button { transform: none !important; box-shadow: 0 6px 18px rgba(60,40,10,0.16) !important; }
+body:not(.in-chapter) .tabs3:not(.compact) button b, body:not(.in-chapter) .tabs3:not(.compact) button small { text-shadow: 0 1px 3px rgba(0,0,0,0.55), 0 2px 14px rgba(0,0,0,0.45); }
