@@ -129,7 +129,7 @@ const FOLLOW_ORDER = ['gym', 'sing', 'dance', 'golf', 'park'];
 const unent = t => String(t || '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 function renderFollow() {
   const f = C.follow; if (!f) { $('follow-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 영상이 준비되지 않았습니다. 내일 다시 들러 주세요.</p>'; return; }
-  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<div class="fl-video"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${esc(it.videoId)}?rel=0&modestbranding=1&playsinline=1" title="${esc(it.title || it.name)}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="fl-cap">${esc(unent(it.title))}${it.channel ? ' · ' + esc(unent(it.channel)) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
+  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<button type="button" class="fl-thumb" data-fl="${k}" aria-label="${esc(it.name)} 영상 보기"><img loading="lazy" src="https://i.ytimg.com/vi/${esc(it.videoId)}/hqdefault.jpg" alt=""><span class="fl-play">▶</span></button><p class="fl-cap">${esc(unent(it.title))}${it.channel ? ' · ' + esc(unent(it.channel)) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
 }
 const LANG = { en: ['영어', 'en-US'], ja: ['일본어', 'ja-JP'], zh: ['중국어', 'zh-CN'] };
 function renderPhrase() {
@@ -223,6 +223,18 @@ $('genre').onclick = e => { const b = e.target.closest('[data-genre]'); if (!b) 
 let SONGV = null;
 fetch('data/song_videos.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGV = j; }).catch(() => { SONGV = {}; });
 function playSong(i) { playFrom(songList(), i, `${Y - ago}년 ${genre === 'pop' ? '팝송' : '가요'}`); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-fl]'); if (!b) return;
+  const order = FOLLOW_ORDER.filter(k => C.follow && C.follow[k] && C.follow[k].videoId), i = order.indexOf(b.dataset.fl); playFollow(order, i);
+});
+function playFollow(order, i) {
+  const it = C.follow[order[i]]; if (!it) return;
+  modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${order.length}</span><h2>${esc(it.name)}</h2><p>${esc(unent(it.title || ''))}</p></div><div class="pl-video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(it.videoId)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(it.name)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><div class="pl-nav"><button type="button" class="btn line" id="pl-prev" ${i === 0 ? 'disabled' : ''}>이전</button><button type="button" class="btn green" id="pl-next" ${i === order.length - 1 ? 'disabled' : ''}>다음</button></div>`, () => {
+    $('modal').classList.add('pl-modal');
+    $('pl-prev').onclick = () => playFollow(order, i - 1); $('pl-next').onclick = () => playFollow(order, i + 1);
+  });
+  DB.track('follow_play', { k: order[i] });
+}
 function playFrom(list, i, tag) {
   const s = list[i]; if (!s) return;
   const v = SONGV && SONGV[`${s[0]}|${s[1]}`];
@@ -337,6 +349,7 @@ function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
   if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
 $('back').onclick = () => { if (route.y != null) history.back(); else location.hash = ''; };
 window.addEventListener('hashchange', route);
+window.addEventListener('scroll', () => document.body.classList.toggle('nav-solid', document.body.classList.contains('in-detail') && window.scrollY > 160), { passive: true });
 renderEra(); route();
 
 // ── 퀴즈 ──
