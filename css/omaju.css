@@ -1308,3 +1308,5 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .tabs3 button.soon[data-soon="g5"] { background-image: url('../img/tab-travel.jpg'), linear-gradient(160deg, #D9CDB4, #A99A7E); }
 .tabs3 button.soon[data-soon="g6"] { background-image: url('../img/tab-health.jpg'), linear-gradient(160deg, #C9D3C2, #8FA088); }
 .tabs3 button.soon small { opacity: 0.9; letter-spacing: 0.08em; }
+.tabs3 button.soon[data-soon="g5"] { background-position: center 30% !important; }
+.tabs3 button.soon[data-soon="g6"] { background-position: 70% 25% !important; }
