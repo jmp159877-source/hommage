@@ -577,7 +577,7 @@
    "query": "아침 스트레칭 10분",
    "title": "[ENG] 심으뜸 매일 아침 10분 스트레칭ㅣ2023 리뉴얼",
    "channel": "힙으뜸",
-   "name": "아침 체조",
+   "name": "요가",
    "say": "가볍게 몸을 펴며 하루를 열어 보세요",
    "thumb": "https://i.ytimg.com/vi/50WCSpZtdmA/mqdefault.jpg"
   },
@@ -589,6 +589,11 @@
    "name": "파크골프",
    "say": "가까운 구장에서 한 라운드 어떠세요",
    "thumb": "https://i.ytimg.com/vi/pOLhwDLQ1pI/mqdefault.jpg"
+  },
+  "meditate": {
+   "name": "명상",
+   "query": "10분 아침 명상",
+   "say": "숨을 고르며 마음을 가만히 내려놓아 보세요."
   }
  },
  "generatedAt": "2026-10-15T23:17:57.279590+09:00",
