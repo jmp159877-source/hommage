@@ -421,7 +421,6 @@ def main():
     gemini.models = list_models()
     force = "--force" in sys.argv
     only = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--only=")), None)
-    if only: force = True
     rg = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--regions=")), None)
     if rg: gen_outing.regions = [r for r in rg if r]
     d = today()
@@ -432,9 +431,8 @@ def main():
     db = firestore()
     ref = db.collection("daily").document(key)
     cur = ref.get()
-    if cur.exists and cur.to_dict().get("source") == "auto" and not force:
-        print(f"{key} 이미 만들어져 있음. 건너뜀."); return
-    if cur.exists and cur.to_dict().get("source") == "admin" and not force:
+    have = cur.to_dict() if cur.exists else {}
+    if have.get("source") == "admin" and not force:
         print(f"{key} 관리자가 직접 쓴 내용이 있음. 건너뜀."); return
 
     out, errors = {}, []
@@ -442,6 +440,8 @@ def main():
     for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("culture", gen_culture), ("outing", gen_outing)]:
         if only and name not in only:
             continue
+        if not force and have.get(name):  # 이미 만든 코너는 다시 만들지 않음 (AI 한도 아끼기). 실패한 코너만 다음 실행에서 채움
+            print(f"[skip] {name} 이미 있음"); continue
         try:
             out[name] = fn(d)
             if name == "outing":
@@ -453,7 +453,10 @@ def main():
             errors.append(f"{name}: {e}")
             print(f"[fail] {name}: {e}", file=sys.stderr)
     if not out:
-        raise SystemExit("아무것도 만들지 못함")
+        missing = [n for n in (only or []) if not have.get(n)]
+        if missing or errors:
+            raise SystemExit("아무것도 만들지 못함: " + ", ".join(errors)[:300])
+        print(f"{key} 모든 코너가 이미 있음."); return
     out["source"] = "auto"
     out["generatedAt"] = datetime.datetime.now(KST).isoformat()
     out["errors"] = errors
