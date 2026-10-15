@@ -1,25 +1,13 @@
-poem misty lake morning 15
-skip 4252410 HTTP Error 429: Too Many Requests
-skip 1236617 HTTP Error 429: Too Many Requests
-skip 8274529 HTTP Error 429: Too Many Requests
-skip 4534056 HTTP Error 429: Too Many Requests
-skip 1850095 HTTP Error 429: Too Many Requests
-skip 10131341 HTTP Error 429: Too Many Requests
-skip 1867715 HTTP Error 429: Too Many Requests
-skip 7905874 HTTP Error 429: Too Many Requests
-skip 1668873 HTTP Error 429: Too Many Requests
-skip 6612075 HTTP Error 429: Too Many Requests
-skip 7551415 HTTP Error 429: Too Many Requests
-skip 6844349 HTTP Error 429: Too Many Requests
-skip 5174879 HTTP Error 429: Too Many Requests
-skip 2461303 HTTP Error 429: Too Many Requests
-poem soft window light curtain 30
-poem wildflowers meadow soft light 30
-poem snowy path quiet 30
-poem golden field sunset 30
-poem autumn leaves soft light 30
-poem cherry blossom soft 30
-poem calm sea dawn 30
-poem reeds river sunset 30
-poem forest path morning light 30
+poem landscape fog no people 16
+poem lake reflection calm 23
+poem wheat field sky 30
+poem moon night landscape 30
+poem pine forest mist 30
+poem lotus pond 30
+poem snow trees landscape 30
+poem sea horizon calm 30
+poem bamboo forest 30
+poem mountain sunrise clouds 30
+poem lavender field 30
+poem sky clouds soft 30
 완료 {'poem': 30}
