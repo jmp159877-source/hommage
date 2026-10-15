@@ -197,3 +197,19 @@ export async function bumpClick(corner) {
   track('corner_open', { corner });
 }
 export function track(name, params) { try { if (analytics) logEvent(analytics, name, params || {}); } catch (e) {} }
+
+// ── 나의 수첩 ──
+// kind: memo(메모) | event(일정: date=YYYY-MM-DD, time="14:00" 선택) | anniv(기억할 날: month, day, lunar(true/false))
+export async function listNotes() {
+  if (!me) return [];
+  const s = await getDocs(query(collection(db, 'notes'), where('uid', '==', me.uid)));
+  return s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+export async function addNote(n) {
+  if (!me) throw new Error('로그인이 필요합니다.');
+  n.text = (n.text || '').trim(); if (!n.text) throw new Error('내용이 비어 있습니다.');
+  const r = await addDoc(collection(db, 'notes'), { ...n, uid: me.uid, createdAt: Date.now() });
+  return r.id;
+}
+export async function updateNote(id, n) { if (!me) throw new Error('로그인이 필요합니다.'); await updateDoc(doc(db, 'notes', id), { ...n, uid: me.uid, updatedAt: Date.now() }); }
+export async function deleteNote(id) { await deleteDoc(doc(db, 'notes', id)); }

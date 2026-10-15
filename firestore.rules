@@ -54,6 +54,13 @@ service cloud.firestore {
       allow update: if (signedIn() && onlyIncrement('reports')) || isAdmin();
       allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
     }
+
+    // 나의 수첩: 본인 것만 읽고 쓰고 지운다 (관리자도 못 본다)
+    match /notes/{id} {
+      allow read, delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && notBanned() && request.resource.data.uid == request.auth.uid && request.resource.data.text.size() <= 500;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid && request.resource.data.text.size() <= 500;
+    }
     match /reports/{id} {
       allow read: if isAdmin();
       allow create: if signedIn() && request.resource.data.uid == request.auth.uid && id.matches('^.*_' + request.auth.uid + '$');

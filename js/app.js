@@ -1,5 +1,6 @@
 import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
+import * as NB from './notebook.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -119,6 +120,8 @@ cardsEl.onclick = async e => {
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 })();
 
+
+NB.init({ toast, modal, closeModal, openGate });
 
 // ── 오늘의 시세 ──
 (async function market() {
