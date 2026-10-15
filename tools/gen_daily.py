@@ -69,7 +69,7 @@ def _retry_delay(detail):
 def gemini(prompt, json_mode=True, search=False, max_retry=None):
     """Gemini REST 호출. json_mode면 JSON 객체를 파싱해 돌려준다."""
     if max_retry is None:
-        max_retry = 2 if search else 4
+        max_retry = 1 if search else 4
     if not GEMINI_KEY:
         raise RuntimeError("GEMINI_API_KEY 없음")
     if search and getattr(gemini, "search_ok", True) is False:
@@ -90,7 +90,7 @@ def gemini(prompt, json_mode=True, search=False, max_retry=None):
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
             _pace()
             try:
-                with urllib.request.urlopen(req, timeout=90) as r:
+                with urllib.request.urlopen(req, timeout=(60 if search else 90)) as r:
                     res = json.load(r)
                 text = "".join(p.get("text", "") for p in res["candidates"][0]["content"]["parts"])
                 return text if not json_mode else parse_json(text)
@@ -286,7 +286,8 @@ def gen_outing(d):
         except Exception as e:
             print(f"[outing] {region} 실패: {e}", file=sys.stderr)
             return region, []
-    for region, items in map(one, REGIONS):
+    regions = getattr(gen_outing, "regions", None) or REGIONS
+    for region, items in map(one, regions):
             if items:
                 out[region] = items
     assert out, "나들이 전부 실패"
@@ -311,6 +312,8 @@ def main():
     force = "--force" in sys.argv
     only = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--only=")), None)
     if only: force = True
+    rg = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--regions=")), None)
+    if rg: gen_outing.regions = [r for r in rg if r]
     d = today()
     for a in sys.argv:
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", a):
@@ -331,7 +334,10 @@ def main():
             continue
         try:
             out[name] = fn(d)
-            ref.set({name: out[name]}, merge=True)
+            if name == "outing":
+                ref.set({"outing": out[name]}, merge=True)  # 지역별 필드 병합 (다른 묶음 결과 보존)
+            else:
+                ref.set({name: out[name]}, merge=True)
             print(f"[ok] {name}")
         except Exception as e:
             errors.append(f"{name}: {e}")

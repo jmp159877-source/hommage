@@ -12,7 +12,7 @@ on:
         description: '만들 날짜 (YYYY-MM-DD, 비우면 오늘)'
         required: false
       only:
-        description: '이 코너만 다시 (예: follow,phrase,outing)'
+        description: '이 코너만 다시 (예: follow,phrase)'
         required: false
       force:
         description: '이미 있어도 다시 만들기 (yes)'
@@ -22,27 +22,28 @@ permissions:
 jobs:
   make:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install -q google-cloud-firestore
-      - name: 콘텐츠 만들기
+      - name: 콘텐츠 만들기 (나들이 제외)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           ARGS="${{ github.event.inputs.date }}"
           if [ "${{ github.event.inputs.force }}" = "yes" ]; then ARGS="$ARGS --force"; fi
-          if [ -n "${{ github.event.inputs.only }}" ]; then ARGS="$ARGS --only=${{ github.event.inputs.only }}"; fi
+          ONLY="${{ github.event.inputs.only }}"; if [ -z "$ONLY" ]; then ONLY="greetings,fortune,era,meal,quiz,story,follow,phrase"; fi
           set +e
-          python -u tools/gen_daily.py $ARGS 2>&1 | tee /tmp/daily.log; rc=${PIPESTATUS[0]}
-          mkdir -p daily; sed -E 's/key=[A-Za-z0-9_\-]+/key=[키]/g' /tmp/daily.log | tail -200 > daily/last-run.log
+          timeout 45m python -u tools/gen_daily.py $ARGS --only=$ONLY 2>&1 | tee /tmp/daily.log; rc=${PIPESTATUS[0]}
+          mkdir -p daily; sed -E 's/key=[A-Za-z0-9_\-]+/key=[키]/g' /tmp/daily.log | tail -300 > daily/last-run.log
           exit $rc
       - name: 만든 내용을 저장소에 기록
+        if: always()
         run: |
-          git config user.name "omaju-bot"
-          git config user.email "bot@omaju.kr"
+          git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
+          git pull -q --rebase origin main || true
           git add daily/ || true
           git diff --cached --quiet || (git commit -m "오늘의 콘텐츠 기록 [skip ci]" && git push)
