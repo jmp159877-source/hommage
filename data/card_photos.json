@@ -1,548 +1,4 @@
 {
- "spring": [
-  {
-   "f": "img/cards/spring/01.jpg",
-   "id": 1316128,
-   "by": "JillWellington",
-   "tags": "daffodils, spring, flower background, pot, window, potted plants, potted flowers, floral arrangement, flower wallpaper, nature, flower arrangement, fresh flowers, yellow flowers, plants, beautiful flowers, window sill, season, blossom, flowers, decoration",
-   "q": "spring blossom sunlight",
-   "bright": 191,
-   "sat": 65
-  },
-  {
-   "f": "img/cards/spring/02.jpg",
-   "id": 1838553,
-   "by": "Pexels",
-   "tags": "vase, flower background, beautiful flowers, flowers, window, floral arrangement, flower arrangement, flower wallpaper, blossom, bloom, nature, bouquet, decoration, flora",
-   "q": "spring blossom sunlight",
-   "bright": 146,
-   "sat": 78
-  },
-  {
-   "f": "img/cards/spring/03.jpg",
-   "id": 10241202,
-   "by": "Couleur",
-   "tags": "yellow tulips, flowers, nature, spring, garden, beautiful wallpaper, macro, beautiful flowers, glowing lights, freshness, outdoor, flower wallpaper, flower background, beauty, greenery, tulip, silhouette, bokeh lights, background, summer day, light and shadow, summer bloom, bright color",
-   "q": "spring blossom sunlight",
-   "bright": 141,
-   "sat": 148
-  },
-  {
-   "f": "img/cards/spring/04.jpg",
-   "id": 10399872,
-   "by": "Lancier",
-   "tags": "tulip, flower, spring, flower background, garden, colorful, flower wallpaper, floral background, petals, floriculture, botany, nature, green, bloom, horticulture, beautiful wallpaper, meditative, zen, calm, nature photography, background, beauty, beautiful flowers, details, lighting",
-   "q": "spring blossom sunlight",
-   "bright": 117,
-   "sat": 116
-  },
-  {
-   "f": "img/cards/spring/05.jpg",
-   "id": 10355884,
-   "by": "Alexas_Fotos",
-   "tags": "bee, flower, macro, detail, beautiful flowers, flower wallpaper, nature, pollination, white, yellow, petal, plants, insect, honey, center, pest, flower background, pollinator bee, outdoors, summer",
-   "q": "spring blossom sunlight",
-   "bright": 164,
-   "sat": 77
-  },
-  {
-   "f": "img/cards/spring/06.jpg",
-   "id": 10426413,
-   "by": "u_5b87kk6539",
-   "tags": "tulip, blooming, field, spring, blue, landscape, nature, garden, outdoor, seasonal, beauty, fresh, bright, soft light, romantic, pure, sharpness, sunlight, blur, pastel, luxurious",
-   "q": "spring blossom sunlight",
-   "bright": 171,
-   "sat": 59
-  },
-  {
-   "f": "img/cards/spring/07.jpg",
-   "id": 10240502,
-   "by": "wal_172619",
-   "tags": "flower, yellow color, bokeh, dew, spring flowers, nature, dew drop, blur, garden, macro, beauty, freshness, shortly after rain, isolation, flower wallpaper, simplicity, minimalism, flower background, beautiful flowers, morning, outdoor, zen",
-   "q": "spring blossom sunlight",
-   "bright": 117,
-   "sat": 107
-  },
-  {
-   "f": "img/cards/spring/08.jpg",
-   "id": 10022840,
-   "by": "Esten-Erbol",
-   "tags": "flower, nature, outdoors, plant, beautiful flowers, flower wallpaper, purple, freshness, growth, flower background, fragility, spring, lupins, field, horizon, sunset, blur, romantic, sun, gentle, view, beauty",
-   "q": "spring blossom sunlight",
-   "bright": 119,
-   "sat": 138
-  },
-  {
-   "f": "img/cards/spring/09.jpg",
-   "id": 271352,
-   "by": "steinchen",
-   "tags": "tulip, nature, yellow, spring, blossoms",
-   "q": "spring blossom sunlight",
-   "bright": 116,
-   "sat": 207
-  },
-  {
-   "f": "img/cards/spring/10.jpg",
-   "id": 315230,
-   "by": "PublicDomainPictures",
-   "tags": "spring, beautiful wallpaper, background, flower, nature, field, floral background, meadow, easter, flower background, green, flower wallpaper, green background, green spring, beautiful flowers, green flower, green field, iphone wallpaper",
-   "q": "spring blossom sunlight",
-   "bright": 178,
-   "sat": 101
-  },
-  {
-   "f": "img/cards/spring/11.jpg",
-   "id": 4066246,
-   "by": "Pezibear",
-   "tags": "spring, flowers, nature, tulips, flower background, phone wallpaper, flower wallpaper, beautiful flowers, iphone wallpaper",
-   "q": "spring blossom sunlight",
-   "bright": 185,
-   "sat": 67
-  },
-  {
-   "f": "img/cards/spring/12.jpg",
-   "id": 10139513,
-   "by": "erwinbosman",
-   "tags": "wood pigeons, flower background, pigeons, birds, couple, love, beautiful flowers, flower wallpaper, affection, cuddle, hug, spring, cherry blossom, flowers, blossom, branch, garden, nature, outdoor, sunlight, peaceful, romantic, wild animals, ai generated",
-   "q": "spring blossom sunlight",
-   "bright": 119,
-   "sat": 111
-  },
-  {
-   "f": "img/cards/spring/13.jpg",
-   "id": 5928741,
-   "by": "BiancaVanDijk",
-   "tags": "basket, flowers, background, nature, beauty, bloom, blossom, flower wallpaper, plants, beautiful flowers, lilacs, flower garden, flower background, beautiful wallpaper, baby photography, floral background, iphone wallpaper",
-   "q": "spring blossom sunlight",
-   "bright": 148,
-   "sat": 61
-  },
-  {
-   "f": "img/cards/spring/14.jpg",
-   "id": 1435545,
-   "by": "JillWellington",
-   "tags": "lovely woman, twirling, dancing, woman, happy, female, joy, carefree, cheerful, spinning",
-   "q": "spring blossom sunlight",
-   "bright": 174,
-   "sat": 93
-  },
-  {
-   "f": "img/cards/spring/15.jpg",
-   "id": 768615,
-   "by": "1027738",
-   "tags": "spring, nature, beautiful flowers, flowers, trees, white, the park, flower background, flower, young woman, flower wallpaper, wreath",
-   "q": "spring blossom sunlight",
-   "bright": 162,
-   "sat": 124
-  },
-  {
-   "f": "img/cards/spring/16.jpg",
-   "id": 10379528,
-   "by": "beleaguered",
-   "tags": "yellow, tulip, bright, flower background, natural, nature, blurred background, macro photography, spring, flower, garden, greenery, outdoor, row, contrast, blooming, flower wallpaper, fresh, beautiful flowers, insect pollination, beauty, striped, blooming season, foreground focus",
-   "q": "spring blossom sunlight",
-   "bright": 126,
-   "sat": 140
-  },
-  {
-   "f": "img/cards/spring/17.jpg",
-   "id": 10118338,
-   "by": "Juliezi3",
-   "tags": "spring, flowers, ai, ai made, flower wallpaper, nature, plants, beautiful, spring vibes, picture, flower background, image, pretty, grass, green, wow, viral, beautiful flowers, stunning, best, ai generated",
-   "q": "spring blossom sunlight",
-   "bright": 149,
-   "sat": 116
-  },
-  {
-   "f": "img/cards/spring/18.jpg",
-   "id": 6180061,
-   "by": "dep377",
-   "tags": "cherry blossom, flowers, branch, pink flowers, bloom, flower wallpaper, blossom, spring, tree, beautiful flowers, flower background, nature, closeup",
-   "q": "spring blossom sunlight",
-   "bright": 129,
-   "sat": 60
-  },
-  {
-   "f": "img/cards/spring/19.jpg",
-   "id": 2131136,
-   "by": "Oldiefan",
-   "tags": "flower, daffodil, nature, narcissus, beautiful flowers, flower background, flower wallpaper, yellow orange, spring",
-   "q": "spring blossom sunlight",
-   "bright": 129,
-   "sat": 148
-  },
-  {
-   "f": "img/cards/spring/20.jpg",
-   "id": 342044,
-   "by": "peasonearth",
-   "tags": "window, spring, heart, blossom, bloom, sunshine, nature, view",
-   "q": "spring blossom sunlight",
-   "bright": 126,
-   "sat": 59
-  },
-  {
-   "f": "img/cards/spring/21.jpg",
-   "id": 100572,
-   "by": "realworkhard",
-   "tags": "poppy, flower wallpaper, poppy flower, blossom, bloom, flower, flower background, red, heaven, blue, clouds, backlighting, sun, light on, nature, beautiful flowers, sunbeams",
-   "q": "spring blossom sunlight",
-   "bright": 141,
-   "sat": 82
-  },
-  {
-   "f": "img/cards/spring/22.jpg",
-   "id": 9589317,
-   "by": "TTIllustrations",
-   "tags": "chair, garden, spring, beautiful flowers, blossom, cherry, leaves, interior, architecture, exterior, man, gardener, gardening, nature, tree, willow, window, sun, grass, lilac, purple, pink, flower background, flower wallpaper, flowers, petals",
-   "q": "spring blossom sunlight",
-   "bright": 167,
-   "sat": 103
-  },
-  {
-   "f": "img/cards/spring/23.jpg",
-   "id": 10072994,
-   "by": "Drosera74",
-   "tags": "flower, nature, flower wallpaper, bloom, blossom, plant, beautiful flowers, spring, flower background, flora, petals, crocus",
-   "q": "spring blossom sunlight",
-   "bright": 142,
-   "sat": 94
-  },
-  {
-   "f": "img/cards/spring/24.jpg",
-   "id": 2000617,
-   "by": "Erbs55",
-   "tags": "houseplants, flowers, flower, flower wallpaper, beautiful flowers, plant, flower background, potted plants, purple, mother and baby plant, nature, purple flowers, flowerpots, table decoration",
-   "q": "spring blossom sunlight",
-   "bright": 121,
-   "sat": 140
-  },
-  {
-   "f": "img/cards/spring/25.jpg",
-   "id": 105701,
-   "by": "PixelAnarchy",
-   "tags": "japanese, cherry blossom, spring flowers, nature, beautiful flowers, japanese cherry, flower, spring, flower wallpaper, flower background, pink",
-   "q": "spring blossom sunlight",
-   "bright": 120,
-   "sat": 58
-  },
-  {
-   "f": "img/cards/spring/26.jpg",
-   "id": 6247856,
-   "by": "DeltaWorks",
-   "tags": "cherry blossoms, flowers, spring, pink flowers, flower wallpaper, sakura, bloom, blossom, branch, tree, flower background, sunset, beautiful flowers, nature, closeup, Japan, Kumamoto",
-   "q": "spring blossom sunlight",
-   "bright": 134,
-   "sat": 81
-  },
-  {
-   "f": "img/cards/spring/27.jpg",
-   "id": 2336518,
-   "by": "Pezibear",
-   "tags": "primrose, auricle, alpine auricles, primula auricula, primula, alpine flower, alpine plant, blossoms, meadow, nature, spring, wildflower, plant, flora",
-   "q": "spring blossom sunlight",
-   "bright": 122,
-   "sat": 118
-  },
-  {
-   "f": "img/cards/spring/28.jpg",
-   "id": 5552968,
-   "by": "lucasgeorgewendt",
-   "tags": "flower, plant, bloom, blossom, flora, floriculture, botany, flower wallpaper, horticulture, flower background, spring, nature, beautiful flowers, garden, sunlight, close up, bokeh",
-   "q": "spring blossom sunlight",
-   "bright": 147,
-   "sat": 127
-  },
-  {
-   "f": "img/cards/spring/29.jpg",
-   "id": 439662,
-   "by": "ValeriaRodrigues",
-   "tags": "tree, yellow, nature, spring, farm, beautiful, ipê, landscape",
-   "q": "spring blossom sunlight",
-   "bright": 162,
-   "sat": 105
-  },
-  {
-   "f": "img/cards/spring/30.jpg",
-   "id": 9581563,
-   "by": "Oliverstar",
-   "tags": "tulip, bloom, flower wallpaper, garden, flower background, spring, flower, pink, beautiful flowers, blossom, nature",
-   "q": "spring blossom sunlight",
-   "bright": 176,
-   "sat": 121
-  }
- ],
- "summer": [
-  {
-   "f": "img/cards/summer/01.jpg",
-   "id": 6208614,
-   "by": "fleglsebastian7",
-   "tags": "lake, sunrise, sunset, bavaria, germany, water, water sports, alps, mountains, nature, reflection, sun, summer, spring, sunlight, outdoors, dusk, dawn, morning, evening, travel, landscape",
-   "q": "summer morning sunlight nature",
-   "bright": 189,
-   "sat": 126
-  },
-  {
-   "f": "img/cards/summer/02.jpg",
-   "id": 2780693,
-   "by": "Felix-Mittermeier",
-   "tags": "forest, path, hike, nature, trees, forest path, trail, landscape, green, fall, quiet, naturally, autumn forest, nature trail, idyllic, to stroll, promenade, silence, summer, idyll, mood, beautiful, peaceful, relaxation, walk, relax, recreation, leisure time, atmospheric, go for a walk, romantic, peaceful mood, scenic",
-   "q": "summer morning sunlight nature",
-   "bright": 121,
-   "sat": 169
-  },
-  {
-   "f": "img/cards/summer/03.jpg",
-   "id": 1772091,
-   "by": "EDUIN",
-   "tags": "natural, nature, landscape, sunrise, mountain, branches, fog, backlighting, green, tree, sheets, tomorrow",
-   "q": "summer morning sunlight nature",
-   "bright": 160,
-   "sat": 97
-  },
-  {
-   "f": "img/cards/summer/04.jpg",
-   "id": 4573827,
-   "by": "TheOtherKev",
-   "tags": "sunrise, misty, bush, orange, rural, morning, landscape, fog, nature, outdoor, light, foggy, ethereal, mist, sunlight, sunset, foliage, sunbeam, summer, early",
-   "q": "summer morning sunlight nature",
-   "bright": 138,
-   "sat": 140
-  },
-  {
-   "f": "img/cards/summer/05.jpg",
-   "id": 2767569,
-   "by": "bones64",
-   "tags": "sunrise, field, sky, clouds, nature, summer, landscape, sun, sunlight, rural, blue sky, blue, sunny, light, farm, outdoor, agriculture, countryside, sunshine, bright, morning, natural, shadow, mist, mountain",
-   "q": "summer morning sunlight nature",
-   "bright": 122,
-   "sat": 106
-  },
-  {
-   "f": "img/cards/summer/06.jpg",
-   "id": 5021623,
-   "by": "8281337",
-   "tags": "sunset, raindrop, rain, sad, depressed, depression, landscape, summer, sunlight, heaven, beautiful wallpaper, wet, nature, drops, sunrise, morning mood, macro, tomorrow, trees, fall, winter, spring, mood, outlook, background, iphone wallpaper",
-   "q": "summer morning sunlight nature",
-   "bright": 126,
-   "sat": 59
-  },
-  {
-   "f": "img/cards/summer/07.jpg",
-   "id": 2728701,
-   "by": "bones64",
-   "tags": "mountain view, lake, trees, sky, clouds, park, landscape, nature, valley, outdoor, summer, blue, scenic, blue sky, green, sunshine, color, sunlight, bright, morning, natural, sunny, season, forest, environment, blue sunshine",
-   "q": "summer morning sunlight nature",
-   "bright": 122,
-   "sat": 98
-  },
-  {
-   "f": "img/cards/summer/08.jpg",
-   "id": 4447345,
-   "by": "capture_gr",
-   "tags": "sun, sunrise, morning, castle, tree, landscape, sunset, nature, dawn, sky, travel, summer, water, sea, lake, evening, beach, ocean, orange, scenic, mood, haze, boat, sunlight, calm",
-   "q": "summer morning sunlight nature",
-   "bright": 127,
-   "sat": 77
-  },
-  {
-   "f": "img/cards/summer/09.jpg",
-   "id": 2866528,
-   "by": "stafichukanatoly",
-   "tags": "birch, summer, white, forest, green, grove, tree, foliage, landscape, nature, sunlight, beauty, color, background, beautiful, factory, leaves, season, day, grass, the park, wednesday, freshness, scene, branch, stem, lush, trunk, bark, beautiful wallpaper, in the morning, sunny, natural, light, colorful, open, iphone wallpaper",
-   "q": "summer morning sunlight nature",
-   "bright": 118,
-   "sat": 130
-  },
-  {
-   "f": "img/cards/summer/10.jpg",
-   "id": 2698277,
-   "by": "violetta",
-   "tags": "shrub, white, flower, green, blossom, bloom, nature, plant, gardens, white green, flourished, landscape, garden, flower wallpaper, park, summer, flower background, beautiful flowers, beautiful, flora, flowery, sunlight, close up",
-   "q": "summer morning sunlight nature",
-   "bright": 128,
-   "sat": 72
-  },
-  {
-   "f": "img/cards/summer/11.jpg",
-   "id": 3280901,
-   "by": "KennethSchulze",
-   "tags": "nature, outside, sky, no person, dawn, summer, the sun, plant, sunny, sunny day, plants, morning card, grow, sunlight, grain, go, dew, daggdroppe, drop, water drop, beer, beautifully, countryside, malt, rays",
-   "q": "summer morning sunlight nature",
-   "bright": 125,
-   "sat": 70
-  },
-  {
-   "f": "img/cards/summer/12.jpg",
-   "id": 5217318,
-   "by": "mvignesh410",
-   "tags": "background, beautiful, blue, blurred, cloud, focus, fog, forest, isolated, landscape, morning, mountain, blue sky, nature, floral background, outdoor, plant, beautiful wallpaper, plants isolated, sky background, scenery, sky, summer, sun, sunlight, sunset, travel, view, blue plants, blue focus, blue morning, iphone wallpaper",
-   "q": "summer morning sunlight nature",
-   "bright": 146,
-   "sat": 71
-  },
-  {
-   "f": "img/cards/summer/13.jpg",
-   "id": 2212448,
-   "by": "Kanenori",
-   "tags": "woods, morning mist, light, beech forest, shirakami-sanchi, world heritage region, japan, june",
-   "q": "summer morning sunlight nature",
-   "bright": 133,
-   "sat": 79
-  },
-  {
-   "f": "img/cards/summer/14.jpg",
-   "id": 10340608,
-   "by": "TobEicher",
-   "tags": "forest, trees, sunlight, sunburst, nature, woodland, hillside, morning, sunrise, rays, backlight, shadows, golden hour, peaceful, grass, green, trunks, branches",
-   "q": "summer morning sunlight nature",
-   "bright": 122,
-   "sat": 95
-  },
-  {
-   "f": "img/cards/summer/15.jpg",
-   "id": 9947733,
-   "by": "datdotien0703",
-   "tags": "landscape, nature, field, tree, cloudscape",
-   "q": "summer morning sunlight nature",
-   "bright": 116,
-   "sat": 116
-  },
-  {
-   "f": "img/cards/summer/16.jpg",
-   "id": 970704,
-   "by": "DeltaWorks",
-   "tags": "mountain, summit, clouds, sea of clouds, mountain road, peak, scenery, nature, caldera, asahi, somma, aso, kumamoto, japan, mountain, mountain, mountain, mountain, mountain, mountain road, scenery, nature, japan, japan, japan, Japan, Kumamoto, Aso",
-   "q": "summer morning sunlight nature",
-   "bright": 123,
-   "sat": 95
-  },
-  {
-   "f": "img/cards/summer/17.jpg",
-   "id": 5649827,
-   "by": "zapCulture",
-   "tags": "mountain, sunrise, sun, clouds, nature, alpine, weather, freedom, hiking, people, Germany, Bavaria, Obermaiselstein",
-   "q": "summer morning sunlight nature",
-   "bright": 179,
-   "sat": 76
-  },
-  {
-   "f": "img/cards/summer/18.jpg",
-   "id": 10500437,
-   "by": "StudioFriluma",
-   "tags": "red deer, spike deer, young deer, deer, wild animal, wildlife photography, nature photography, animal portrait, velvet antlers, antlers, darßer ort, meadow, backlight, golden light, nature, autumn, national park, mecklenburg-vorpommern, morning light, fischland-darß-zingst, Prerow, Germany, Mecklenburg-Vorpommern",
-   "q": "summer morning sunlight nature",
-   "bright": 138,
-   "sat": 94
-  },
-  {
-   "f": "img/cards/summer/19.jpg",
-   "id": 1867636,
-   "by": "Pexels",
-   "tags": "water, ipad wallpaper, pool, phone wallpaper, mobile wallpaper 4k, turquoise, background, clean, clear, swimming pool, water surface, texture, mobile wallpaper, underwater, wallpaper, beautiful wallpaper, wet, lock screen wallpaper, nature, samsung wallpaper, iphone wallpaper",
-   "q": "summer morning sunlight nature",
-   "bright": 163,
-   "sat": 196
-  },
-  {
-   "f": "img/cards/summer/20.jpg",
-   "id": 5996781,
-   "by": "bubbiomarco",
-   "tags": "wheat, crop, field, barley, cereal grains, farm, plants, agriculture, countryside, rural, summer, nature, closeup",
-   "q": "summer morning sunlight nature",
-   "bright": 186,
-   "sat": 69
-  },
-  {
-   "f": "img/cards/summer/21.jpg",
-   "id": 9609512,
-   "by": "Daniil_Kondrashin",
-   "tags": "girl, model, lady, fashion, modeling, posing, smile, hair, face, dusk, sunset, nature, portrait",
-   "q": "summer morning sunlight nature",
-   "bright": 176,
-   "sat": 62
-  },
-  {
-   "f": "img/cards/summer/22.jpg",
-   "id": 7353447,
-   "by": "andriish22",
-   "tags": "peaches, fruits, plant, food, vitamins, fresh, healthy, leaves, nature, peaches, peaches, food, food, food, food, food",
-   "q": "summer morning sunlight nature",
-   "bright": 127,
-   "sat": 127
-  },
-  {
-   "f": "img/cards/summer/23.jpg",
-   "id": 8555108,
-   "by": "HeiKiwi",
-   "tags": "sunlight, grass, flowers, summer, meadow, grasses, halm, plant, flower wallpaper, nature, beautiful flowers, landscape, bokeh, shine, flower background, light",
-   "q": "summer morning sunlight nature",
-   "bright": 177,
-   "sat": 64
-  },
-  {
-   "f": "img/cards/summer/24.jpg",
-   "id": 1411992,
-   "by": "kie-ker",
-   "tags": "bellflowers, backlighting, flowers, purple flowers, purple petals, petals, blossom, bloom, flora, floriculture, horticulture, botany, flower background, beautiful flowers, nature, flower wallpaper, plants, campanula, close up",
-   "q": "summer morning sunlight nature",
-   "bright": 122,
-   "sat": 127
-  },
-  {
-   "f": "img/cards/summer/25.jpg",
-   "id": 6174060,
-   "by": "21087530",
-   "tags": "girl, kid, field, grass, play, playful, childhood, cute, adorable, happiness, meadow, beautiful, model, beauty, nature, kid, kid, model, model, model, model, model",
-   "q": "summer morning sunlight nature",
-   "bright": 143,
-   "sat": 60
-  },
-  {
-   "f": "img/cards/summer/26.jpg",
-   "id": 5016043,
-   "by": "Timmyspics",
-   "tags": "coffee, man, outdoor, morning, breakfast, espresso, caffeine, drink, cappuccino, hot, coffee cup, cafe, out, steam, coffee, coffee, coffee, coffee, cafe, cafe, cafe, cafe, cafe",
-   "q": "summer morning sunlight nature",
-   "bright": 138,
-   "sat": 61
-  },
-  {
-   "f": "img/cards/summer/27.jpg",
-   "id": 9248762,
-   "by": "Mollyroselee",
-   "tags": "cloudscape, stratus, cumulus, cirrostratus, altostratus, morning sky, nature, sunrise, sunlight",
-   "q": "summer morning sunlight nature",
-   "bright": 159,
-   "sat": 89
-  },
-  {
-   "f": "img/cards/summer/28.jpg",
-   "id": 4311828,
-   "by": "Chuotanhls",
-   "tags": "woman, forest, smiling, portrait, sunny, girl, happy, nature, female",
-   "q": "summer morning sunlight nature",
-   "bright": 123,
-   "sat": 61
-  },
-  {
-   "f": "img/cards/summer/29.jpg",
-   "id": 9248778,
-   "by": "Mollyroselee",
-   "tags": "cloudscape, stratus, nature, cumulus, cirrostratus, altostratus, morning sky, sunrise, sunlight",
-   "q": "summer morning sunlight nature",
-   "bright": 164,
-   "sat": 69
-  },
-  {
-   "f": "img/cards/summer/30.jpg",
-   "id": 7350734,
-   "by": "lmfotografia",
-   "tags": "sun, nature, woman, curls, smiling, portrait",
-   "q": "summer morning sunlight nature",
-   "bright": 179,
-   "sat": 57
-  }
- ],
  "autumn": [
   {
    "f": "img/cards/autumn/01.jpg",
@@ -555,15 +11,6 @@
   },
   {
    "f": "img/cards/autumn/02.jpg",
-   "id": 10512838,
-   "by": "YaoMuyu",
-   "tags": "tianjin, mother and son, parent and child, straw hat, autumn foliage, backlight, golden light, outdoor, family love, happy moment, bokeh effect, bouquet and flowers, smile, motherhood, children, parenting, den, festive, november weather, covered plants",
-   "q": "autumn golden sunlight",
-   "bright": 123,
-   "sat": 113
-  },
-  {
-   "f": "img/cards/autumn/03.jpg",
    "id": 411491,
    "by": "371865",
    "tags": "forest, light, nature, fall, trees, leaves, coloured, sunbeams",
@@ -572,7 +19,7 @@
    "sat": 110
   },
   {
-   "f": "img/cards/autumn/04.jpg",
+   "f": "img/cards/autumn/03.jpg",
    "id": 3737568,
    "by": "Lolame",
    "tags": "walk, sunbeams, nature, forest, mood, sun, trees, fall, path, hike, the atmosphere, fog, sunlight, haze, glade, october, golden autumn, golden october, autumn mood, stroller, go for a walk, morning hour",
@@ -581,16 +28,7 @@
    "sat": 167
   },
   {
-   "f": "img/cards/autumn/05.jpg",
-   "id": 10151019,
-   "by": "bluext2",
-   "tags": "woman, portrait, fashion",
-   "q": "autumn golden sunlight",
-   "bright": 125,
-   "sat": 128
-  },
-  {
-   "f": "img/cards/autumn/06.jpg",
+   "f": "img/cards/autumn/04.jpg",
    "id": 7557866,
    "by": "matthiasboeckel",
    "tags": "fall, leaves, vine leaves, nature, autumn, autumn mood, autumn leaves, leaves, leaves, leaves, leaves, leaves",
@@ -599,7 +37,7 @@
    "sat": 153
   },
   {
-   "f": "img/cards/autumn/07.jpg",
+   "f": "img/cards/autumn/05.jpg",
    "id": 76849,
    "by": "19306",
    "tags": "leaves, multicoloured, fall, forest, nature, colorful, red, yellow, golden, autumn forest, tree, maple, maple leaves, leaves, leaves, leaves, fall, forest, forest, forest, forest, forest, nature, nature, nature, red, yellow, autumn forest, autumn forest, autumn forest, tree, maple, maple, maple, maple, maple",
@@ -608,25 +46,7 @@
    "sat": 192
   },
   {
-   "f": "img/cards/autumn/08.jpg",
-   "id": 385093,
-   "by": "Colliefreund",
-   "tags": "collie, dog, domestic animal, animal, animal portrait, fur, pet, view, wildlife, dear, grass, forest, glade, leaves, to sit, attentive, nature, proper, wait, light, seem, fog, grim",
-   "q": "autumn golden sunlight",
-   "bright": 115,
-   "sat": 82
-  },
-  {
-   "f": "img/cards/autumn/09.jpg",
-   "id": 10198545,
-   "by": "erwinbosman",
-   "tags": "senior, woman, older, park, autumn, leaves, feed, pigeons, birds, happy, smiling, nature, bokeh, golden, sunlight, peaceful, quiet, bank, outdoor, connection, ai generated",
-   "q": "autumn golden sunlight",
-   "bright": 120,
-   "sat": 128
-  },
-  {
-   "f": "img/cards/autumn/10.jpg",
+   "f": "img/cards/autumn/06.jpg",
    "id": 605847,
    "by": "Sponchia",
    "tags": "fall, autumn leaf, candle, lantern, wick, mood, autumn color, autumn leaves, leaves, plant, nature, coloring, autumn colors, yellow, golden, bright, golden autumn, october, lighting mood",
@@ -635,7 +55,7 @@
    "sat": 163
   },
   {
-   "f": "img/cards/autumn/11.jpg",
+   "f": "img/cards/autumn/07.jpg",
    "id": 1044923,
    "by": "AllanW",
    "tags": "chester, park, autumn, nature, high dynamic range, historic, sunset, travel, tourism, landscape, light, tree, sky, benches, seating, path, evening, scenic, cloud, season, brown path",
@@ -644,16 +64,7 @@
    "sat": 105
   },
   {
-   "f": "img/cards/autumn/12.jpg",
-   "id": 830708,
-   "by": "rmt",
-   "tags": "boy, kid, childhood, cute, toddler, portrait, lifestyle, fall, autumn, outdoor, outside, natural, attractive, teddy bear, bear",
-   "q": "autumn golden sunlight",
-   "bright": 135,
-   "sat": 65
-  },
-  {
-   "f": "img/cards/autumn/13.jpg",
+   "f": "img/cards/autumn/08.jpg",
    "id": 2806196,
    "by": "Felix-Mittermeier",
    "tags": "fall, coloured, orange, golden autumn, leaves, multicoloured, colorful, autumn leaves, bright, red, autumn run, nature, sunlight, canopy, mood, to dye, coloring, golden october, october, colorful leaves, yellowish red, beautiful, tree",
@@ -662,7 +73,7 @@
    "sat": 208
   },
   {
-   "f": "img/cards/autumn/14.jpg",
+   "f": "img/cards/autumn/09.jpg",
    "id": 2651230,
    "by": "ReneVenema",
    "tags": "red rock, rock, skirt, landscape, nature, fall, landscapes, sunset, bad kreuznach, lighting mood, top, bad münster, germany",
@@ -671,7 +82,7 @@
    "sat": 118
   },
   {
-   "f": "img/cards/autumn/15.jpg",
+   "f": "img/cards/autumn/10.jpg",
    "id": 1836635,
    "by": "Pexels",
    "tags": "bright, forest, nature, sun glare, trees, bright, forest, forest, forest, forest, forest, nature, nature, nature, nature",
@@ -680,7 +91,7 @@
    "sat": 97
   },
   {
-   "f": "img/cards/autumn/16.jpg",
+   "f": "img/cards/autumn/11.jpg",
    "id": 2956988,
    "by": "Engin_Akyurt",
    "tags": "yellow, autumn, leaf, tree, branches, high, live, nature, dry leaf, view, forest, herb, spring, winter, leaves, colour, daytime, composition, day light, environment, morning, background, perspective, beautiful wallpaper, beautiful, photography, tissue, iphone wallpaper",
@@ -689,7 +100,7 @@
    "sat": 190
   },
   {
-   "f": "img/cards/autumn/17.jpg",
+   "f": "img/cards/autumn/12.jpg",
    "id": 200011,
    "by": "AnnaER",
    "tags": "fall, path, avenue, bomberg, nature, leaves, walk, trees, bad pyrmont",
@@ -698,7 +109,7 @@
    "sat": 106
   },
   {
-   "f": "img/cards/autumn/18.jpg",
+   "f": "img/cards/autumn/13.jpg",
    "id": 1001196,
    "by": "JillWellington",
    "tags": "autumn, fall, yellow, season, leaf, leaves, forest, golden, colorful, nature, tree",
@@ -707,7 +118,7 @@
    "sat": 138
   },
   {
-   "f": "img/cards/autumn/19.jpg",
+   "f": "img/cards/autumn/14.jpg",
    "id": 197536,
    "by": "70154",
    "tags": "tree, autumn, landscape, nature, seasons, fall, branch, foliage, environment, floral, oak, maple, scenic, ecology, countryside, trunk, scenery, vibrant, lush, golden, deciduous, outdoors, beech, leaves, twig, vegetation, growth",
@@ -716,7 +127,7 @@
    "sat": 119
   },
   {
-   "f": "img/cards/autumn/20.jpg",
+   "f": "img/cards/autumn/15.jpg",
    "id": 2759158,
    "by": "monika1607",
    "tags": "oak, oak leaves, tree, deciduous tree, fall, colored leaves, yellow, golden, foliage coloring, nature",
@@ -725,7 +136,7 @@
    "sat": 129
   },
   {
-   "f": "img/cards/autumn/21.jpg",
+   "f": "img/cards/autumn/16.jpg",
    "id": 231687,
    "by": "Hans",
    "tags": "autumn leaves, golden, shine, shining, yellow, yellow-green, autumn colors, gold, tree, nature, chestnut, chestnut tree, backlighting, fall, beautiful, multicoloured, autumn color, buckeye, aesculus, common horse chestnut, aesculus hippocastanum, white horse chestnut, chestnut style, autumn day, autumnal, sunshine, sun, sunlight, illuminated",
@@ -734,7 +145,7 @@
    "sat": 235
   },
   {
-   "f": "img/cards/autumn/22.jpg",
+   "f": "img/cards/autumn/17.jpg",
    "id": 1832420,
    "by": "makamuki0",
    "tags": "poplar, yellow sheets, leaf fall, autumn, populus alba, poplar, poplar, poplar, poplar, poplar, leaf fall, leaf fall, leaf fall, leaf fall, leaf fall",
@@ -743,7 +154,7 @@
    "sat": 152
   },
   {
-   "f": "img/cards/autumn/23.jpg",
+   "f": "img/cards/autumn/18.jpg",
    "id": 10712,
    "by": "Hans",
    "tags": "willow leaves, leaves, silver willow, salix alba, pasture, sali, golden autumn, golden october, fall, october, forest, golden, bright, sun, backlighting, multicoloured, coloured, colorful, tree, branch, autumn forest, nature, autumn leaves",
@@ -752,7 +163,7 @@
    "sat": 173
   },
   {
-   "f": "img/cards/autumn/24.jpg",
+   "f": "img/cards/autumn/19.jpg",
    "id": 2986182,
    "by": "vv8888vv",
    "tags": "oak, autumn, yellow, oak leaf, nature, leaf, leaves, tree, forest, fall, yellowed leaf, autumn leaves, yellow leaves, branch",
@@ -761,7 +172,7 @@
    "sat": 163
   },
   {
-   "f": "img/cards/autumn/25.jpg",
+   "f": "img/cards/autumn/20.jpg",
    "id": 10756,
    "by": "Hans",
    "tags": "beech, european beech, fagus sylvatica, fagus, deciduous tree, golden autumn, golden october, fall, nature, october, forest, leaves, golden, bright, sun, backlighting, multicoloured, coloured, colorful, tree, branch, autumn forest, autumn leaves",
@@ -770,7 +181,7 @@
    "sat": 129
   },
   {
-   "f": "img/cards/autumn/26.jpg",
+   "f": "img/cards/autumn/21.jpg",
    "id": 2558332,
    "by": "Olesya88",
    "tags": "autumn, rowan, autumn leaves, nature, rowan clusters, rowan leaves, orange, golden autumn, crimson leaf, garden, sky",
@@ -779,40 +190,13 @@
    "sat": 134
   },
   {
-   "f": "img/cards/autumn/27.jpg",
-   "id": 3780148,
-   "by": "michaelstnr",
-   "tags": "pu the bear, stuffed animal, plush, bokeh",
-   "q": "autumn leaves warm light",
-   "bright": 117,
-   "sat": 114
-  },
-  {
-   "f": "img/cards/autumn/28.jpg",
-   "id": 10441688,
-   "by": "Irina_Amsterdam",
-   "tags": "christmas decoration, mother and child, winter, home, cozy, lifestyle, window, nature, autumn, star, family, love, contentment, lighting, comfort, scandinavian style, nordic countries, mother, son, happiness, moment",
-   "q": "autumn leaves warm light",
-   "bright": 141,
-   "sat": 106
-  },
-  {
-   "f": "img/cards/autumn/29.jpg",
+   "f": "img/cards/autumn/22.jpg",
    "id": 6199828,
    "by": "RyanK14",
    "tags": "frames, decoration, sunlight, sunset, light, wall, interior, nature, home",
    "q": "autumn leaves warm light",
    "bright": 163,
    "sat": 99
-  },
-  {
-   "f": "img/cards/autumn/30.jpg",
-   "id": 10187366,
-   "by": "knuckles_echidna",
-   "tags": "spring, rabbit, nature, lady, girl, portrait, model, pet, pose, female, charming",
-   "q": "autumn leaves warm light",
-   "bright": 120,
-   "sat": 105
   }
  ],
  "winter": [
@@ -899,24 +283,6 @@
   },
   {
    "f": "img/cards/winter/10.jpg",
-   "id": 8420945,
-   "by": "Purgin_Alexandr",
-   "tags": "bridge, winter, frost, fog, morning, yenisei, city, krasnoyarsk, nature, river, russia, ice, snow, duck, water, stream, cold",
-   "q": "winter morning sunlight snow",
-   "bright": 141,
-   "sat": 64
-  },
-  {
-   "f": "img/cards/winter/11.jpg",
-   "id": 8481557,
-   "by": "Jan_Meyes",
-   "tags": "winter, nature, snow, child, sunset, running",
-   "q": "winter morning sunlight snow",
-   "bright": 153,
-   "sat": 81
-  },
-  {
-   "f": "img/cards/winter/12.jpg",
    "id": 7677111,
    "by": "Leonhard_Niederwimmer",
    "tags": "winter forest, snow, winter, frost, nature, winter landscape, winter magic, wintry, trees, spruce trees, forest, sunrise, fir tree, woodland, snow, winter, winter, winter, winter, winter, nature, trees",
@@ -925,25 +291,7 @@
    "sat": 65
   },
   {
-   "f": "img/cards/winter/13.jpg",
-   "id": 10340608,
-   "by": "TobEicher",
-   "tags": "forest, trees, sunlight, sunburst, nature, woodland, hillside, morning, sunrise, rays, backlight, shadows, golden hour, peaceful, grass, green, trunks, branches",
-   "q": "winter morning sunlight snow",
-   "bright": 122,
-   "sat": 95
-  },
-  {
-   "f": "img/cards/winter/14.jpg",
-   "id": 9947733,
-   "by": "datdotien0703",
-   "tags": "landscape, nature, field, tree, cloudscape",
-   "q": "winter morning sunlight snow",
-   "bright": 116,
-   "sat": 116
-  },
-  {
-   "f": "img/cards/winter/15.jpg",
+   "f": "img/cards/winter/11.jpg",
    "id": 6977993,
    "by": "fietzfotos",
    "tags": "tree, meadow, winter, snow, sun, sunlight, field, cold, nature, landscape",
@@ -952,7 +300,7 @@
    "sat": 83
   },
   {
-   "f": "img/cards/winter/16.jpg",
+   "f": "img/cards/winter/12.jpg",
    "id": 10317137,
    "by": "Wolfgang_Hasselmann",
    "tags": "winter landscape, snow-covered trees, frozen landscape, pink sky, aurora borealis, natural beauty, winter scenery, finnish nature, cold, distance, landscape, wintertime, silence, emptiness, evening, hazy sky, winter feeling, nordic country, peaceful, nordic nature",
@@ -961,7 +309,7 @@
    "sat": 72
   },
   {
-   "f": "img/cards/winter/17.jpg",
+   "f": "img/cards/winter/13.jpg",
    "id": 7326487,
    "by": "BlenderTimer",
    "tags": "snow, morning, stick, branch, nature, mound, winter, macro, sunshine",
@@ -970,7 +318,7 @@
    "sat": 148
   },
   {
-   "f": "img/cards/winter/18.jpg",
+   "f": "img/cards/winter/14.jpg",
    "id": 5942468,
    "by": "susnpics",
    "tags": "hills, winter, sunset, snow, trees, frost, wintry, cold, snow landscape, landscape, scenery, scenic, nature, phone wallpaper, clouds, sky, twilight, dusk, aesthetic wallpaper, iphone wallpaper",
@@ -979,7 +327,7 @@
    "sat": 93
   },
   {
-   "f": "img/cards/winter/19.jpg",
+   "f": "img/cards/winter/15.jpg",
    "id": 9554109,
    "by": "G_Lupan",
    "tags": "trees, mountains, snow, forest, cold, nature, sky, white, ice, ski, frost, christmas, snowy, frozen, season, wood, québec, canada, winter, landscape",
@@ -988,79 +336,7 @@
    "sat": 80
   },
   {
-   "f": "img/cards/winter/20.jpg",
-   "id": 970704,
-   "by": "DeltaWorks",
-   "tags": "mountain, summit, clouds, sea of clouds, mountain road, peak, scenery, nature, caldera, asahi, somma, aso, kumamoto, japan, mountain, mountain, mountain, mountain, mountain, mountain road, scenery, nature, japan, japan, japan, Japan, Kumamoto, Aso",
-   "q": "winter morning sunlight snow",
-   "bright": 123,
-   "sat": 95
-  },
-  {
-   "f": "img/cards/winter/21.jpg",
-   "id": 4720178,
-   "by": "Pezibear",
-   "tags": "horse, horse head, winter, snow, snowflakes, animal, snowfall, nature, snowing, equine, brown horse, portrait, animal world",
-   "q": "winter morning sunlight snow",
-   "bright": 150,
-   "sat": 60
-  },
-  {
-   "f": "img/cards/winter/22.jpg",
-   "id": 5649827,
-   "by": "zapCulture",
-   "tags": "mountain, sunrise, sun, clouds, nature, alpine, weather, freedom, hiking, people, Germany, Bavaria, Obermaiselstein",
-   "q": "winter morning sunlight snow",
-   "bright": 179,
-   "sat": 76
-  },
-  {
-   "f": "img/cards/winter/23.jpg",
-   "id": 1082511,
-   "by": "822640",
-   "tags": "winter wonderland, nature, red, snow, cold, season, christmas, white, snowflake, little girl, december, holiday, winter",
-   "q": "winter morning sunlight snow",
-   "bright": 131,
-   "sat": 60
-  },
-  {
-   "f": "img/cards/winter/24.jpg",
-   "id": 5016043,
-   "by": "Timmyspics",
-   "tags": "coffee, man, outdoor, morning, breakfast, espresso, caffeine, drink, cappuccino, hot, coffee cup, cafe, out, steam, coffee, coffee, coffee, coffee, cafe, cafe, cafe, cafe, cafe",
-   "q": "winter morning sunlight snow",
-   "bright": 138,
-   "sat": 61
-  },
-  {
-   "f": "img/cards/winter/25.jpg",
-   "id": 9338907,
-   "by": "Tom-Photographer",
-   "tags": "horse, white, animal, nature, hay, farm, straw",
-   "q": "winter morning sunlight snow",
-   "bright": 151,
-   "sat": 59
-  },
-  {
-   "f": "img/cards/winter/26.jpg",
-   "id": 6208614,
-   "by": "fleglsebastian7",
-   "tags": "lake, sunrise, sunset, bavaria, germany, water, water sports, alps, mountains, nature, reflection, sun, summer, spring, sunlight, outdoors, dusk, dawn, morning, evening, travel, landscape",
-   "q": "winter morning sunlight snow",
-   "bright": 189,
-   "sat": 126
-  },
-  {
-   "f": "img/cards/winter/27.jpg",
-   "id": 4631194,
-   "by": "JillWellington",
-   "tags": "christmas, presents, gifts, carrying, woman, holiday, boxes, packages, xmas, celebration, snowing, happy, excited, tradition, festive, celebrate, christmasbackground, happychristmas, iphone wallpaper, christmas, christmas, christmas, christmas, christmas",
-   "q": "winter morning sunlight snow",
-   "bright": 136,
-   "sat": 112
-  },
-  {
-   "f": "img/cards/winter/28.jpg",
+   "f": "img/cards/winter/16.jpg",
    "id": 6071475,
    "by": "Kanenori",
    "tags": "snow, mountains, peak, summit, mountainous, mountain landscape, nature, snowy, landscape, mountain, snow mountain, oyama, japan",
@@ -1069,22 +345,386 @@
    "sat": 83
   },
   {
-   "f": "img/cards/winter/29.jpg",
+   "f": "img/cards/winter/17.jpg",
    "id": 9935921,
    "by": "Alef_photograph",
    "tags": "winter woods, tall trees, snowy ground, forest in winter, seasonal nature, natural landscape, wilderness, outdoor adventure, tranquil forest, snow covered",
    "q": "winter morning sunlight snow",
    "bright": 119,
    "sat": 78
+  }
+ ],
+ "spring": [
+  {
+   "f": "img/cards/spring/01.jpg",
+   "id": 1316128,
+   "by": "JillWellington",
+   "tags": "daffodils, spring, flower background, pot, window, potted plants, potted flowers, floral arrangement, flower wallpaper, nature, flower arrangement, fresh flowers, yellow flowers, plants, beautiful flowers, window sill, season, blossom, flowers, decoration",
+   "q": "spring blossom sunlight",
+   "bright": 191,
+   "sat": 65
   },
   {
-   "f": "img/cards/winter/30.jpg",
-   "id": 1842508,
-   "by": "12019",
-   "tags": "winter, snow, deer, animal, wildlife, nature, outdoors, doe, snowfall, snowing, snowy, wintry, hoarfrost, wild, wild animal, wilderness, wildlife photography, animal world, winter, winter, snow, deer, deer, deer, deer, deer",
-   "q": "winter morning sunlight snow",
-   "bright": 138,
-   "sat": 63
+   "f": "img/cards/spring/02.jpg",
+   "id": 1838553,
+   "by": "Pexels",
+   "tags": "vase, flower background, beautiful flowers, flowers, window, floral arrangement, flower arrangement, flower wallpaper, blossom, bloom, nature, bouquet, decoration, flora",
+   "q": "spring blossom sunlight",
+   "bright": 146,
+   "sat": 78
+  },
+  {
+   "f": "img/cards/spring/03.jpg",
+   "id": 10241202,
+   "by": "Couleur",
+   "tags": "yellow tulips, flowers, nature, spring, garden, beautiful wallpaper, macro, beautiful flowers, glowing lights, freshness, outdoor, flower wallpaper, flower background, beauty, greenery, tulip, silhouette, bokeh lights, background, summer day, light and shadow, summer bloom, bright color",
+   "q": "spring blossom sunlight",
+   "bright": 141,
+   "sat": 148
+  },
+  {
+   "f": "img/cards/spring/04.jpg",
+   "id": 10399872,
+   "by": "Lancier",
+   "tags": "tulip, flower, spring, flower background, garden, colorful, flower wallpaper, floral background, petals, floriculture, botany, nature, green, bloom, horticulture, beautiful wallpaper, meditative, zen, calm, nature photography, background, beauty, beautiful flowers, details, lighting",
+   "q": "spring blossom sunlight",
+   "bright": 117,
+   "sat": 116
+  },
+  {
+   "f": "img/cards/spring/05.jpg",
+   "id": 10426413,
+   "by": "u_5b87kk6539",
+   "tags": "tulip, blooming, field, spring, blue, landscape, nature, garden, outdoor, seasonal, beauty, fresh, bright, soft light, romantic, pure, sharpness, sunlight, blur, pastel, luxurious",
+   "q": "spring blossom sunlight",
+   "bright": 171,
+   "sat": 59
+  },
+  {
+   "f": "img/cards/spring/06.jpg",
+   "id": 10240502,
+   "by": "wal_172619",
+   "tags": "flower, yellow color, bokeh, dew, spring flowers, nature, dew drop, blur, garden, macro, beauty, freshness, shortly after rain, isolation, flower wallpaper, simplicity, minimalism, flower background, beautiful flowers, morning, outdoor, zen",
+   "q": "spring blossom sunlight",
+   "bright": 117,
+   "sat": 107
+  },
+  {
+   "f": "img/cards/spring/07.jpg",
+   "id": 10022840,
+   "by": "Esten-Erbol",
+   "tags": "flower, nature, outdoors, plant, beautiful flowers, flower wallpaper, purple, freshness, growth, flower background, fragility, spring, lupins, field, horizon, sunset, blur, romantic, sun, gentle, view, beauty",
+   "q": "spring blossom sunlight",
+   "bright": 119,
+   "sat": 138
+  },
+  {
+   "f": "img/cards/spring/08.jpg",
+   "id": 271352,
+   "by": "steinchen",
+   "tags": "tulip, nature, yellow, spring, blossoms",
+   "q": "spring blossom sunlight",
+   "bright": 116,
+   "sat": 207
+  },
+  {
+   "f": "img/cards/spring/09.jpg",
+   "id": 315230,
+   "by": "PublicDomainPictures",
+   "tags": "spring, beautiful wallpaper, background, flower, nature, field, floral background, meadow, easter, flower background, green, flower wallpaper, green background, green spring, beautiful flowers, green flower, green field, iphone wallpaper",
+   "q": "spring blossom sunlight",
+   "bright": 178,
+   "sat": 101
+  },
+  {
+   "f": "img/cards/spring/10.jpg",
+   "id": 4066246,
+   "by": "Pezibear",
+   "tags": "spring, flowers, nature, tulips, flower background, phone wallpaper, flower wallpaper, beautiful flowers, iphone wallpaper",
+   "q": "spring blossom sunlight",
+   "bright": 185,
+   "sat": 67
+  },
+  {
+   "f": "img/cards/spring/11.jpg",
+   "id": 5928741,
+   "by": "BiancaVanDijk",
+   "tags": "basket, flowers, background, nature, beauty, bloom, blossom, flower wallpaper, plants, beautiful flowers, lilacs, flower garden, flower background, beautiful wallpaper, baby photography, floral background, iphone wallpaper",
+   "q": "spring blossom sunlight",
+   "bright": 148,
+   "sat": 61
+  },
+  {
+   "f": "img/cards/spring/12.jpg",
+   "id": 10379528,
+   "by": "beleaguered",
+   "tags": "yellow, tulip, bright, flower background, natural, nature, blurred background, macro photography, spring, flower, garden, greenery, outdoor, row, contrast, blooming, flower wallpaper, fresh, beautiful flowers, insect pollination, beauty, striped, blooming season, foreground focus",
+   "q": "spring blossom sunlight",
+   "bright": 126,
+   "sat": 140
+  },
+  {
+   "f": "img/cards/spring/13.jpg",
+   "id": 10118338,
+   "by": "Juliezi3",
+   "tags": "spring, flowers, ai, ai made, flower wallpaper, nature, plants, beautiful, spring vibes, picture, flower background, image, pretty, grass, green, wow, viral, beautiful flowers, stunning, best, ai generated",
+   "q": "spring blossom sunlight",
+   "bright": 149,
+   "sat": 116
+  },
+  {
+   "f": "img/cards/spring/14.jpg",
+   "id": 6180061,
+   "by": "dep377",
+   "tags": "cherry blossom, flowers, branch, pink flowers, bloom, flower wallpaper, blossom, spring, tree, beautiful flowers, flower background, nature, closeup",
+   "q": "spring blossom sunlight",
+   "bright": 129,
+   "sat": 60
+  },
+  {
+   "f": "img/cards/spring/15.jpg",
+   "id": 2131136,
+   "by": "Oldiefan",
+   "tags": "flower, daffodil, nature, narcissus, beautiful flowers, flower background, flower wallpaper, yellow orange, spring",
+   "q": "spring blossom sunlight",
+   "bright": 129,
+   "sat": 148
+  },
+  {
+   "f": "img/cards/spring/16.jpg",
+   "id": 342044,
+   "by": "peasonearth",
+   "tags": "window, spring, heart, blossom, bloom, sunshine, nature, view",
+   "q": "spring blossom sunlight",
+   "bright": 126,
+   "sat": 59
+  },
+  {
+   "f": "img/cards/spring/17.jpg",
+   "id": 100572,
+   "by": "realworkhard",
+   "tags": "poppy, flower wallpaper, poppy flower, blossom, bloom, flower, flower background, red, heaven, blue, clouds, backlighting, sun, light on, nature, beautiful flowers, sunbeams",
+   "q": "spring blossom sunlight",
+   "bright": 141,
+   "sat": 82
+  },
+  {
+   "f": "img/cards/spring/18.jpg",
+   "id": 10072994,
+   "by": "Drosera74",
+   "tags": "flower, nature, flower wallpaper, bloom, blossom, plant, beautiful flowers, spring, flower background, flora, petals, crocus",
+   "q": "spring blossom sunlight",
+   "bright": 142,
+   "sat": 94
+  },
+  {
+   "f": "img/cards/spring/19.jpg",
+   "id": 2000617,
+   "by": "Erbs55",
+   "tags": "houseplants, flowers, flower, flower wallpaper, beautiful flowers, plant, flower background, potted plants, purple, mother and baby plant, nature, purple flowers, flowerpots, table decoration",
+   "q": "spring blossom sunlight",
+   "bright": 121,
+   "sat": 140
+  },
+  {
+   "f": "img/cards/spring/20.jpg",
+   "id": 105701,
+   "by": "PixelAnarchy",
+   "tags": "japanese, cherry blossom, spring flowers, nature, beautiful flowers, japanese cherry, flower, spring, flower wallpaper, flower background, pink",
+   "q": "spring blossom sunlight",
+   "bright": 120,
+   "sat": 58
+  },
+  {
+   "f": "img/cards/spring/21.jpg",
+   "id": 6247856,
+   "by": "DeltaWorks",
+   "tags": "cherry blossoms, flowers, spring, pink flowers, flower wallpaper, sakura, bloom, blossom, branch, tree, flower background, sunset, beautiful flowers, nature, closeup, Japan, Kumamoto",
+   "q": "spring blossom sunlight",
+   "bright": 134,
+   "sat": 81
+  },
+  {
+   "f": "img/cards/spring/22.jpg",
+   "id": 2336518,
+   "by": "Pezibear",
+   "tags": "primrose, auricle, alpine auricles, primula auricula, primula, alpine flower, alpine plant, blossoms, meadow, nature, spring, wildflower, plant, flora",
+   "q": "spring blossom sunlight",
+   "bright": 122,
+   "sat": 118
+  },
+  {
+   "f": "img/cards/spring/23.jpg",
+   "id": 5552968,
+   "by": "lucasgeorgewendt",
+   "tags": "flower, plant, bloom, blossom, flora, floriculture, botany, flower wallpaper, horticulture, flower background, spring, nature, beautiful flowers, garden, sunlight, close up, bokeh",
+   "q": "spring blossom sunlight",
+   "bright": 147,
+   "sat": 127
+  },
+  {
+   "f": "img/cards/spring/24.jpg",
+   "id": 439662,
+   "by": "ValeriaRodrigues",
+   "tags": "tree, yellow, nature, spring, farm, beautiful, ipê, landscape",
+   "q": "spring blossom sunlight",
+   "bright": 162,
+   "sat": 105
+  },
+  {
+   "f": "img/cards/spring/25.jpg",
+   "id": 9581563,
+   "by": "Oliverstar",
+   "tags": "tulip, bloom, flower wallpaper, garden, flower background, spring, flower, pink, beautiful flowers, blossom, nature",
+   "q": "spring blossom sunlight",
+   "bright": 176,
+   "sat": 121
+  }
+ ],
+ "summer": [
+  {
+   "f": "img/cards/summer/01.jpg",
+   "id": 6208614,
+   "by": "fleglsebastian7",
+   "tags": "lake, sunrise, sunset, bavaria, germany, water, water sports, alps, mountains, nature, reflection, sun, summer, spring, sunlight, outdoors, dusk, dawn, morning, evening, travel, landscape",
+   "q": "summer morning sunlight nature",
+   "bright": 189,
+   "sat": 126
+  },
+  {
+   "f": "img/cards/summer/02.jpg",
+   "id": 2780693,
+   "by": "Felix-Mittermeier",
+   "tags": "forest, path, hike, nature, trees, forest path, trail, landscape, green, fall, quiet, naturally, autumn forest, nature trail, idyllic, to stroll, promenade, silence, summer, idyll, mood, beautiful, peaceful, relaxation, walk, relax, recreation, leisure time, atmospheric, go for a walk, romantic, peaceful mood, scenic",
+   "q": "summer morning sunlight nature",
+   "bright": 121,
+   "sat": 169
+  },
+  {
+   "f": "img/cards/summer/03.jpg",
+   "id": 1772091,
+   "by": "EDUIN",
+   "tags": "natural, nature, landscape, sunrise, mountain, branches, fog, backlighting, green, tree, sheets, tomorrow",
+   "q": "summer morning sunlight nature",
+   "bright": 160,
+   "sat": 97
+  },
+  {
+   "f": "img/cards/summer/04.jpg",
+   "id": 2767569,
+   "by": "bones64",
+   "tags": "sunrise, field, sky, clouds, nature, summer, landscape, sun, sunlight, rural, blue sky, blue, sunny, light, farm, outdoor, agriculture, countryside, sunshine, bright, morning, natural, shadow, mist, mountain",
+   "q": "summer morning sunlight nature",
+   "bright": 122,
+   "sat": 106
+  },
+  {
+   "f": "img/cards/summer/05.jpg",
+   "id": 2728701,
+   "by": "bones64",
+   "tags": "mountain view, lake, trees, sky, clouds, park, landscape, nature, valley, outdoor, summer, blue, scenic, blue sky, green, sunshine, color, sunlight, bright, morning, natural, sunny, season, forest, environment, blue sunshine",
+   "q": "summer morning sunlight nature",
+   "bright": 122,
+   "sat": 98
+  },
+  {
+   "f": "img/cards/summer/06.jpg",
+   "id": 4447345,
+   "by": "capture_gr",
+   "tags": "sun, sunrise, morning, castle, tree, landscape, sunset, nature, dawn, sky, travel, summer, water, sea, lake, evening, beach, ocean, orange, scenic, mood, haze, boat, sunlight, calm",
+   "q": "summer morning sunlight nature",
+   "bright": 127,
+   "sat": 77
+  },
+  {
+   "f": "img/cards/summer/07.jpg",
+   "id": 2866528,
+   "by": "stafichukanatoly",
+   "tags": "birch, summer, white, forest, green, grove, tree, foliage, landscape, nature, sunlight, beauty, color, background, beautiful, factory, leaves, season, day, grass, the park, wednesday, freshness, scene, branch, stem, lush, trunk, bark, beautiful wallpaper, in the morning, sunny, natural, light, colorful, open, iphone wallpaper",
+   "q": "summer morning sunlight nature",
+   "bright": 118,
+   "sat": 130
+  },
+  {
+   "f": "img/cards/summer/08.jpg",
+   "id": 2698277,
+   "by": "violetta",
+   "tags": "shrub, white, flower, green, blossom, bloom, nature, plant, gardens, white green, flourished, landscape, garden, flower wallpaper, park, summer, flower background, beautiful flowers, beautiful, flora, flowery, sunlight, close up",
+   "q": "summer morning sunlight nature",
+   "bright": 128,
+   "sat": 72
+  },
+  {
+   "f": "img/cards/summer/09.jpg",
+   "id": 2212448,
+   "by": "Kanenori",
+   "tags": "woods, morning mist, light, beech forest, shirakami-sanchi, world heritage region, japan, june",
+   "q": "summer morning sunlight nature",
+   "bright": 133,
+   "sat": 79
+  },
+  {
+   "f": "img/cards/summer/10.jpg",
+   "id": 9947733,
+   "by": "datdotien0703",
+   "tags": "landscape, nature, field, tree, cloudscape",
+   "q": "summer morning sunlight nature",
+   "bright": 116,
+   "sat": 116
+  },
+  {
+   "f": "img/cards/summer/11.jpg",
+   "id": 970704,
+   "by": "DeltaWorks",
+   "tags": "mountain, summit, clouds, sea of clouds, mountain road, peak, scenery, nature, caldera, asahi, somma, aso, kumamoto, japan, mountain, mountain, mountain, mountain, mountain, mountain road, scenery, nature, japan, japan, japan, Japan, Kumamoto, Aso",
+   "q": "summer morning sunlight nature",
+   "bright": 123,
+   "sat": 95
+  },
+  {
+   "f": "img/cards/summer/12.jpg",
+   "id": 1867636,
+   "by": "Pexels",
+   "tags": "water, ipad wallpaper, pool, phone wallpaper, mobile wallpaper 4k, turquoise, background, clean, clear, swimming pool, water surface, texture, mobile wallpaper, underwater, wallpaper, beautiful wallpaper, wet, lock screen wallpaper, nature, samsung wallpaper, iphone wallpaper",
+   "q": "summer morning sunlight nature",
+   "bright": 163,
+   "sat": 196
+  },
+  {
+   "f": "img/cards/summer/13.jpg",
+   "id": 7353447,
+   "by": "andriish22",
+   "tags": "peaches, fruits, plant, food, vitamins, fresh, healthy, leaves, nature, peaches, peaches, food, food, food, food, food",
+   "q": "summer morning sunlight nature",
+   "bright": 127,
+   "sat": 127
+  },
+  {
+   "f": "img/cards/summer/14.jpg",
+   "id": 1411992,
+   "by": "kie-ker",
+   "tags": "bellflowers, backlighting, flowers, purple flowers, purple petals, petals, blossom, bloom, flora, floriculture, horticulture, botany, flower background, beautiful flowers, nature, flower wallpaper, plants, campanula, close up",
+   "q": "summer morning sunlight nature",
+   "bright": 122,
+   "sat": 127
+  },
+  {
+   "f": "img/cards/summer/15.jpg",
+   "id": 9248762,
+   "by": "Mollyroselee",
+   "tags": "cloudscape, stratus, cumulus, cirrostratus, altostratus, morning sky, nature, sunrise, sunlight",
+   "q": "summer morning sunlight nature",
+   "bright": 159,
+   "sat": 89
+  },
+  {
+   "f": "img/cards/summer/16.jpg",
+   "id": 9248778,
+   "by": "Mollyroselee",
+   "tags": "cloudscape, stratus, nature, cumulus, cirrostratus, altostratus, morning sky, sunrise, sunlight",
+   "q": "summer morning sunlight nature",
+   "bright": 164,
+   "sat": 69
   }
  ]
 }

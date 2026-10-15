@@ -924,3 +924,11 @@ body.in-detail .tabs-mini { display: none; }
 .toc-l em { font-size: 2.3rem !important; }
 .toc-l img { width: 76px; }
 @media (max-width: 768px) { .toc-l em { font-size: 2.15rem !important; } }
+/* ── 인사 카드: 계절 사진 2장 ── */
+.cards { gap: 14px; scroll-snap-type: x mandatory; }
+.gcard.pic { flex: none; width: min(74vw, 300px); height: auto; aspect-ratio: 4 / 5; min-height: 0; background-size: cover; background-position: center; background-color: #E9DFC9; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 8px 22px rgba(60,40,10,0.18); }
+.gcard.pic::after { background: linear-gradient(to bottom, rgba(20,16,10,0) 35%, rgba(20,16,10,0.45) 65%, rgba(20,16,10,0.78)); }
+.gcard.pic q { position: absolute; top: auto; left: 20px; right: 20px; bottom: 54px; padding: 0; background: none; font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.22rem; line-height: 1.55; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.45); z-index: 1; }
+.gcard.pic .g-logo { position: absolute; top: 12px; right: 12px; left: auto; bottom: auto; width: 64px; opacity: 0.95; z-index: 1; }
+.gcard.pic .g-send { position: absolute; left: 20px; bottom: 18px; z-index: 1; font-size: 0.85rem; color: rgba(255,255,255,0.92); padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.7); }
+@media (min-width: 769px) { .gcard.pic { width: 300px; } }
