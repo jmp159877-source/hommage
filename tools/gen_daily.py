@@ -23,7 +23,9 @@ def list_models():
         def ver(n):
             m = re.search(r"gemini-(\d+)(?:\.(\d+))?", n); return (int(m.group(1)), int(m.group(2) or 0), 0 if "preview" in n or "exp" in n else 1) if m else (0, 0, 0)
         flash.sort(key=ver, reverse=True)
-        picked = flash[:3] + [m for m in MODELS if m not in flash]
+        picked = flash[:3]
+        if not picked:
+            picked = MODELS
         print("[models]", picked[:4])
         return picked
     except Exception as e:
@@ -45,17 +47,35 @@ def today():
     return datetime.datetime.now(KST).date()
 
 
+import threading
+_lock = threading.Lock()
+_last_call = [0.0]
+MIN_GAP = 7.0  # 무료 등급 분당 호출 제한을 넘지 않게 호출 사이 최소 간격(초)
+
+
+def _pace():
+    with _lock:
+        wait = _last_call[0] + MIN_GAP - time.time()
+        if wait > 0:
+            time.sleep(wait)
+        _last_call[0] = time.time()
+
+
+def _retry_delay(detail):
+    m = re.search(r'"retryDelay":\s*"(\d+)', detail or "")
+    return min(int(m.group(1)) + 2, 70) if m else 30
+
+
 def gemini(prompt, json_mode=True, search=False, max_retry=None):
-    if max_retry is None:
-        max_retry = 1 if search else 3
     """Gemini REST 호출. json_mode면 JSON 객체를 파싱해 돌려준다."""
+    if max_retry is None:
+        max_retry = 2 if search else 4
     if not GEMINI_KEY:
         raise RuntimeError("GEMINI_API_KEY 없음")
     if search and getattr(gemini, "search_ok", True) is False:
         raise RuntimeError("검색 기능 사용 불가(앞서 확인됨)")
-    last = None
-    hard_fail = 0
-    for model in gemini.models:
+    errs = []
+    for model in list(gemini.models):
         for attempt in range(max_retry):
             body = {
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
@@ -68,30 +88,35 @@ def gemini(prompt, json_mode=True, search=False, max_retry=None):
                 body["tools"] = [{"google_search": {}}]
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+            _pace()
             try:
                 with urllib.request.urlopen(req, timeout=90) as r:
                     res = json.load(r)
                 text = "".join(p.get("text", "") for p in res["candidates"][0]["content"]["parts"])
-                if not json_mode:
-                    return text
-                return parse_json(text)
+                return text if not json_mode else parse_json(text)
             except urllib.error.HTTPError as e:
                 detail = ""
-                try: detail = e.read().decode()[:300]
+                try: detail = e.read().decode()[:600]
                 except Exception: pass
-                last = RuntimeError(f"{model} HTTP {e.code}: {detail}")
-                print(f"[gemini] {last}", file=sys.stderr)
-                if e.code in (400, 404):
-                    hard_fail += 1
-                    break  # 이 모델은 이 요청을 못 받음 → 다음 모델로
-                time.sleep(8 * (attempt + 1)); continue
-            except Exception as e:  # 파싱 실패 등 → 잠시 쉬고 재시도
-                last = e
+                msg = re.sub(r"\s+", " ", detail)[:220]
+                errs.append(f"{model} {e.code}: {msg}")
+                print(f"[gemini] {model} {e.code}: {msg}", file=sys.stderr)
+                if e.code == 404:
+                    if model in gemini.models and not search:
+                        gemini.models.remove(model)  # 없어진 모델은 이후 건너뜀
+                    break
+                if e.code == 400:
+                    break
+                if e.code == 429:
+                    time.sleep(_retry_delay(detail)); continue
+                time.sleep(6 * (attempt + 1)); continue
+            except Exception as e:
+                errs.append(f"{model}: {e}")
                 print(f"[gemini] {model} 시도 {attempt + 1} 실패: {e}", file=sys.stderr)
-                time.sleep(8 * (attempt + 1))
-    if search and hard_fail >= len(gemini.models):
-        gemini.search_ok = False  # 모든 모델이 검색 요청을 거절 → 이후엔 바로 대체 경로로
-    raise RuntimeError(f"Gemini 실패: {last}")
+                time.sleep(4)
+    if search and errs and all((" 400:" in x or " 404:" in x) for x in errs):
+        gemini.search_ok = False
+    raise RuntimeError("Gemini 실패: " + " | ".join(errs[-3:]))
 
 
 def parse_json(text):
@@ -261,8 +286,7 @@ def gen_outing(d):
         except Exception as e:
             print(f"[outing] {region} 실패: {e}", file=sys.stderr)
             return region, []
-    with ThreadPoolExecutor(max_workers=4) as ex:
-        for region, items in ex.map(one, REGIONS):
+    for region, items in map(one, REGIONS):
             if items:
                 out[region] = items
     assert out, "나들이 전부 실패"
@@ -285,6 +309,8 @@ def firestore():
 def main():
     gemini.models = list_models()
     force = "--force" in sys.argv
+    only = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--only=")), None)
+    if only: force = True
     d = today()
     for a in sys.argv:
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", a):
@@ -301,6 +327,8 @@ def main():
     out, errors = {}, []
     ref.set({"source": "auto", "startedAt": datetime.datetime.now(KST).isoformat()}, merge=True)
     for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("outing", gen_outing)]:
+        if only and name not in only:
+            continue
         try:
             out[name] = fn(d)
             ref.set({name: out[name]}, merge=True)
@@ -315,8 +343,9 @@ def main():
     out["errors"] = errors
     ref.set(out, merge=True)
     os.makedirs(os.path.join(HERE, "..", "daily"), exist_ok=True)
+    full = ref.get().to_dict() or out
     with open(os.path.join(HERE, "..", "daily", key + ".json"), "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
+        json.dump(full, f, ensure_ascii=False, indent=1, default=str)
     print(f"{key} 저장 완료. 코너 {len(out) - 3}개" + (f", 실패 {len(errors)}개" if errors else ""))
 
 
