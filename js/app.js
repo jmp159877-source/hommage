@@ -2,6 +2,7 @@ import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
 import * as NB from './notebook.js';
 import { drawCard, photoFor } from './cards.js';
+import * as MM from './malmoi.js';
 let modalPushed = false, skipPop = false, exitOpen = false;
 
 const $ = id => document.getElementById(id);
@@ -299,10 +300,34 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
+const DET = { malmoi: ['detail_malmoi', '말모이', () => '오늘의 낱말,<br>맞혀 보세요'], history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
-function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
+// ── 아침 알림 받기 (원하는 사람만, 시간은 직접 고르기) ──
+(function pushUI() {
+  const btn = $('push-cta'); if (!btn) return;
+  const ok = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent), standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (!ok && !isIOS) return;
+  const get = () => store.get('push', null);
+  const draw = () => { const p = get(); btn.hidden = false; btn.innerHTML = p ? `<span class="pc-ic">☀</span><span><b>아침 ${p.hour}시 알림 받는 중</b><small>시간 바꾸기 · 그만 받기</small></span>` : `<span class="pc-ic">☀</span><span><b>아침 알림 받기</b><small>매일 아침 인사 카드와 말모이를 알려 드려요</small></span>`; };
+  btn.onclick = () => {
+    if (isIOS && !standalone) return modal(`<h2>아침 알림 받기</h2><p style="font-size:1.1rem;line-height:1.8">아이폰은 오마주를 <b>앱 아이콘으로 설치</b>한 뒤에 알림을 받을 수 있습니다.<br>화면 아래 <b>공유</b> 단추 → <b>홈 화면에 추가</b>를 누른 뒤, 아이콘으로 열어 다시 눌러 주세요.</p>`);
+    const p = get();
+    modal(`<h2>몇 시에 받을까요?</h2><p style="font-size:1.05rem;color:#555">매일 그 시간에 오늘의 인사 카드가 찾아갑니다.</p><div class="pc-hours">${[7, 8, 9].map(h => `<button type="button" class="btn ${p && p.hour === h ? 'green' : 'line'}" data-hour="${h}">아침 ${h}시</button>`).join('')}</div>${p ? '<button type="button" class="pc-stop" id="pc-stop">알림 그만 받기</button>' : ''}`, () => {
+      document.querySelectorAll('[data-hour]').forEach(b => b.onclick = async () => {
+        const hour = +b.dataset.hour; b.textContent = '등록하는 중…';
+        try { const token = await DB.pushSubscribe(hour); store.set('push', { token, hour }); closeModal(); draw(); toast(`매일 아침 ${hour}시에 찾아가겠습니다.`); DB.track && DB.track('push_on', { hour }); }
+        catch (e) { closeModal(); toast(e.message || '알림 등록에 실패했습니다.'); }
+      });
+      const stop = $('pc-stop'); if (stop) stop.onclick = async () => { await DB.pushUnsubscribe(p.token); store.set('push', null); closeModal(); draw(); toast('알림을 껐습니다.'); };
+    });
+  };
+  draw();
+})();
+
+let mmMounted = false;
+function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; if (cur === 'malmoi' && !mmMounted) { mmMounted = true; MM.mount($('mm-root'), { toast, esc }); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
 $('back').onclick = () => { if (route.y != null) history.back(); else location.hash = ''; };
 window.addEventListener('hashchange', route);
 renderEra(); route();

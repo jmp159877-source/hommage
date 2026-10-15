@@ -67,6 +67,14 @@ service cloud.firestore {
     }
     // 아이디·비밀번호 찾기 요청: 누구나 넣고, 관리자만 본다.
     match /resets/{id} { allow create: if true; allow read, update, delete: if isAdmin(); }
+    // 아침 알림 받기: 누구나 자기 기기를 등록·해지. 읽기는 서버(관리 계정)만.
+    match /push/{id} {
+      allow create, update: if request.resource.data.keys().hasOnly(['token', 'hour', 'ua', 'updated', 'uid'])
+        && request.resource.data.token is string && request.resource.data.token.size() < 500
+        && request.resource.data.hour in [7, 8, 9];
+      allow delete: if true;
+      allow read: if isAdmin();
+    }
     // 집계: 숫자만 올릴 수 있고, 관리자만 본다.
     match /stats/{date} {
       allow read: if isAdmin();

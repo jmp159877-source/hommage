@@ -213,3 +213,23 @@ export async function addNote(n) {
 }
 export async function updateNote(id, n) { if (!me) throw new Error('로그인이 필요합니다.'); await updateDoc(doc(db, 'notes', id), { ...n, uid: me.uid, updatedAt: Date.now() }); }
 export async function deleteNote(id) { await deleteDoc(doc(db, 'notes', id)); }
+
+// ── 아침 알림 (FCM 웹 푸시) ──
+async function tokenId(t) { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(h)].slice(0, 16).map(b => b.toString(16).padStart(2, '0')).join(''); }
+export async function pushSubscribe(hour) {
+  const { getMessaging, getToken, isSupported } = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-messaging.js');
+  if (!(await isSupported())) throw new Error('이 휴대폰(브라우저)에서는 알림을 받을 수 없습니다.');
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') throw new Error('알림이 꺼져 있습니다. 휴대폰 설정에서 오마주 알림을 허용해 주세요.');
+  const reg = await navigator.serviceWorker.register('sw.js');
+  const token = await getToken(getMessaging(app), { serviceWorkerRegistration: reg });
+  if (!token) throw new Error('알림 등록에 실패했습니다. 잠시 뒤 다시 해 주세요.');
+  const data = { token, hour, ua: navigator.userAgent.slice(0, 120), updated: serverTimestamp() };
+  if (auth.currentUser) data.uid = auth.currentUser.uid;
+  await setDoc(doc(db, 'push', await tokenId(token)), data);
+  return token;
+}
+export async function pushUnsubscribe(token) {
+  try { await deleteDoc(doc(db, 'push', await tokenId(token))); } catch (e) {}
+  try { const { getMessaging, deleteToken } = await import('https://www.gstatic.com/firebasejs/10.12.4/firebase-messaging.js'); await deleteToken(getMessaging(app)); } catch (e) {}
+}

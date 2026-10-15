@@ -961,3 +961,46 @@ body.in-detail .tabs-mini { display: none; }
 .lb-cap { color: #f4efe4; text-align: center; margin: 16px 18px 4px; font-size: 1.05rem; line-height: 1.6; }
 .lb-cap b { font-family: 'Nanum Myeongjo', serif; }
 .lb-tip { color: rgba(255,255,255,0.6); text-align: center; font-size: 0.85rem; margin: 0; }
+/* ── 말모이 ── */
+.mm { margin-top: 18px; }
+.mm-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 6px; }
+.mm-head b { font-family: 'Nanum Myeongjo', serif; font-size: 1.5rem; color: var(--dark-green); }
+.mm-head span { font-size: 0.9rem; color: #8a6d2c; letter-spacing: 0.08em; }
+.mm-how { margin: 4px 0 18px; font-size: 0.98rem; color: #444; }
+.mm-how summary { cursor: pointer; color: var(--dark-green); font-weight: 700; padding: 6px 0; }
+.mm-how p { margin: 8px 0; line-height: 1.75; }
+.mm-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 0.9rem; }
+.mm-legend .t { width: 28px; height: 28px; font-size: 0.95rem; border-radius: 6px; }
+.mm-board { display: grid; gap: 7px; }
+.mm-row { display: grid; grid-template-columns: repeat(6, 1fr) 3.4em; gap: 7px; align-items: center; }
+.mm-row em { font-style: normal; font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.05rem; color: #6b665c; text-align: center; }
+.mm .t { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border-radius: 8px; border: 1.5px solid #D8D1C2; background: #fff; font-size: 1.45rem; font-weight: 700; color: #1f1f1f; }
+.mm .t.typed { border-color: #6b665c; }
+.mm .t.hit { background: #3E8A63; border-color: #3E8A63; color: #fff; }
+.mm .t.near { background: #F2D675; border-color: #E0BF4F; color: #3A2E00; }
+.mm .t.miss { background: #B9B3A7; border-color: #B9B3A7; color: #fff; }
+.mm-row.live .t:empty { border-style: dashed; }
+.mm-row.shake { animation: mmshake 0.4s; }
+@keyframes mmshake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.mm-keys { margin-top: 20px; display: grid; gap: 7px; }
+.mm-krow { display: flex; gap: 5px; justify-content: center; }
+.mm-keys .k { flex: 1 1 0; max-width: 46px; height: 52px; border: 0; border-radius: 8px; background: #E9E3D6; font-size: 1.25rem; font-weight: 700; color: #1f1f1f; padding: 0; }
+.mm-keys .k.wide { max-width: 78px; flex: 1.6 1 0; font-size: 0.88rem; white-space: nowrap; }
+.mm-keys .k.go { background: var(--warm); color: var(--warm-ink); border: 1px solid var(--warm-line); }
+.mm-keys .k.hit { background: #3E8A63; color: #fff; } .mm-keys .k.near { background: #F2D675; color: #3A2E00; } .mm-keys .k.miss { background: #B9B3A7; color: #fff; }
+.mm-end { margin-top: 24px; padding: 22px 18px; background: #FFFDF6; border: 1px solid #EADFC2; border-radius: 14px; text-align: center; }
+.mm-verdict { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.25rem; color: var(--dark-green); margin: 0 0 12px; }
+.mm-answer b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 2.4rem; letter-spacing: 0.2em; margin-right: -0.2em; color: #1f1f1f; }
+.mm-answer span { display: block; font-size: 1.02rem; color: #555; margin-top: 4px; line-height: 1.6; }
+.mm-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: 18px 0; border-top: 1px solid #EADFC2; border-bottom: 1px solid #EADFC2; padding: 12px 0; }
+.mm-stats span { font-size: 0.82rem; color: #777; }
+.mm-stats b { display: block; font-size: 1.35rem; color: #1f1f1f; }
+.mm-share { width: 100%; font-size: 1.1rem; padding: 14px; }
+/* 아침 알림 받기 */
+.push-cta { display: flex; align-items: center; gap: 14px; width: 100%; margin: 6px 0 10px; padding: 14px 16px; background: #fff; border: 1px solid #EADFC2; border-radius: 12px; text-align: left; cursor: pointer; }
+.push-cta .pc-ic { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--warm); color: #B8862F; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+.push-cta b { display: block; font-size: 1.05rem; color: #1f1f1f; }
+.push-cta small { display: block; font-size: 0.88rem; color: #777; margin-top: 2px; }
+.pc-hours { display: grid; gap: 10px; margin-top: 18px; }
+.pc-hours .btn { width: 100%; font-size: 1.15rem; padding: 14px; }
+.pc-stop { display: block; margin: 18px auto 0; background: none; border: 0; color: #888; text-decoration: underline; font-size: 0.95rem; }
