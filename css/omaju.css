@@ -1004,3 +1004,96 @@ body.in-detail .tabs-mini { display: none; }
 .pc-hours { display: grid; gap: 10px; margin-top: 18px; }
 .pc-hours .btn { width: 100%; font-size: 1.15rem; padding: 14px; }
 .pc-stop { display: block; margin: 18px auto 0; background: none; border: 0; color: #888; text-decoration: underline; font-size: 0.95rem; }
+/* ── 오늘 PLAY ── */
+body.game-mode .d-hero { display: none; }
+body.game-mode .top-nav { position: sticky; background: var(--ivory); padding: 10px 16px; box-shadow: 0 1px 0 var(--line); }
+body.game-mode .top-nav .back { color: #1f1f1f; }
+body.game-mode .top-nav img { height: 40px; filter: none; }
+body.game-mode #detail main, body.game-mode .d-body { padding-top: 0; }
+.dsec.game { padding-top: 6px; }
+.pl-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.pl-name b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 1.45rem; color: var(--dark-green); line-height: 1.2; }
+.pl-clock { font-variant-numeric: tabular-nums; font-size: 1.05rem; color: #8a6d2c; font-weight: 700; }
+.pl-btns { display: flex; gap: 6px; }
+.pl-b { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 12px; border: 1px solid #E3DAC6; background: #fff; font-size: 1.15rem; line-height: 1; color: #1f1f1f; padding: 0; }
+.pl-b small { font-size: 0.7rem; margin-top: 4px; color: #666; }
+.pl-b[aria-pressed="false"] { opacity: 0.45; }
+.pl-b.rank { background: var(--warm); border-color: var(--warm-line); }
+.pl-done { margin-top: 18px; padding: 18px; text-align: center; background: #FFFDF6; border: 1px solid #EADFC2; border-radius: 14px; }
+.pl-done-t { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.4rem; color: var(--dark-green); margin: 0 0 6px; }
+.pl-done-s { font-size: 1.02rem; color: #555; margin: 0 0 14px; }
+.pl-done-b { display: grid; gap: 8px; }
+.pl-done-b .btn, .pl-again { width: 100%; font-size: 1.08rem; padding: 13px; }
+.pl-again { margin-top: 10px; }
+.pl-hub-lead { margin: 22px 0 14px; font-size: 1.05rem; color: #555; }
+.pl-hub { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pl-card { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 4px; padding: 16px 14px; background: #fff; border: 1px solid #E8E0CC; border-radius: 14px; box-shadow: 0 3px 10px rgba(60,40,10,0.06); }
+.pl-card b { font-family: 'Nanum Myeongjo', serif; font-size: 1.25rem; color: #1f1f1f; margin-top: 6px; }
+.pl-card > span:not(.pl-ic) { font-size: 0.9rem; color: #666; line-height: 1.45; }
+.pl-card em { font-style: normal; font-size: 0.8rem; color: #8a6d2c; margin-top: 6px; }
+.pl-ic { height: 40px; display: flex; align-items: center; }
+.gi-emoji { font-size: 2rem; }
+.gi-num { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.15rem; color: #fff; background: var(--dark-green); border-radius: 8px; padding: 6px 9px; }
+.gi-tiles { display: grid; grid-template-columns: repeat(2, 16px); gap: 3px; }
+.gi-tiles i { width: 16px; height: 16px; border-radius: 3px; background: #D8D1C2; } .gi-tiles i.g { background: #3E8A63; } .gi-tiles i.y { background: #F2D675; }
+/* 순위 창 */
+.rank-modal .modal-box { max-height: 88vh; overflow: auto; }
+.rk-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 6px 0 12px; }
+.rk-tabs button { padding: 10px; border-radius: 10px; border: 1px solid #E3DAC6; background: #fff; font-size: 1.02rem; font-weight: 700; color: #555; }
+.rk-tabs button[aria-pressed="true"] { background: var(--warm); border-color: var(--warm-line); color: var(--warm-ink); }
+.rk-me { background: #F4EFE3; border-radius: 10px; padding: 12px 14px; font-size: 1rem; color: #333; line-height: 1.6; }
+.rk-me em { font-style: normal; font-weight: 800; color: var(--dark-green); font-size: 1.15rem; }
+.rk-list { list-style: none; padding: 0; margin: 12px 0 0; }
+.rk-list li { display: grid; grid-template-columns: 2.4em 1fr auto; align-items: center; gap: 8px; padding: 10px 6px; border-bottom: 1px solid #EFE8D8; font-size: 1rem; }
+.rk-list li.me { background: #FFF8E3; border-radius: 8px; font-weight: 700; }
+.rk-n { text-align: center; color: #8a6d2c; font-weight: 700; }
+.rk-list li.top .rk-n { font-size: 1.25rem; }
+.rk-nick { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk-rec { font-variant-numeric: tabular-nums; color: #333; font-size: 0.95rem; }
+.rk-empty { display: block !important; text-align: center; color: #888; }
+/* 1 to 50 */
+.n5-goal { text-align: center; font-size: 1.1rem; color: #555; margin: 4px 0 12px; }
+.n5-goal b { font-size: 1.6rem; color: var(--dark-green); margin-left: 6px; }
+.n5-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; max-width: 420px; margin: 0 auto; }
+.n5 { aspect-ratio: 1; border-radius: 10px; border: 0; background: #fff; box-shadow: 0 2px 0 #DCD3C0; font-size: 1.5rem; font-weight: 800; color: #1f1f1f; padding: 0; }
+.n5.two { background: #F4EFE3; color: var(--dark-green); }
+.n5.gone { background: transparent; box-shadow: none; }
+.n5.no { background: #F6D5D0; }
+/* 스도쿠 */
+.sd-grid { display: grid; grid-template-columns: repeat(9, 1fr); max-width: 440px; margin: 0 auto; border: 2px solid #3a3a3a; border-radius: 6px; overflow: hidden; background: #fff; }
+.sd { aspect-ratio: 1; border: 0; border-right: 1px solid #DDD5C4; border-bottom: 1px solid #DDD5C4; background: #fff; font-size: 1.3rem; color: #2C6AA0; font-weight: 600; padding: 0; }
+.sd.given { color: #1f1f1f; font-weight: 800; }
+.sd.br { border-right: 2px solid #3a3a3a; } .sd.bb { border-bottom: 2px solid #3a3a3a; }
+.sd.near { background: #F6F1E4; } .sd.samev { background: #E7F0E9; } .sd.sel { background: #F2D675; }
+.sd.bad { color: #C0392B; background: #FBE3DF; }
+.sd-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; max-width: 440px; margin: 14px auto 0; }
+.sd-pad button { height: 54px; border-radius: 10px; border: 0; background: #E9E3D6; font-size: 1.45rem; font-weight: 800; color: #1f1f1f; }
+.sd-pad .wide { font-size: 1rem; background: #fff; border: 1px solid #DDD5C4; }
+.sd-tip, .ss-tip { text-align: center; margin-top: 10px; }
+/* 사천성 */
+.ss-board { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 6px; margin: 0 auto; background: #1E3B2E; border-radius: 14px; --fs: 26px; }
+.ss-t { aspect-ratio: 3 / 4; border: 0; border-radius: 8px; background: #FFFBEF; box-shadow: inset 0 -3px 0 #D9D1BD; font-size: var(--fs); padding: 0; display: flex; align-items: center; justify-content: center; }
+.ss-t.sel { background: #F2D675; box-shadow: 0 0 0 3px #3A2E00 inset; }
+.ss-t.hint { background: #CFE6D8; }
+.ss-t.gone { visibility: hidden; }
+.ss-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
+.ss-bar .btn { padding: 10px 4px; font-size: 0.95rem; line-height: 1.25; }
+.ss-bar small { display: block; font-size: 0.72rem; color: #8a6d2c; }
+.ss-line { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 30; }
+.ss-line polyline { fill: none; stroke: #F2D675; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+body.game-mode .top-nav img { display: none; }
+body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
+.pl-hub-head { padding: 18px 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+.pl-hub-head span { font-size: 0.78rem; letter-spacing: 0.3em; color: #8a6d2c; }
+.pl-hub-head h2 { font-family: 'Nanum Myeongjo', serif; font-size: 2rem; margin: 4px 0 6px; color: var(--dark-green); }
+.pl-hub-head p { margin: 0; color: #555; font-size: 1.02rem; }
+.sd-pad .wide { white-space: nowrap; font-size: 0.9rem; }
+/* 큰 글씨 폰에서도 판이 넘치지 않게: 칸 글자는 화면 폭 기준 */
+.sd { min-width: 0; font-size: min(5.2vw, 23px); }
+.sd-grid { width: 100%; }
+.mm-keys .k { min-width: 0; font-size: min(5vw, 21px); }
+.mm-keys .k.wide { font-size: min(3.6vw, 15px); }
+.mm .t { min-width: 0; font-size: min(6vw, 24px); }
+.mm-row em { font-size: min(4vw, 17px); }
+.n5 { min-width: 0; font-size: min(6.5vw, 26px); }
+.ss-bar .btn { font-size: min(3.8vw, 15px); }

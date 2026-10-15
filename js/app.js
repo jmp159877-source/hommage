@@ -3,6 +3,7 @@ import * as DB from './db.js';
 import * as NB from './notebook.js';
 import { drawCard, photoFor } from './cards.js';
 import * as MM from './malmoi.js';
+import * as PLAY from './play.js';
 let modalPushed = false, skipPop = false, exitOpen = false;
 
 const $ = id => document.getElementById(id);
@@ -251,6 +252,7 @@ document.addEventListener('click', async e => { const d = e.target.closest('[dat
 window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (CBOX[k]) renderCbox(k); });
 if (CBOX[location.hash.slice(1)]) renderCbox(location.hash.slice(1));
 
+PLAY.init({ toast, modal, closeModal, esc, openGate: (...a) => openGate(...a) });
 NB.init({ toast, modal, closeModal, openGate });
 
 // ── 오늘의 시세 ──
@@ -300,7 +302,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { malmoi: ['detail_malmoi', '말모이', () => '오늘의 낱말,<br>맞혀 보세요'], history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
+const DET = { play: ['detail_malmoi', '오늘 PLAY', () => '하루 한 판,<br>오늘의 순위'], malmoi: ['', '말모이', () => ''], shisen: ['', '사천성', () => ''], num50: ['', '1 to 50', () => ''], sudoku: ['', '스도쿠', () => ''], history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 // ── 아침 알림 받기 (원하는 사람만, 시간은 직접 고르기) ──
@@ -326,8 +328,12 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
   draw();
 })();
 
-let mmMounted = false;
-function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null; if (cur === 'malmoi' && !mmMounted) { mmMounted = true; MM.mount($('mm-root'), { toast, esc }); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
+const GAME = { malmoi: () => MM.mount($('mm-root'), { toast, esc }), shisen: async () => (await import('./games/shisen.js')).mount($('ss-root')), num50: async () => (await import('./games/num50.js')).mount($('n5-root')), sudoku: async () => (await import('./games/sudoku.js')).mount($('sd-root')) };
+const gameDone = {};
+function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
+  document.body.classList.toggle('game-mode', !!GAME[cur] || cur === 'play'); if (!GAME[cur]) PLAY.stopAll();
+  if (cur === 'play') PLAY.hub($('play-root'));
+  if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
 $('back').onclick = () => { if (route.y != null) history.back(); else location.hash = ''; };
 window.addEventListener('hashchange', route);
 renderEra(); route();
