@@ -1,0 +1,18 @@
+# 오마주 오늘의 시세: 매시 10분(한국 시간 06~23시)에 갱신
+name: market
+on:
+  schedule:
+    - cron: '10 21-23,0-14 * * *'   # UTC 21~14시 = KST 06~23시
+  workflow_dispatch:
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q google-cloud-firestore
+      - env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python tools/market.py
