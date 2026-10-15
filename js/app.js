@@ -12,7 +12,7 @@ const TAGLINE = '— 오마주, 매일 아침 5분, 마음은 주니어\n' + loc
 // ── 날짜 ──
 const now = new Date(), M = now.getMonth(), D = now.getDate(), Y = now.getFullYear(), WD = ['일', '월', '화', '수', '목', '금', '토'];
 const TODAY = DB.todayKey(now);
-$('toc-date').innerHTML = `<b>${M + 1}월 ${D}일</b><span>${['일','월','화','수','목','금','토'][new Date().getDay()]}요일</span>`; $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
+$('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
 try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = `음력 ${m.value}월 ${d.value}일`; } catch (e) {}
 const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
 $('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
