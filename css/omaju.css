@@ -736,3 +736,7 @@ body.in-detail .tabs-mini { display: none; }
 .ot-row { display: block; }
 .ot-row p { margin: 0 0 4px; }
 .ot-row .linkbtn { display: inline-block; margin-top: 6px; }
+/* 시세 카드: 신문 사진 띠 */
+.mk-card { background: #fff url('../img/market.jpg') center 30% / cover no-repeat; position: relative; overflow: hidden; }
+.mk-card::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.86); }
+.mk-card > * { position: relative; }
