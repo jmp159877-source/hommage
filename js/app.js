@@ -313,7 +313,7 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
   if (!ok && !isIOS) return;
   const get = () => store.get('push', null);
   const draw = () => { const p = get(); btn.hidden = false; btn.innerHTML = p ? `<span class="pc-ic">☀</span><span><b>아침 ${p.hour}시 알림 받는 중</b><small>시간 바꾸기 · 그만 받기</small></span>` : `<span class="pc-ic">☀</span><span><b>아침 알림 받기</b><small>매일 아침 인사 카드와 오늘 PLAY를 알려 드려요</small></span>`; };
-  btn.onclick = () => {
+  const open = () => {
     if (isIOS && !standalone) return modal(`<h2>아침 알림 받기</h2><p style="font-size:1.1rem;line-height:1.8">아이폰은 오마주를 <b>앱 아이콘으로 설치</b>한 뒤에 알림을 받을 수 있습니다.<br>화면 아래 <b>공유</b> 단추 → <b>홈 화면에 추가</b>를 누른 뒤, 아이콘으로 열어 다시 눌러 주세요.</p>`);
     const p = get();
     modal(`<h2>몇 시에 받을까요?</h2><p style="font-size:1.05rem;color:#555">매일 그 시간에 오늘의 인사 카드가 찾아갑니다.</p><div class="pc-hours">${[7, 8, 9].map(h => `<button type="button" class="btn ${p && p.hour === h ? 'green' : 'line'}" data-hour="${h}">아침 ${h}시</button>`).join('')}</div>${p ? '<button type="button" class="pc-stop" id="pc-stop">알림 그만 받기</button>' : ''}`, () => {
@@ -325,6 +325,7 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
       const stop = $('pc-stop'); if (stop) stop.onclick = async () => { await DB.pushUnsubscribe(p.token); store.set('push', null); closeModal(); draw(); toast('알림을 껐습니다.'); };
     });
   };
+  btn.onclick = () => open(); window.openPushPicker = open;
   draw();
 })();
 
@@ -456,27 +457,31 @@ function openGate(why) {
 const REGIONS = { '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'], '경기': ['수원', '성남', '고양', '용인', '부천', '안산', '안양', '남양주', '화성', '평택', '의정부', '시흥', '파주', '김포', '광명', '광주', '군포', '하남', '오산', '양주', '이천', '구리', '안성', '포천', '의왕', '여주', '양평', '동두천', '과천', '가평', '연천'], '인천': ['중구', '동구', '미추홀구', '연수구', '남동구', '부평구', '계양구', '서구', '강화군', '옹진군'], '부산': ['중구', '서구', '동구', '영도구', '부산진구', '동래구', '남구', '북구', '해운대구', '사하구', '금정구', '강서구', '연제구', '수영구', '사상구', '기장군'], '대구': ['중구', '동구', '서구', '남구', '북구', '수성구', '달서구', '달성군', '군위군'], '광주': ['동구', '서구', '남구', '북구', '광산구'], '대전': ['동구', '중구', '서구', '유성구', '대덕구'], '울산': ['중구', '남구', '동구', '북구', '울주군'], '세종': ['세종'], '강원': ['춘천', '원주', '강릉', '동해', '태백', '속초', '삼척', '홍천', '횡성', '영월', '평창', '정선', '철원', '화천', '양구', '인제', '고성', '양양'], '충북': ['청주', '충주', '제천', '보은', '옥천', '영동', '증평', '진천', '괴산', '음성', '단양'], '충남': ['천안', '공주', '보령', '아산', '서산', '논산', '계룡', '당진', '금산', '부여', '서천', '청양', '홍성', '예산', '태안'], '전북': ['전주', '군산', '익산', '정읍', '남원', '김제', '완주', '진안', '무주', '장수', '임실', '순창', '고창', '부안'], '전남': ['목포', '여수', '순천', '나주', '광양', '담양', '곡성', '구례', '고흥', '보성', '화순', '장흥', '강진', '해남', '영암', '무안', '함평', '영광', '장성', '완도', '진도', '신안'], '경북': ['포항', '경주', '김천', '안동', '구미', '영주', '영천', '상주', '문경', '경산', '의성', '청송', '영양', '영덕', '청도', '고령', '성주', '칠곡', '예천', '봉화', '울진', '울릉'], '경남': ['창원', '진주', '통영', '사천', '김해', '밀양', '거제', '양산', '의령', '함안', '창녕', '고성', '남해', '하동', '산청', '함양', '거창', '합천'], '제주': ['제주시', '서귀포시'] };
 function openSignup() {
   modal(`<h2>간편 회원가입</h2>
-  <div class="field"><label>아이디</label><div class="in"><input id="s-id" autocomplete="username" inputmode="latin" placeholder="예: happy1960" maxlength="12"><button type="button" class="btn line" id="s-id-chk">중복 확인</button></div><div class="hint">영문 소문자와 숫자, 4~12자</div><div class="msg" id="s-id-msg"></div></div>
+  <div class="field"><label>아이디</label><div class="in"><input id="s-id" autocomplete="username" inputmode="latin" placeholder="예: abc1234" maxlength="12"><button type="button" class="btn line" id="s-id-chk">중복 확인</button></div><div class="hint">영어 소문자 + 숫자 조합, 4~12자 <span style="white-space:nowrap">(예: abc1234)</span></div><div class="msg" id="s-id-msg"></div></div>
   <div class="field"><label>비밀번호</label><input id="s-pw" type="password" inputmode="numeric" placeholder="숫자 6개" maxlength="6" autocomplete="new-password"><div class="hint">숫자 6자리</div></div>
   <div class="field"><label>별명</label><div class="in"><input id="s-nick" placeholder="예: 강남 멋쟁이" maxlength="12"><button type="button" class="btn line" id="s-nick-chk">중복 확인</button></div><div class="hint">글을 쓸 때 보이는 이름</div><div class="msg" id="s-nick-msg"></div></div>
   <div class="field"><label>연락처</label><input id="s-phone" type="tel" inputmode="tel" placeholder="010-1234-5678" maxlength="13"><div class="hint">아이디나 비밀번호를 잊으셨을 때 찾는 데 필요합니다.</div></div>
-  <div class="field"><label>거주 지역</label><div class="in"><select id="s-r1"><option value="">시·도</option>${Object.keys(REGIONS).map(r => `<option>${r}</option>`).join('')}</select><select id="s-r2"><option value="">구·군</option></select></div></div>
+  <div class="field"><label>성별</label><div class="seg2" id="s-gender"><button type="button" data-g="남">남성</button><button type="button" data-g="여">여성</button></div></div>
+  <div class="field"><label>태어난 해</label><select id="s-birth"><option value="">태어난 해를 고르세요</option>${Array.from({ length: new Date().getFullYear() - 14 - 1925 + 1 }, (_, i) => 1925 + i).map(y => `<option value="${y}">${y}년생</option>`).join('')}</select><div class="hint">나이에 맞는 소식을 고르는 데만 씁니다.</div></div>
   <label class="chk"><input type="checkbox" id="s-agree"><span>개인정보 수집에 동의합니다. 아이디·비밀번호 찾기와 서비스 안내에만 쓰고, 다른 곳에 주지 않습니다. <a href="privacy.html" target="_blank">자세히</a></span></label>
-  <label class="chk"><input type="checkbox" id="s-mkt"><span>(선택) 오마주 소식을 문자로 받겠습니다.</span></label>
+  <label class="chk"><input type="checkbox" id="s-mkt"><span>(선택) 매일 아침 오마주 소식을 <b>알림</b>으로 받겠습니다.</span></label>
   <div class="modal-actions"><button type="button" class="btn green" id="s-go">가입하기</button></div><div class="err-box" id="s-err" hidden></div>`,
   () => {
-    $('s-r1').onchange = () => { $('s-r2').innerHTML = '<option value="">구·군</option>' + (REGIONS[$('s-r1').value] || []).map(r => `<option>${r}</option>`).join(''); };
+    let gender = ''; $('s-gender').onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; gender = b.dataset.g; $('s-gender').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); };
     $('s-phone').oninput = e => { let v = e.target.value.replace(/\D/g, '').slice(0, 11); if (v.length > 7) v = v.slice(0, 3) + '-' + v.slice(3, 7) + '-' + v.slice(7); else if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3); e.target.value = v; };
     $('s-id').oninput = e => { e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''); $('s-id-msg').textContent = ''; };
     $('s-id-chk').onclick = async () => { const u = $('s-id').value; const m = $('s-id-msg'); if (!DB.validUsername(u)) { m.className = 'msg err'; m.textContent = '영문 소문자와 숫자로 4~12자입니다.'; return; } m.className = 'msg'; m.textContent = '확인 중…'; const t = await DB.usernameTaken(u); m.className = 'msg ' + (t ? 'err' : 'ok'); m.textContent = t ? '이미 있는 아이디입니다. 다른 아이디를 넣어 주세요.' : '사용할 수 있습니다.'; };
     $('s-nick-chk').onclick = async () => { const n = $('s-nick').value.trim(); const m = $('s-nick-msg'); if (n.length < 2) { m.className = 'msg err'; m.textContent = '2자 이상 적어 주세요.'; return; } m.className = 'msg'; m.textContent = '확인 중…'; const t = await DB.nicknameTaken(n); if (t) { const s = await DB.suggestNick(n); m.className = 'msg err'; m.innerHTML = `이미 있는 별명입니다. "<b>${esc(s)}</b>"는 어떠세요? <button type="button" class="linkbtn" id="s-nick-use">이걸로 할게요</button>`; $('s-nick-use').onclick = () => { $('s-nick').value = s; m.className = 'msg ok'; m.textContent = '사용할 수 있습니다.'; }; } else { m.className = 'msg ok'; m.textContent = '사용할 수 있습니다.'; } };
     $('s-go').onclick = async () => {
       const err = $('s-err'); err.hidden = true;
+      if (!gender) { err.textContent = '성별을 골라 주세요.'; err.hidden = false; return; }
+      if (!$('s-birth').value) { err.textContent = '태어난 해를 골라 주세요.'; err.hidden = false; return; }
       if (!$('s-agree').checked) { err.textContent = '개인정보 수집 동의에 체크해 주세요.'; err.hidden = false; return; }
       $('s-go').disabled = true; $('s-go').textContent = '가입하는 중…';
       try {
-        await DB.signup({ username: $('s-id').value, pw: $('s-pw').value, nick: $('s-nick').value, phone: $('s-phone').value, region: [$('s-r1').value, $('s-r2').value].filter(Boolean).join(' '), marketing: $('s-mkt').checked });
-        closeModal(); toast('가입되었습니다. 환영합니다!'); if (afterLogin) afterLogin();
+        await DB.signup({ username: $('s-id').value, pw: $('s-pw').value, nick: $('s-nick').value, phone: $('s-phone').value, region: '', gender, birthYear: +$('s-birth').value, marketing: $('s-mkt').checked });
+        const wantPush = $('s-mkt').checked; closeModal(); toast('가입되었습니다. 환영합니다!'); if (afterLogin) afterLogin();
+        if (wantPush && window.openPushPicker) setTimeout(() => window.openPushPicker(true), 600);
       } catch (e) { err.textContent = e.message; err.hidden = false; $('s-go').disabled = false; $('s-go').textContent = '가입하기'; }
     };
   });

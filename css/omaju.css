@@ -1097,3 +1097,12 @@ body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 .mm-row em { font-size: min(4vw, 17px); }
 .n5 { min-width: 0; font-size: min(6.5vw, 26px); }
 .ss-bar .btn { font-size: min(3.8vw, 15px); }
+/* 가입 화면: 큰 글씨 폰에서도 칸이 다 보이게 */
+.field .in { flex-wrap: wrap; }
+.field .in input { flex: 1 1 7em; min-width: 0; }
+.field .in .btn { flex: 1 0 auto; }
+.field select { width: 100%; font-size: 1.05rem; padding: 12px; border-radius: 8px; border: 1px solid #D8D1C2; background: #fff; }
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg2 button { padding: 13px; border-radius: 8px; border: 1px solid #D8D1C2; background: #fff; font-size: 1.08rem; font-weight: 700; color: #444; }
+.seg2 button[aria-pressed="true"] { background: var(--warm); border-color: var(--warm-line); color: var(--warm-ink); }
+.chk input { width: 24px; height: 24px; flex: none; accent-color: #3E8A63; }

@@ -47,12 +47,14 @@ export async function suggestNick(n) {
 }
 
 // ── 가입 ──
-export async function signup({ username, pw, nick, phone, region, marketing }) {
+export async function signup({ username, pw, nick, phone, region, marketing, gender, birthYear }) {
   username = username.trim().toLowerCase(); nick = nick.trim();
   if (!validUsername(username)) throw new Error('아이디는 영문 소문자와 숫자로 4~12자입니다.');
   if (!validPw(pw)) throw new Error('비밀번호는 숫자 6자리입니다.');
   if (nick.length < 2 || nick.length > 12) throw new Error('별명은 2~12자로 적어 주세요.');
   if (!validPhone(phone)) throw new Error('휴대폰 번호를 다시 확인해 주세요. 예: 010-1234-5678');
+  if (!['남', '여'].includes(gender)) throw new Error('성별을 골라 주세요.');
+  if (!(birthYear >= 1925 && birthYear <= new Date().getFullYear() - 14)) throw new Error('태어난 해를 골라 주세요.');
   if (await usernameTaken(username)) throw new Error('이미 있는 아이디입니다. 다른 아이디를 넣어 주세요.');
   if (await nicknameTaken(nick)) throw new Error('이미 있는 별명입니다. 다른 별명을 넣어 주세요.');
   const cred = await createUserWithEmailAndPassword(auth, username + DOMAIN, pw);
@@ -63,12 +65,12 @@ export async function signup({ username, pw, nick, phone, region, marketing }) {
     if ((await tx.get(n)).exists()) throw new Error('이미 있는 별명입니다.');
     tx.set(u, { uid }); tx.set(n, { uid });
     tx.set(doc(db, 'users', uid), {
-      username, nick, nickKey: normNick(nick), phone: phone.replace(/-/g, ''), region: region || '', role: 'member',
+      username, nick, nickKey: normNick(nick), phone: phone.replace(/-/g, ''), region: region || '', gender, birthYear, role: 'member',
       marketing: !!marketing, agreedAt: serverTimestamp(), createdAt: serverTimestamp(), lastSeen: serverTimestamp(), lastSeenDay: todayKey(),
       streak: 0, lastCheckin: ''
     });
   });
-  profile = { username, nick, nickKey: normNick(nick), phone: phone.replace(/-/g, ''), region: region || '', role: 'member', marketing: !!marketing, streak: 0, lastCheckin: '', checkinCount: 0 };
+  profile = { username, nick, nickKey: normNick(nick), phone: phone.replace(/-/g, ''), region: region || '', gender, birthYear, role: 'member', marketing: !!marketing, streak: 0, lastCheckin: '', checkinCount: 0 };
   listeners.forEach(cb => cb(me, profile));
   track('sign_up');
   return uid;
