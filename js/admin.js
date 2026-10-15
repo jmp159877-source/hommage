@@ -57,13 +57,14 @@ $('users').onclick = async e => { const b = e.target.closest('[data-ban]'); if (
 async function loadContent() {
   const d = $('c-date').value; const s = await getDoc(doc(db, 'daily', d));
   $('c-json').value = JSON.stringify(s.exists() ? s.data() : DEFAULT_CONTENT, null, 2);
-  $('c-msg').textContent = s.exists() ? '저장된 내용을 불러왔습니다.' : '저장된 것이 없어 기본 내용을 보여 줍니다.';
+  const x = s.exists() ? s.data() : null; $('c-msg').textContent = x ? (x.source === 'auto' ? '자동으로 만들어진 내용입니다. ' + (x.generatedAt || '').slice(0, 16).replace('T', ' ') + (x.errors && x.errors.length ? ' · 못 만든 코너: ' + x.errors.map(e => e.split(':')[0]).join(', ') : '') : '관리자가 저장한 내용입니다.') : '저장된 것이 없어 기본 내용을 보여 줍니다.';
 }
 $('c-load').onclick = loadContent;
 $('c-default').onclick = () => { $('c-json').value = JSON.stringify(DEFAULT_CONTENT, null, 2); };
 $('c-save').onclick = async () => {
   let data; try { data = JSON.parse($('c-json').value); } catch (e) { $('c-msg').textContent = '모양이 틀렸습니다. 따옴표나 쉼표를 확인해 주세요. (' + e.message + ')'; return; }
-  await setDoc(doc(db, 'daily', $('c-date').value), data); $('c-msg').textContent = $('c-date').value + ' 저장했습니다.';
+  data.source = 'admin'; data.editedAt = new Date().toISOString(); delete data.errors;
+  await setDoc(doc(db, 'daily', $('c-date').value), data); $('c-msg').textContent = $('c-date').value + ' 저장했습니다. (관리자가 고친 날은 자동 생성이 덮어쓰지 않습니다)';
 };
 
 // ── 한마디·신고 ──

@@ -1,0 +1,33 @@
+# 오마주 매일 콘텐츠: 한국 시간 자정 5분에 만들고, 못 만들었으면 1시·3시·6시에 다시 시도
+name: daily-content
+on:
+  schedule:
+    - cron: '5 15 * * *'   # 00:05 KST
+    - cron: '0 16 * * *'   # 01:00 KST (보강)
+    - cron: '0 18 * * *'   # 03:00 KST (보강)
+    - cron: '0 21 * * *'   # 06:00 KST (보강)
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '만들 날짜 (YYYY-MM-DD, 비우면 오늘)'
+        required: false
+      force:
+        description: '이미 있어도 다시 만들기 (yes)'
+        required: false
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q google-cloud-firestore
+      - name: 콘텐츠 만들기
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          ARGS="${{ github.event.inputs.date }}"
+          if [ "${{ github.event.inputs.force }}" = "yes" ]; then ARGS="$ARGS --force"; fi
+          python tools/gen_daily.py $ARGS
