@@ -831,3 +831,7 @@ body.in-detail .tabs-mini { display: none; }
 .genre button { background: #fff; border: 0; padding: 12px 0; font-size: 1.08rem; font-weight: 700; color: #555; }
 .genre button + button { border-left: 1px solid rgba(20,20,20,0.2); }
 .genre button[aria-pressed="true"] { background: var(--dark-green); color: #fff; }
+.wx-in .linkbtn { position: relative; z-index: 2; padding: 6px 0; cursor: pointer; }
+.wx-in .linkbtn[disabled] { opacity: 0.7; }
+.mk-item .mk-l { color: #1a1a1a !important; font-weight: 600; }
+.mk-item .mk-v { color: #000; font-weight: 800; }
