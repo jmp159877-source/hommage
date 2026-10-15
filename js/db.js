@@ -261,5 +261,5 @@ export async function myRank(k) {
   const mine = await getDoc(doc(db, 'scores', k, 'e', me.uid));
   if (!mine.exists()) return { total };
   const better = (await getCountFromServer(query(col, where('score', '<', mine.data().score)))).data().count;
-  return { total, rank: better + 1, label: mine.data().label };
+  return { total, rank: better + 1, label: mine.data().label, score: mine.data().score };
 }

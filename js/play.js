@@ -62,6 +62,27 @@ export function shell(el, game, { timer = true } = {}) {
   };
   return T;
 }
+
+// ── 기준 기록: 순위표가 비어 보이지 않게 놀이마다 50명. 진짜 참여자가 50명을 넘으면 저절로 빠짐. (SEED_ON=false 로 끄기)
+const SEED_ON = true, SEED_N = 50, REAL_ENOUGH = 50;
+const SEED_NICKS = ['봄날햇살', '산들바람', '느티나무', '꽃길만걷자', '청춘다방', '초록대문', '해맑음', '바다향기', '달빛산책', '커피한잔',
+  '은하수', '민들레홀씨', '푸른솔', '한강라이더', '단풍잎', '소나기', '라일락향', '별헤는밤', '아침이슬', '파란하늘',
+  '동네왕언니', '등산대장', '낚시광', '골프사랑', '여행가방', '하모니카', '통기타', '책벌레', '꽃할매', '멋쟁이신사',
+  '수국정원', '노을빛', '새벽기차', '보리밭', '장미정원', '미소천사', '우리집셰프', '텃밭농부', '자전거여행', '청포도',
+  '해바라기', '들국화', '은행나무길', '매화향기', '감나무집', '찐빵좋아', '노래교실짱', '탁구왕', '바둑두는남자', '수다쟁이',
+  '제주바람', '부산갈매기', '대구사과', '전주한옥', '강릉커피', '춘천닭갈비', '여수밤바다', '경주나들이', '안동하회', '남해바다'];
+function srand(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const RANGE = { num50: [24000, 95000], shisen: [85000, 420000], sudoku: [260000, 1500000], malmoi: [40000, 520000] };
+function seeds(game, k) {
+  if (!SEED_ON) return [];
+  let h = 0; for (const c of k) h = (h * 31 + c.charCodeAt(0)) | 0;
+  const R = srand(h), [lo, hi] = RANGE[game], names = SEED_NICKS.slice().sort(() => R() - 0.5).slice(0, SEED_N);
+  return names.map((nick, i) => {
+    const x = Math.pow((i + 0.15 + R() * 0.8) / SEED_N, 1.35), ms = Math.round(lo + (hi - lo) * x);
+    if (game === 'malmoi') { const t = [2, 3, 3, 4, 4, 4, 5, 5, 6][Math.floor(R() * 9)]; return { uid: 's_' + nick, nick, score: t * 1e6 + Math.min(ms, 999999), label: `${t}번 · ${fmtKo(ms)}`, seed: true }; }
+    return { uid: 's_' + nick, nick, score: ms, label: fmtKo(ms), seed: true };
+  });
+}
 export const fmt = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 export const fmtKo = ms => { const s = Math.round(ms / 100) / 10; const m = Math.floor(s / 60); return (m ? m + '분 ' : '') + (s % 60).toFixed(1).replace('.0', '') + '초'; };
 
@@ -78,20 +99,29 @@ export async function finish(game, score, label, el) {
   if (!DB.currentUser()) return;
   try {
     const r = await DB.submitScore(game, score, label);
-    const k = DB.rankKeys(game), me = await DB.myRank(k.day);
+    const k = DB.rankKeys(game), m0 = await DB.myRank(k.day), me = withSeeds(game, k.day, m0, m0.score);
     box.querySelector('#pl-done-s').textContent = me.rank ? `오늘 ${me.total.toLocaleString()}명 중 ${me.rank.toLocaleString()}등${r && r.day ? '' : ' (오늘 더 좋은 기록이 이미 있어요)'}` : '순위에 올렸습니다.';
   } catch (e) { box.querySelector('#pl-done-s').textContent = '순위에 올리지 못했습니다. 잠시 뒤 다시 해 주세요.'; }
 }
 
+function withSeeds(game, k, me, myScore) {
+  if (me.total >= REAL_ENOUGH) return me;
+  const sd = seeds(game, k); if (!sd.length) return me;
+  const out = { ...me, total: me.total + sd.length };
+  if (me.rank && myScore != null) out.rank = me.rank + sd.filter(x => x.score < myScore).length;
+  return out;
+}
 // ── 순위 창: 오늘 / 이번 주, 1~50위, 내 순위 ──
 export async function showRank(game, period = 'day') {
   const k = DB.rankKeys(game)[period];
-  H.modal(`<h2>${GAMES[game].name} 순위</h2><div class="rk-tabs"><button type="button" data-p="day" aria-pressed="${period === 'day'}">오늘</button><button type="button" data-p="week" aria-pressed="${period === 'week'}">이번 주</button></div><div class="rk-me" id="rk-me">불러오는 중…</div><ol class="rk-list" id="rk-list"></ol>`, () => {
+  H.modal(`<h2>${GAMES[game].name} 순위</h2><div class="rk-tabs"><button type="button" data-p="day" aria-pressed="${period === 'day'}">오늘</button><button type="button" data-p="week" aria-pressed="${period === 'week'}">이번 주</button></div><div class="rk-me" id="rk-me">불러오는 중…</div><ol class="rk-list" id="rk-list"></ol><p class="rk-note">순위에는 오마주가 준비한 기준 기록이 함께 들어 있습니다.</p>`, () => {
     document.querySelectorAll('.rk-tabs [data-p]').forEach(b => b.onclick = () => showRank(game, b.dataset.p));
     document.getElementById('modal').classList.add('rank-modal');
   });
   try {
-    const [top, me] = await Promise.all([DB.topScores(k, 50), DB.myRank(k)]);
+    const [real, me0] = await Promise.all([DB.topScores(k, 50), DB.myRank(k)]);
+    const sd = me0.total >= REAL_ENOUGH ? [] : seeds(game, k), top = real.concat(sd).sort((a, b) => a.score - b.score).slice(0, 50);
+    const me = withSeeds(game, k, me0, me0.score);
     const uid = DB.currentUser() && DB.currentUser().uid;
     const meEl = document.getElementById('rk-me'), list = document.getElementById('rk-list'); if (!meEl) return;
     meEl.innerHTML = me.rank ? `<b>내 순위</b> ${me.total.toLocaleString()}명 중 <em>${me.rank.toLocaleString()}등</em> · ${H.esc(me.label)}` : DB.currentUser() ? `아직 ${period === 'day' ? '오늘' : '이번 주'} 기록이 없어요. 한 판 해 보세요!` : '로그인하면 내 순위를 볼 수 있어요.';
