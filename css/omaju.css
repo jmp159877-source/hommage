@@ -895,3 +895,8 @@ body.in-detail .tabs-mini { display: none; }
 .colophon .co-orn b { color: #C9A24A; font-size: 0.8rem; font-weight: 400; }
 .colophon .co-en { line-height: 1.45; }
 .colophon .co-kr { line-height: 1.7; word-break: keep-all; }
+.foot.colophon { margin-top: 60px; padding: 26px 0 34px; }
+.colophon .co-orn { margin-bottom: 22px; }
+.colophon .co-logo { width: 150px; margin-bottom: 12px; }
+.colophon .co-kr { font-size: 0.92rem; margin-bottom: 16px; }
+.colophon .co-copy { margin-top: 14px; }
