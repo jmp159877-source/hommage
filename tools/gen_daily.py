@@ -70,7 +70,16 @@ def gemini(prompt, json_mode=True, search=False, max_retry=3):
                 if not json_mode:
                     return text
                 return parse_json(text)
-            except Exception as e:  # 429·500·파싱 실패 등 → 잠시 쉬고 재시도
+            except urllib.error.HTTPError as e:
+                detail = ""
+                try: detail = e.read().decode()[:300]
+                except Exception: pass
+                last = RuntimeError(f"{model} HTTP {e.code}: {detail}")
+                print(f"[gemini] {last}", file=sys.stderr)
+                if e.code in (400, 404):
+                    break  # 이 모델은 이 요청을 못 받음 → 다음 모델로
+                time.sleep(8 * (attempt + 1)); continue
+            except Exception as e:  # 파싱 실패 등 → 잠시 쉬고 재시도
                 last = e
                 print(f"[gemini] {model} 시도 {attempt + 1} 실패: {e}", file=sys.stderr)
                 time.sleep(8 * (attempt + 1))
@@ -111,12 +120,16 @@ def gen_era(d):
     era = {}
     for ago in (50, 40, 30, 20):
         yr = d.year - ago
-        text = gemini(f"""{yr}년 {d.month}월(가능하면 {d.month}월 {d.day}일 전후 한 주 안)에 실제로 있었던 일을 구글 검색으로 확인해서 2~3개 골라라.
+        prompt = f"""{yr}년 {d.month}월(가능하면 {d.month}월 {d.day}일 전후 한 주 안)에 실제로 있었던 일을 구글 검색으로 확인해서 2~3개 골라라.
 한국 소식 위주로 하되 세계 소식 1개를 섞어도 된다. 정치 논쟁·사건사고·죽음은 피하고 스포츠·문화·생활·방송·유행 위주로.
 반드시 검색으로 확인된 사실만 쓰고, 날짜가 확실하면 "{d.month}월 N일," 로 시작한다. 확인이 안 되면 그 항목은 빼라.
 또 그 시절(한국 {yr}년 무렵)의 생활 풍경을 떠올리게 하는 분위기 문장 한 개(40~60자)도 써라. "~그 시절을 다시 꺼내어 봅니다."로 끝낸다.
-형식(JSON만): {{"mood":"...", "facts":[["짧은 제목(4~8자)","설명 한두 문장(40~90자)"], ...]}}""", json_mode=True, search=True)
-        j = text if isinstance(text, dict) else parse_json(text)
+형식(JSON만): {{"mood":"...", "facts":[["짧은 제목(4~8자)","설명 한두 문장(40~90자)"], ...]}}"""
+        try:
+            j = gemini(prompt, json_mode=True, search=True)
+        except Exception as e:
+            print(f"[era] {yr} 검색 호출 실패, 검색 없이 재시도: {e}", file=sys.stderr)
+            j = gemini(prompt.replace("구글 검색으로 확인해서", "네가 확실히 아는 것만으로").replace("반드시 검색으로 확인된 사실만 쓰고", "확실한 사실만 쓰고") + "\n확실하지 않으면 그 해의 널리 알려진 큰 사건(올림픽·월드컵·유행가·방송)으로 대신해도 된다.", json_mode=True)
         facts = [[str(a).strip(), str(b).strip()] for a, b in j.get("facts", []) if str(b).strip()][:3]
         assert j.get("mood") and facts, f"{yr} 그해 오늘 비어 있음"
         era[str(ago)] = {"mood": j["mood"].strip(), "facts": facts, "songs": pick_songs(yr, d)}
