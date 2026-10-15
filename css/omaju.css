@@ -1310,3 +1310,7 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .tabs3 button.soon small { opacity: 0.9; letter-spacing: 0.08em; }
 .tabs3 button.soon[data-soon="g5"] { background-position: center 30% !important; }
 .tabs3 button.soon[data-soon="g6"] { background-position: 70% 25% !important; }
+/* 준비 중: 흐리고 차분하게(아직 열리지 않은 느낌) */
+.tabs3 button.soon { filter: grayscale(0.65) brightness(0.88) !important; }
+.tabs3 button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.7) 0%, rgba(30,28,24,0.42) 55%, rgba(30,28,24,0.35) 100%) !important; }
+.tabs3 button.soon small { display: inline-block; margin-top: 4px; padding: 3px 12px; border: 1px solid rgba(255,255,255,0.7); border-radius: 999px; font-size: min(0.9rem, 3.6vw) !important; }
