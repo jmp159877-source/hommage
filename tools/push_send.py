@@ -18,7 +18,7 @@ g = (day.to_dict() or {}).get("greetings") if day.exists else None
 first = (g[0] if g else "좋은 아침입니다.\n오늘도 반갑습니다.").replace("\n", " ")
 wd = "월화수목금토일"[now.weekday()]
 title = f"오마주 · {now.month}월 {now.day}일 {wd}요일"
-body = f"{first}  오늘의 인사 카드와 말모이가 기다립니다."
+body = f"{first}  오늘의 인사 카드와 오늘 PLAY가 기다립니다."
 
 docs = list(db.collection("push").where("hour", "==", hour).stream())
 print("보낼 시각", hour, "기기", len(docs))
