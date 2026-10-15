@@ -239,7 +239,8 @@ def youtube_pick(query):
         if not items:
             return None
         pick = items[datetime.date.today().toordinal() % len(items)]
-        return {"videoId": pick["id"]["videoId"], "title": pick["snippet"]["title"], "channel": pick["snippet"]["channelTitle"], "thumb": pick["snippet"]["thumbnails"].get("medium", {}).get("url", "")}
+        import html
+        return {"videoId": pick["id"]["videoId"], "title": html.unescape(pick["snippet"]["title"]), "channel": html.unescape(pick["snippet"]["channelTitle"]), "thumb": pick["snippet"]["thumbnails"].get("medium", {}).get("url", "")}
     except Exception as e:
         print(f"[youtube] 사용 불가: {str(e)[:120]}", file=sys.stderr)
         return None

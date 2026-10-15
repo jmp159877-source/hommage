@@ -130,9 +130,10 @@ cardsEl.onclick = async e => {
 
 // ── 앞으로 나아가기: 따라하기 · 회화 · 나들이 ──
 const FOLLOW_ORDER = ['gym', 'sing', 'dance', 'golf', 'park'];
+const unent = t => String(t || '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 function renderFollow() {
   const f = C.follow; if (!f) { $('follow-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 영상이 준비되지 않았습니다. 내일 다시 들러 주세요.</p>'; return; }
-  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<div class="fl-video"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${esc(it.videoId)}?rel=0&modestbranding=1&playsinline=1" title="${esc(it.title || it.name)}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="fl-cap">${esc(it.title || '')}${it.channel ? ' · ' + esc(it.channel) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
+  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<div class="fl-video"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${esc(it.videoId)}?rel=0&modestbranding=1&playsinline=1" title="${esc(it.title || it.name)}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="fl-cap">${esc(unent(it.title))}${it.channel ? ' · ' + esc(unent(it.channel)) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
 }
 const LANG = { en: ['영어', 'en-US'], ja: ['일본어', 'ja-JP'], zh: ['중국어', 'zh-CN'] };
 function renderPhrase() {
