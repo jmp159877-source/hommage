@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['tools/songs.json']
   schedule:
-    - cron: '0 19 * * *'   # 04:00 KST
+    - cron: '20 8 * * *'   # 17:20 KST — 유튜브 하루 한도가 16시(KST)에 새로 채워진 직후
   workflow_dispatch:
 permissions:
   contents: write
