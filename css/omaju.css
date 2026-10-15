@@ -826,3 +826,8 @@ body.in-detail .tabs-mini { display: none; }
 .toc-l { gap: 8px; }
 .toc-l img { width: 60px; }
 @media (max-width: 768px) { .toc-l em { font-size: 1.65rem !important; } }
+/* 가요 / 팝송 */
+.genre { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 20px 0 0; border: 1px solid rgba(20,20,20,0.2); border-radius: 8px; overflow: hidden; }
+.genre button { background: #fff; border: 0; padding: 12px 0; font-size: 1.08rem; font-weight: 700; color: #555; }
+.genre button + button { border-left: 1px solid rgba(20,20,20,0.2); }
+.genre button[aria-pressed="true"] { background: var(--dark-green); color: #fff; }

@@ -165,7 +165,7 @@ def gen_era(d):
             j = gemini(prompt.replace("구글 검색으로 확인해서", "네가 확실히 아는 것만으로").replace("반드시 검색으로 확인된 사실만 쓰고", "확실한 사실만 쓰고") + "\n확실하지 않으면 그 해의 널리 알려진 큰 사건(올림픽·월드컵·유행가·방송)으로 대신해도 된다.", json_mode=True)
         facts = [[str(a).strip(), str(b).strip()] for a, b in j.get("facts", []) if str(b).strip()][:3]
         assert j.get("mood") and facts, f"{yr} 그해 오늘 비어 있음"
-        era[str(ago)] = {"mood": j["mood"].strip(), "facts": facts, "songs": pick_songs(yr, d)}
+        era[str(ago)] = {"mood": j["mood"].strip(), "facts": facts, "songs": pick_songs(yr, d), "pop": pick_songs(f"pop:{yr}", d)}
     return era
 
 

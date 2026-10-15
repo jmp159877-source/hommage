@@ -1,5 +1,5 @@
 {
- "_설명": "해마다 사랑받은 노래 목록. 매일 10곡씩 돌아가며 보여 준다. [제목, 가수]. 올해(2026) 필요한 해는 1976·1986·1996·2006, 내년은 1977·1987·1997·2007. 내년 목록은 연말에 확인해서 채운다.",
+ "_설명": "해마다 사랑받은 노래 목록. 매일 10곡씩 돌아가며 보여 준다. [제목, 가수]. 올해(2026) 필요한 해는 1976·1986·1996·2006, 내년은 1977·1987·1997·2007. 내년 목록은 연말에 확인해서 채운다. 팝은 'pop:연도' 키.",
  "1976": [
   [
    "돌아와요 부산항에",
@@ -418,6 +418,374 @@
   [
    "다시 만난 세계",
    "소녀시대"
+  ]
+ ],
+ "pop:1976": [
+  [
+   "Dancing Queen",
+   "ABBA"
+  ],
+  [
+   "Bohemian Rhapsody",
+   "Queen"
+  ],
+  [
+   "Don't Go Breaking My Heart",
+   "Elton John & Kiki Dee"
+  ],
+  [
+   "Silly Love Songs",
+   "Wings"
+  ],
+  [
+   "Fernando",
+   "ABBA"
+  ],
+  [
+   "If You Leave Me Now",
+   "Chicago"
+  ],
+  [
+   "I Write the Songs",
+   "Barry Manilow"
+  ],
+  [
+   "Love Hurts",
+   "Nazareth"
+  ],
+  [
+   "December, 1963 (Oh, What a Night)",
+   "The Four Seasons"
+  ],
+  [
+   "Tonight's the Night",
+   "Rod Stewart"
+  ],
+  [
+   "Play That Funky Music",
+   "Wild Cherry"
+  ],
+  [
+   "Let Your Love Flow",
+   "Bellamy Brothers"
+  ]
+ ],
+ "pop:1986": [
+  [
+   "That's What Friends Are For",
+   "Dionne Warwick & Friends"
+  ],
+  [
+   "Take My Breath Away",
+   "Berlin"
+  ],
+  [
+   "Glory of Love",
+   "Peter Cetera"
+  ],
+  [
+   "Greatest Love of All",
+   "Whitney Houston"
+  ],
+  [
+   "Papa Don't Preach",
+   "Madonna"
+  ],
+  [
+   "Live to Tell",
+   "Madonna"
+  ],
+  [
+   "Kyrie",
+   "Mr. Mister"
+  ],
+  [
+   "Say You, Say Me",
+   "Lionel Richie"
+  ],
+  [
+   "Addicted to Love",
+   "Robert Palmer"
+  ],
+  [
+   "The Final Countdown",
+   "Europe"
+  ],
+  [
+   "Livin' on a Prayer",
+   "Bon Jovi"
+  ],
+  [
+   "Sledgehammer",
+   "Peter Gabriel"
+  ]
+ ],
+ "pop:1996": [
+  [
+   "Macarena",
+   "Los del Río"
+  ],
+  [
+   "Because You Loved Me",
+   "Celine Dion"
+  ],
+  [
+   "One Sweet Day",
+   "Mariah Carey & Boyz II Men"
+  ],
+  [
+   "Wannabe",
+   "Spice Girls"
+  ],
+  [
+   "Killing Me Softly",
+   "Fugees"
+  ],
+  [
+   "Ironic",
+   "Alanis Morissette"
+  ],
+  [
+   "Don't Speak",
+   "No Doubt"
+  ],
+  [
+   "Always Be My Baby",
+   "Mariah Carey"
+  ],
+  [
+   "It's All Coming Back to Me Now",
+   "Celine Dion"
+  ],
+  [
+   "Change the World",
+   "Eric Clapton"
+  ],
+  [
+   "Wonderwall",
+   "Oasis"
+  ],
+  [
+   "Un-Break My Heart",
+   "Toni Braxton"
+  ]
+ ],
+ "pop:2006": [
+  [
+   "Crazy",
+   "Gnarls Barkley"
+  ],
+  [
+   "Hips Don't Lie",
+   "Shakira"
+  ],
+  [
+   "SexyBack",
+   "Justin Timberlake"
+  ],
+  [
+   "Bad Day",
+   "Daniel Powter"
+  ],
+  [
+   "You're Beautiful",
+   "James Blunt"
+  ],
+  [
+   "Unwritten",
+   "Natasha Bedingfield"
+  ],
+  [
+   "Irreplaceable",
+   "Beyoncé"
+  ],
+  [
+   "Chasing Cars",
+   "Snow Patrol"
+  ],
+  [
+   "Over My Head (Cable Car)",
+   "The Fray"
+  ],
+  [
+   "Promiscuous",
+   "Nelly Furtado"
+  ],
+  [
+   "How to Save a Life",
+   "The Fray"
+  ],
+  [
+   "Waiting on the World to Change",
+   "John Mayer"
+  ]
+ ],
+ "pop:1977": [
+  [
+   "Hotel California",
+   "Eagles"
+  ],
+  [
+   "How Deep Is Your Love",
+   "Bee Gees"
+  ],
+  [
+   "Don't Stop",
+   "Fleetwood Mac"
+  ],
+  [
+   "Dreams",
+   "Fleetwood Mac"
+  ],
+  [
+   "Sir Duke",
+   "Stevie Wonder"
+  ],
+  [
+   "Rich Girl",
+   "Daryl Hall & John Oates"
+  ],
+  [
+   "Evergreen",
+   "Barbra Streisand"
+  ],
+  [
+   "I Just Want to Be Your Everything",
+   "Andy Gibb"
+  ],
+  [
+   "You Light Up My Life",
+   "Debby Boone"
+  ],
+  [
+   "We Will Rock You",
+   "Queen"
+  ]
+ ],
+ "pop:1987": [
+  [
+   "With or Without You",
+   "U2"
+  ],
+  [
+   "I Wanna Dance with Somebody",
+   "Whitney Houston"
+  ],
+  [
+   "Nothing's Gonna Stop Us Now",
+   "Starship"
+  ],
+  [
+   "La Bamba",
+   "Los Lobos"
+  ],
+  [
+   "Never Gonna Give You Up",
+   "Rick Astley"
+  ],
+  [
+   "Walk Like an Egyptian",
+   "The Bangles"
+  ],
+  [
+   "Alone",
+   "Heart"
+  ],
+  [
+   "Faith",
+   "George Michael"
+  ],
+  [
+   "Here I Go Again",
+   "Whitesnake"
+  ],
+  [
+   "Livin' on a Prayer",
+   "Bon Jovi"
+  ]
+ ],
+ "pop:1997": [
+  [
+   "Candle in the Wind 1997",
+   "Elton John"
+  ],
+  [
+   "MMMBop",
+   "Hanson"
+  ],
+  [
+   "Bitter Sweet Symphony",
+   "The Verve"
+  ],
+  [
+   "I'll Be Missing You",
+   "Puff Daddy & Faith Evans"
+  ],
+  [
+   "Barbie Girl",
+   "Aqua"
+  ],
+  [
+   "Tubthumping",
+   "Chumbawamba"
+  ],
+  [
+   "Truly Madly Deeply",
+   "Savage Garden"
+  ],
+  [
+   "Quit Playing Games (with My Heart)",
+   "Backstreet Boys"
+  ],
+  [
+   "Torn",
+   "Natalie Imbruglia"
+  ],
+  [
+   "Men in Black",
+   "Will Smith"
+  ]
+ ],
+ "pop:2007": [
+  [
+   "Umbrella",
+   "Rihanna"
+  ],
+  [
+   "Apologize",
+   "Timbaland & OneRepublic"
+  ],
+  [
+   "Big Girls Don't Cry",
+   "Fergie"
+  ],
+  [
+   "Hey There Delilah",
+   "Plain White T's"
+  ],
+  [
+   "Girlfriend",
+   "Avril Lavigne"
+  ],
+  [
+   "Rehab",
+   "Amy Winehouse"
+  ],
+  [
+   "Bubbly",
+   "Colbie Caillat"
+  ],
+  [
+   "Before He Cheats",
+   "Carrie Underwood"
+  ],
+  [
+   "Stronger",
+   "Kanye West"
+  ],
+  [
+   "Love Song",
+   "Sara Bareilles"
   ]
  ]
 }

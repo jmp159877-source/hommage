@@ -151,17 +151,34 @@ renderFollow(); renderPhrase(); renderOuting();
 
 
 
+
+// ── 가요 / 팝송 ──
+let genre = store.get('genre', 'kpop'), SONGS_ALL = null;
+fetch('data/songs.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGS_ALL = j; renderSongs(); }).catch(() => {});
+function pickPop(yr) {
+  const l = (SONGS_ALL && SONGS_ALL['pop:' + yr]) || []; if (!l.length) return [];
+  const start = (Math.floor((Date.now() - new Date(Y, 0, 0)) / 86400000) * 3) % l.length;
+  return Array.from({ length: Math.min(10, l.length) }, (_, i) => l[(start + i) % l.length]);
+}
+function songList() { const e = C.era[ago]; return genre === 'pop' ? (e.pop && e.pop.length ? e.pop : pickPop(Y - ago)) : e.songs; }
+function renderSongs() {
+  if (!$('songs')) return; const list = songList();
+  document.querySelectorAll('#genre [data-genre]').forEach(b => b.setAttribute('aria-pressed', b.dataset.genre === genre));
+  $('songs').innerHTML = list.length ? `<p class="note" style="margin:22px 0 0">노래를 누르면 이 화면에서 바로 들려 드립니다.</p><div class="rows">` + list.map((s, i) => `<button type="button" class="row song-row" data-song="${i}"><span class="song-no">${i + 1}</span><p><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></p><span class="song-play" aria-hidden="true">▶</span></button>`).join('') + '</div>' : '<p class="note" style="margin-top:22px">노래 목록을 불러오는 중입니다.</p>';
+}
+$('genre').onclick = e => { const b = e.target.closest('[data-genre]'); if (!b) return; genre = b.dataset.genre; store.set('genre', genre); renderSongs(); };
+
 // ── 노래 재생기: 오마주 안에서 유튜브 영상 재생 (검색 화면·추천 광고로 나가지 않음) ──
 let SONGV = null;
 fetch('data/song_videos.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGV = j; }).catch(() => { SONGV = {}; });
 function playSong(i) {
-  const list = C.era[ago].songs, s = list[i]; if (!s) return;
+  const list = songList(), s = list[i]; if (!s) return;
   const v = SONGV && SONGV[`${s[0]}|${s[1]}`];
   const nav = `<div class="pl-nav"><button type="button" class="btn line" id="pl-prev" ${i === 0 ? 'disabled' : ''}>이전 곡</button><button type="button" class="btn green" id="pl-next" ${i === list.length - 1 ? 'disabled' : ''}>다음 곡</button></div>`;
   const body = v && v.v
     ? `<div class="pl-video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.v)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(s[0])}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`
     : `<p class="note" style="margin:16px 0">이 노래는 아직 영상을 준비하지 못했습니다.</p><a class="btn line" style="display:block;text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">유튜브에서 찾아보기</a>`;
-  modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${list.length}</span><h2>${esc(s[0])}</h2><p>${esc(s[1])} · ${Y - ago}년</p></div>${body}${nav}`, () => {
+  modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${list.length}</span><h2>${esc(s[0])}</h2><p>${esc(s[1])} · ${Y - ago}년 ${genre === 'pop' ? '팝송' : '가요'}</p></div>${body}${nav}`, () => {
     $('modal').classList.add('pl-modal');
     $('pl-prev').onclick = () => playSong(i - 1); $('pl-next').onclick = () => playSong(i + 1);
   });
@@ -203,7 +220,7 @@ function renderEra() {
   let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
   h += '<h3 class="subhead">나는 그때</h3>' + (memo ? `<p class="mine">${esc(memo)}</p>` : `<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="${yr}년의 나는 어디서 무엇을 하고 있었나요"><button type="submit" class="btn green">남기기</button></form>`);
   $('era').innerHTML = h;
-  $('songs').innerHTML = `<p class="note" style="margin:30px 0 0">노래를 누르면 이 화면에서 바로 들려 드립니다.</p><div class="rows">` + e.songs.map((s, i) => `<button type="button" class="row song-row" data-song="${i}"><span class="song-no">${i + 1}</span><p><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></p><span class="song-play" aria-hidden="true">▶</span></button>`).join('') + '</div>';
+  renderSongs();
   if (cur) setTitle();
 }
 const onTab = e => { const b = e.target.closest('[data-ago]'); if (!b) return; ago = +b.dataset.ago; store.set('ago', ago); renderEra(); };
