@@ -250,18 +250,31 @@ def get_json(url):
         return json.load(r)
 
 
+FOLLOW_FALLBACK = {"gym": ("아침 스트레칭 10분", "가볍게 몸을 펴며 하루를 열어 보세요"), "sing": ("노래교실 인기 가요", "목을 풀고 한 곡 시원하게 불러 보세요"),
+                   "dance": ("쉬운 라인댄스 따라하기", "신나는 음악에 발을 맞춰 보세요"), "golf": ("골프 스윙 기초 레슨", "오늘은 스윙 한 가지만 다듬어 볼까요"),
+                   "park": ("파크골프 치는 법", "가까운 구장에서 한 라운드 어떠세요")}
+
+
 def gen_follow(d):
-    j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. '오늘의 따라하기' 다섯 항목 각각에 대해 유튜브 검색어 하나와 한 줄 권유 문구를 만들어라.
+    try:
+        j = _gen_follow_ai(d)
+    except Exception as e:
+        print(f"[follow] 문구 생성 실패, 기본 검색어로 영상만 찾습니다: {str(e)[:80]}", file=sys.stderr)
+        j = {"follow": {k: {"query": q, "say": say} for k, (q, say) in FOLLOW_FALLBACK.items()}}
+    out = {}
+    for k, name, _ in FOLLOW:
+        it = j["follow"].get(k) or {"query": FOLLOW_FALLBACK[k][0], "say": FOLLOW_FALLBACK[k][1]}
+        v = youtube_pick(it["query"]) or youtube_pick(FOLLOW_FALLBACK[k][0])
+        out[k] = {"name": name, "query": it["query"].strip(), "say": it["say"].strip(), **(v or {})}
+    return out
+
+
+def _gen_follow_ai(d):
+    return gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. '오늘의 따라하기' 다섯 항목 각각에 대해 유튜브 검색어 하나와 한 줄 권유 문구를 만들어라.
 항목: {json.dumps([(k, n, desc) for k, n, desc in FOLLOW], ensure_ascii=False)}
 검색어는 한국어 유튜브에서 실제로 좋은 영상이 나올 만한 자연스러운 말(8~16자), 날마다 조금씩 다르게. "시니어·어르신·노인" 금지.
 권유(say)는 20~40자, 오늘 기분에 맞게.
 형식: {{"follow": {{"gym": {{"query":"...", "say":"..."}}, "sing": {{...}}, "dance": {{...}}, "golf": {{...}}, "park": {{...}}}}}}""")
-    out = {}
-    for k, name, _ in FOLLOW:
-        it = j["follow"][k]
-        v = youtube_pick(it["query"])
-        out[k] = {"name": name, "query": it["query"].strip(), "say": it["say"].strip(), **(v or {})}
-    return out
 
 
 def gen_phrase(d):
