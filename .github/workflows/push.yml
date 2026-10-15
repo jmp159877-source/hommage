@@ -1,0 +1,26 @@
+# 아침 알림: 7·8·9시(KST) 몇 분 전에 깨어나 그 시각을 고른 기기에 보낸다.
+name: morning-push
+on:
+  schedule:
+    - cron: '50 21 * * *'   # 06:50 KST → 7시 몫
+    - cron: '50 22 * * *'   # 07:50 KST → 8시 몫
+    - cron: '50 23 * * *'   # 08:50 KST → 9시 몫
+  workflow_dispatch:
+    inputs:
+      hour: { description: '보낼 시각(7·8·9). 시험용', required: false }
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q google-cloud-firestore google-auth
+      - env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SCHED: ${{ github.event.schedule }}
+          IN_HOUR: ${{ github.event.inputs.hour }}
+        run: |
+          case "$SCHED" in "50 21 * * *") H=7;; "50 22 * * *") H=8;; "50 23 * * *") H=9;; *) H="$IN_HOUR";; esac
+          HOUR="$H" python tools/push_send.py

@@ -67,6 +67,26 @@ service cloud.firestore {
     }
     // 아이디·비밀번호 찾기 요청: 누구나 넣고, 관리자만 본다.
     match /resets/{id} { allow create: if true; allow read, update, delete: if isAdmin(); }
+    // 오늘 PLAY 순위: 누구나 보고, 본인 기록만 더 좋은 기록으로 고친다.
+    match /scores/{k}/e/{uid} {
+      allow read: if true;
+      allow create, update: if signedIn() && notBanned() && uid == request.auth.uid
+        && k.matches('^(malmoi|shisen|num50|sudoku)_[0-9]{4}(W[0-9]{2}|[0-9]{4})$')
+        && request.resource.data.keys().hasOnly(['uid', 'nick', 'score', 'label', 'at'])
+        && request.resource.data.uid == uid
+        && request.resource.data.nick is string && request.resource.data.nick.size() <= 20
+        && request.resource.data.label is string && request.resource.data.label.size() <= 30
+        && request.resource.data.score is number && request.resource.data.score >= 3000
+        && (resource == null || request.resource.data.score < resource.data.score);
+    }
+    // 아침 알림 받기: 누구나 자기 기기를 등록·해지. 읽기는 서버(관리 계정)만.
+    match /push/{id} {
+      allow create, update: if request.resource.data.keys().hasOnly(['token', 'hour', 'ua', 'updated', 'uid'])
+        && request.resource.data.token is string && request.resource.data.token.size() < 500
+        && request.resource.data.hour in [7, 8, 9];
+      allow delete: if true;
+      allow read: if isAdmin();
+    }
     // 집계: 숫자만 올릴 수 있고, 관리자만 본다.
     match /stats/{date} {
       allow read: if isAdmin();
