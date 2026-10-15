@@ -142,12 +142,22 @@ def gen_greetings(d):
 
 
 def gen_fortune(d):
-    j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 열두 띠 각각의 오늘 한마디를 만들어라.
-점괘가 아니라 하루를 기분 좋게 시작하게 하는 구체적인 권유 한 문장(25~45자). 돈·건강·불운 언급 금지. 띠마다 내용이 겹치지 않게.
-형식: {{"fortune": {{"쥐":"...","소":"...","호랑이":"...","토끼":"...","용":"...","뱀":"...","말":"...","양":"...","원숭이":"...","닭":"...","개":"...","돼지":"..."}}}}""")
-    f = j.get("fortune", {})
-    assert all(z in f and f[z].strip() for z in ZODIAC), "띠 누락"
-    return {z: f[z].strip() for z in ZODIAC}
+    out = {}
+    for half in (ZODIAC[:6], ZODIAC[6:]):
+        j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 다음 띠들의 '오늘의 운세'를 써라: {", ".join(half)}.
+점괘가 아니라 하루를 기분 좋게 시작하게 하는 다정한 글. 돈·건강·질병·사고·불운·나이 이야기 금지. 띠마다 내용과 말투가 겹치지 않게.
+각 띠마다:
+- total: 오늘 하루의 흐름 세 문장(100~150자). 구체적인 장면이 떠오르게.
+- people: 가족·친구·이웃과의 관계 한 문장(30~50자).
+- do: 오늘 해 보면 좋은 작은 일 한 문장(25~45자).
+- color: 행운의 색(한 단어), num: 행운의 숫자(1~99), time: 좋은 시간대(예: "오전 10시 무렵"), place: 좋은 장소(예: "동네 공원").
+형식: {{"fortune": {{"띠": {{"total":"...","people":"...","do":"...","color":"...","num":7,"time":"...","place":"..."}}, ...}}}}""")
+        f = j.get("fortune", {})
+        for z in half:
+            it = f.get(z) or {}
+            assert isinstance(it, dict) and it.get("total"), f"{z} 운세 누락"
+            out[z] = {k: (str(it.get(k, "")).strip()) for k in ("total", "people", "do", "color", "num", "time", "place")}
+    return out
 
 
 def gen_era(d):
@@ -365,13 +375,19 @@ def gen_culture(d):
 1) essay: '오늘의 에세이' 한 편. 지금 계절의 풍경·소리·냄새로 시작하는 1인칭 수필, 세 문단(각 120~180자), 제목 12자 이내. 교훈·설교 금지. 담백하고 따뜻하게.
 2) bible_note: 다음 성경 구절에 대한 짧은 묵상 두 문장(70~120자). 특정 교파 주장 없이 부드럽게. 구절: {bible["ref"]} "{bible["text"]}"
 3) dharma_note: 다음 불교 가르침에 대한 쉬운 풀이 두 문장(70~120자). 출처: {dharma["src"]} "{dharma["text"]}"
-형식: {{"essay": {{"title":"...","paras":["...","...","..."]}}, "bible_note":"...", "dharma_note":"..."}}""")
+4) humor: '오늘의 유머' 하나. 넌센스 퀴즈(말장난 정답) 또는 짧은 우스개 이야기(세 문장 안팎, 마지막 한마디로 웃기는) 중 하나. 누구나 부담 없이 웃을 수 있게. 나이·늙음·건강·외모·성별·지역 비하, 정치, 야한 이야기 금지. 남의 책·방송 대사를 그대로 옮기지 말 것.
+형식: {{"essay": {{"title":"...","paras":["...","...","..."]}}, "bible_note":"...", "dharma_note":"...", "humor": {{"kind":"넌센스 퀴즈 또는 짧은 이야기","title":"이야기면 제목(8자 이내), 퀴즈면 빈 문자열","text":"문제 또는 이야기(줄바꿈 \\n)","punch":"정답 또는 마지막 한마디"}}}}""")
     out = {
         "poem": {**poem, "bg": a.get("poem_bg", "").strip(), "words": [w for w in a.get("poem_words", []) if isinstance(w, list) and len(w) == 2 and w[0]], "note": a.get("poem_note", "").strip()},
         "quote": {**quote, "note": a.get("quote_note", "").strip()},
         "bible": {**bible, "note": b.get("bible_note", "").strip()},
         "dharma": {**dharma, "note": b.get("dharma_note", "").strip()},
     }
+    h = b.get("humor") or {}
+    if h.get("text") and h.get("punch"):
+        out["humor"] = {k: str(h.get(k, "")).strip() for k in ("kind", "title", "text", "punch")}
+    else:
+        out["humor"] = data["humor"][(n * 11) % len(data["humor"])]
     e = b.get("essay") or {}
     if e.get("title") and len(e.get("paras", [])) >= 2:
         out["essay"] = {"title": e["title"].strip(), "paras": [x.strip() for x in e["paras"]], "by": "오마주 편집실"}

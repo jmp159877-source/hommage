@@ -135,7 +135,8 @@ function renderPhrase() {
   $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read">${esc(x.reading || '')}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
   if (C.phrase.topic) $('phrase-title').textContent = '오늘의 상황: ' + C.phrase.topic;
 }
-document.addEventListener('click', e => { const b = e.target.closest('[data-say]'); if (!b) return; const k = b.dataset.say, x = C.phrase[k]; if (!('speechSynthesis' in window)) return toast('이 기기에서는 듣기를 쓸 수 없습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(x.text); u.lang = LANG[k][1]; u.rate = +b.dataset.rate; const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(LANG[k][1].slice(0, 2).toLowerCase())).sort((a, b) => (/google|natural|neural|premium/i.test(b.name) ? 1 : 0) - (/google|natural|neural|premium/i.test(a.name) ? 1 : 0))[0]; if (v) u.voice = v; speechSynthesis.speak(u); DB.track('phrase_listen', { lang: k }); });
+document.addEventListener('click', e => {
+  if (e.target.id === 'hu-open') { $('hu-punch').hidden = false; e.target.hidden = true; return; } const b = e.target.closest('[data-say]'); if (!b) return; const k = b.dataset.say, x = C.phrase[k]; if (!('speechSynthesis' in window)) return toast('이 기기에서는 듣기를 쓸 수 없습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(x.text); u.lang = LANG[k][1]; u.rate = +b.dataset.rate; const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(LANG[k][1].slice(0, 2).toLowerCase())).sort((a, b) => (/google|natural|neural|premium/i.test(b.name) ? 1 : 0) - (/google|natural|neural|premium/i.test(a.name) ? 1 : 0))[0]; if (v) u.voice = v; speechSynthesis.speak(u); DB.track('phrase_listen', { lang: k }); });
 let outRegion = store.get('outRegion', '서울');
 function renderOuting() {
   const o = C.outing; if (!o || !Object.keys(o).length) { $('outing-tabs').innerHTML = ''; $('outing-body').innerHTML = '<p class="note" style="margin-top:30px">이번 주 소식이 준비되지 않았습니다.</p>'; return; }
@@ -160,13 +161,13 @@ let CULT = null;
 async function wikiImg(ref) {
   try { const [lang, title] = ref.split(/:(.+)/); const j = await (await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)).json(); const th = (j.thumbnail || {}).source || ''; return th ? { img: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/1280px-') : th, thumb: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/640px-') : th } : null; } catch (e) { return null; }
 }
-const CU_TABS = [['poem', '시'], ['painting', '그림'], ['quote', '명언'], ['essay', '에세이'], ['bible', '성경'], ['dharma', '법문'], ['music', '음악']];
+const CU_TABS = [['poem', '시'], ['painting', '그림'], ['quote', '명언'], ['essay', '에세이'], ['bible', '성경'], ['dharma', '법문'], ['music', '음악'], ['humor', '유머']];
 let cuTab = store.get('cuTab', 'poem'), muGenre = store.get('muGenre', '발라드');
 const MU_GENRES = ['발라드', '트로트', '댄스', '팝', '클래식'];
 function dayN() { return Math.floor(new Date(Y, M, D).getTime() / 86400000) + 719163; }
 async function loadCulture() {
   let d = {}; try { d = await (await fetch('data/culture.json', { cache: 'no-cache' })).json(); } catch (e) {}
-  const n = dayN(), base = { poem: d.poems && d.poems[n % d.poems.length], quote: d.quotes && d.quotes[(n * 7) % d.quotes.length], bible: d.bible && d.bible[(n * 5) % d.bible.length], dharma: d.dharma && d.dharma[(n * 3) % d.dharma.length] };
+  const n = dayN(), base = { poem: d.poems && d.poems[n % d.poems.length], quote: d.quotes && d.quotes[(n * 7) % d.quotes.length], bible: d.bible && d.bible[(n * 5) % d.bible.length], dharma: d.dharma && d.dharma[(n * 3) % d.dharma.length], humor: d.humor && d.humor[(n * 11) % d.humor.length] };
   CULT = Object.assign({}, base, C.culture || {});
   if (!CULT.painting && d.paintings) { const ps = d.paintings; for (let k = 0; k < 4 && !CULT.painting; k++) { const c = ps[(n * 3 + k) % ps.length]; const im = await wikiImg(c.wiki); if (im) CULT.painting = { ...c, ...im }; } }
   renderCulture();
@@ -181,6 +182,7 @@ function renderCulture() {
   else if (cuTab === 'essay') { const e = c.essay; body = e ? `<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><h2 class="cu-title">${esc(e.title)}</h2><div class="cu-essay">${e.paras.map(x => `<p>${esc(x)}</p>`).join('')}</div><p class="cu-by" style="text-align:right">${esc(e.by || '오마주 편집실')}</p></div>` : '<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><p class="cu-note">계절에 맞는 짧은 글이 내일 아침부터 매일 새로 실립니다.</p></div>'; }
   else if (cuTab === 'bible') { const b = c.bible; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 성경</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.ref)} (개역한글)</p>${b.note ? `<p class="is-sub">묵상</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
   else if (cuTab === 'dharma') { const b = c.dharma; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 법문</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.src)}</p>${b.note ? `<p class="is-sub">풀이</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
+  else if (cuTab === 'humor') { const h = c.humor; body = h ? `<div class="cu-block cu-humor"><p class="cu-kind">오늘의 유머 · ${esc(h.kind || '')}</p>${h.title ? `<h2 class="cu-title">${esc(h.title)}</h2>` : ''}<p class="hu-text">${esc(h.text).replace(/\n/g, '<br>')}</p><button type="button" class="btn green hu-open" id="hu-open">${h.kind === '넌센스 퀴즈' ? '정답 보기' : '그래서 어떻게 됐을까요?'}</button><p class="hu-punch" id="hu-punch" hidden>${esc(h.punch)}</p></div>` : ''; }
   else if (cuTab === 'music') { const list = musicList(muGenre); body = `<div class="cu-block"><p class="cu-kind">오늘의 음악</p><div class="genre mu-genre" id="mu-genre" style="grid-template-columns:repeat(5,1fr)">${MU_GENRES.map(g => `<button type="button" data-mu="${g}" aria-pressed="${g === muGenre}">${g}</button>`).join('')}</div><div class="rows">${list.map((s, i) => `<button type="button" class="row song-row" data-msong="${i}"><span class="song-no">${i + 1}</span><p><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></p><span class="song-play" aria-hidden="true">▶</span></button>`).join('') || '<p class="note">목록을 불러오는 중입니다.</p>'}</div></div>`; }
   $('culture-body').innerHTML = tabs + body;
 }
@@ -256,7 +258,9 @@ NB.init({ toast, modal, closeModal, openGate });
 // ── 운세 ──
 const ZO = Object.keys(C.fortune);
 let myZ = store.get('zodiac', null);
-function renderZ() { $('zodiac').innerHTML = ZO.map(z => `<button type="button" data-z="${z}" aria-pressed="${myZ === z}">${z}</button>`).join(''); $('fortune').textContent = myZ ? C.fortune[myZ] : '띠를 고르면 오늘의 한마디가 나옵니다.'; }
+function renderZ() { $('zodiac').innerHTML = ZO.map(z => `<button type="button" data-z="${z}" aria-pressed="${myZ === z}">${z}</button>`).join(''); const f = myZ ? C.fortune[myZ] : null; if (!f) { $('fortune').textContent = '띠를 고르면 오늘의 운세가 나옵니다.'; return; }
+  if (typeof f === 'string') { $('fortune').textContent = f; return; }
+  $('fortune').innerHTML = `<span class="fo-total">${esc(f.total || '')}</span>${f.people ? `<span class="fo-row"><b>사람</b>${esc(f.people)}</span>` : ''}${f.do ? `<span class="fo-row"><b>해 보기</b>${esc(f.do)}</span>` : ''}<span class="fo-lucky">${[['색', f.color], ['숫자', f.num], ['시간', f.time], ['장소', f.place]].filter(x => x[1]).map(([k, v]) => `<span><em>${k}</em>${esc(String(v))}</span>`).join('')}</span>`; }
 $('zodiac').onclick = e => { const b = e.target.closest('[data-z]'); if (!b) return; myZ = b.dataset.z; store.set('zodiac', myZ); if (DB.currentUser()) DB.saveProfile({ zodiac: myZ }).catch(() => {}); renderZ(); };
 renderZ();
 

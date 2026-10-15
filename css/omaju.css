@@ -932,3 +932,14 @@ body.in-detail .tabs-mini { display: none; }
 .gcard.pic .g-logo { position: absolute; top: 12px; right: 12px; left: auto; bottom: auto; width: 64px; opacity: 0.95; z-index: 1; }
 .gcard.pic .g-send { position: absolute; left: 20px; bottom: 18px; z-index: 1; font-size: 0.85rem; color: rgba(255,255,255,0.92); padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.7); }
 @media (min-width: 769px) { .gcard.pic { width: 300px; } }
+/* ── 운세: 길어진 글 ── */
+#fortune .fo-total { display: block; font-size: 1.22rem; line-height: 1.85; color: #1f1f1f; margin-bottom: 18px; }
+#fortune .fo-row { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: 1.05rem; line-height: 1.7; color: #333; padding: 12px 0; border-top: 1px solid var(--line); }
+#fortune .fo-row b { display: block; font-size: 0.88rem; color: #8a6d2c; letter-spacing: 0.05em; margin-bottom: 2px; }
+#fortune .fo-lucky { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; font-family: 'Noto Sans KR', sans-serif; }
+#fortune .fo-lucky span { background: #FFF8E3; border: 1px solid var(--warm-line, #E8D58A); border-radius: 10px; padding: 10px 12px; font-size: 1rem; color: #3A2E00; font-weight: 700; }
+#fortune .fo-lucky em { display: block; font-style: normal; font-weight: 500; font-size: 0.82rem; color: #8a6d2c; }
+/* ── 오늘의 유머 ── */
+.cu-humor .hu-text { font-size: 1.2rem; line-height: 1.9; color: #1f1f1f; margin: 10px 0 22px; }
+.cu-humor .hu-open { width: 100%; font-size: 1.1rem; padding: 14px; }
+.cu-humor .hu-punch { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.45rem; line-height: 1.6; color: #3A2E00; background: #FFF8E3; border: 1px solid #E8D58A; border-radius: 12px; padding: 18px 20px; margin: 0; text-align: center; }
