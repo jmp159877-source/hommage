@@ -227,7 +227,7 @@ function playFrom(list, i, tag) {
   const nav = `<div class="pl-nav"><button type="button" class="btn line" id="pl-prev" ${i === 0 ? 'disabled' : ''}>이전 곡</button><button type="button" class="btn green" id="pl-next" ${i === list.length - 1 ? 'disabled' : ''}>다음 곡</button></div>`;
   const body = v && v.v
     ? `<div class="pl-video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.v)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(s[0])}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`
-    : `<p class="note" style="margin:16px 0">이 곡은 영상을 준비하는 중입니다. 내일 아침이면 여기서 바로 들으실 수 있습니다.</p><a class="btn line" style="display:block;text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">유튜브에서 찾아보기</a>`;
+    : `<p class="note" style="margin:16px 0">이 곡은 영상을 준비하는 중입니다. 하루 이틀 안에 여기서 바로 들으실 수 있습니다.</p><a class="btn line" style="display:block;text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">유튜브에서 찾아보기</a>`;
   modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${list.length}</span><h2>${esc(s[0])}</h2><p>${esc(s[1])} · ${esc(tag)}</p></div>${body}${nav}`, () => {
     $('modal').classList.add('pl-modal');
     $('pl-prev').onclick = () => playFrom(list, i - 1, tag); $('pl-next').onclick = () => playFrom(list, i + 1, tag);
