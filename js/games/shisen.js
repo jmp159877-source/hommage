@@ -18,21 +18,21 @@ function path(B, r1, c1, r2, c2) {
 }
 function pairs(B) { const L = []; for (let r = 1; r <= SR; r++) for (let c = 1; c <= SC; c++) if (B[r][c]) L.push([r, c]); const out = []; for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) { const a = L[i], b = L[j]; if (B[a[0]][a[1]] === B[b[0]][b[1]] && path(B, a[0], a[1], b[0], b[1])) out.push([a, b]); } return out; }
 function solvable(B0, R) { for (let tries = 0; tries < 6; tries++) { const B = B0.map(r => r.slice()); let left = SR * SC; while (left) { const ps = pairs(B); if (!ps.length) break; const [a, b] = ps[Math.floor(R() * ps.length)]; B[a[0]][a[1]] = B[b[0]][b[1]] = null; left -= 2; } if (!left) return true; } return false; }
-export function make(day) {
+export function make(day, seed) {
   for (let k = 0; k < 200; k++) {
-    const R = rng(+day.replace(/-/g, '') * 31 + k), arr = []; ICONS.forEach(ic => { for (let i = 0; i < 4; i++) arr.push(ic); });
+    const R = rng((seed != null ? seed : +day.replace(/-/g, '') * 31) + k), arr = []; ICONS.forEach(ic => { for (let i = 0; i < 4; i++) arr.push(ic); });
     for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
     const B = Array.from({ length: SR + 2 }, () => Array(SC + 2).fill(null)); let n = 0; for (let r = 1; r <= SR; r++) for (let c = 1; c <= SC; c++) B[r][c] = arr[n++];
     if (solvable(B, R)) return B;
   }
 }
-export function mount(el) {
-  const T = P.shell(el, 'shisen'), day = todayKey();
+export function mount(el, practice = false) {
+  const root = el, T = P.shell(el, 'shisen'), day = todayKey();
   let B, sel, left, shuf, hints;
   function ready() {
-    T.reset(); B = make(day); sel = null; left = SR * SC; shuf = 3; hints = 0;
-    T.body.innerHTML = `<div class="ss-board" id="ss-board"></div><div class="ss-bar"><button type="button" class="btn line" id="ss-hint">힌트 <small>+15초</small></button><button type="button" class="btn line" id="ss-shuf">섞기 (3) <small>+20초</small></button><button type="button" class="btn line" id="ss-new">처음부터</button></div><p class="note ss-tip">같은 그림 두 장을 이어 보세요. 꺾이는 곳은 두 번까지!</p>`;
-    T.body.querySelector('#ss-hint').onclick = hint; T.body.querySelector('#ss-shuf').onclick = () => shuffle(true); T.body.querySelector('#ss-new').onclick = ready;
+    T.reset(); B = practice ? make(day, Math.floor(Math.random() * 1e9)) : make(day); sel = null; left = SR * SC; shuf = 3; hints = 0;
+    T.body.innerHTML = `${practice ? '<p class="pr-band">새 판 · 순위에 반영되지 않습니다 <button type="button" class="linkbtn" id="ss-today">오늘 판으로</button></p>' : ''}<div class="ss-board" id="ss-board"></div><div class="ss-bar"><button type="button" class="btn line" id="ss-hint">힌트 <small>+15초</small></button><button type="button" class="btn line" id="ss-shuf">섞기 (3) <small>+20초</small></button><button type="button" class="btn line" id="ss-new">처음부터</button></div><p class="note ss-tip">같은 그림 두 장을 이어 보세요. 꺾이는 곳은 두 번까지!</p>`;
+    T.body.querySelector('#ss-hint').onclick = hint; T.body.querySelector('#ss-shuf').onclick = () => shuffle(true); T.body.querySelector('#ss-new').onclick = ready; const tb = T.body.querySelector('#ss-today'); if (tb) tb.onclick = () => mount(root, false);
     draw();
   }
   function fit() {
@@ -64,7 +64,7 @@ export function mount(el) {
     line(p); P.sfx('ok'); B[r0][c0] = B[r][c] = null; sel = null; left -= 2;
     setTimeout(() => {
       draw();
-      if (!left) { const ms = T.stop(); P.sfx('win'); P.finish('shisen', ms, P.fmtKo(ms), T.body); return; }
+      if (!left) { const ms = T.stop(); P.sfx('win'); T.body.querySelector('#ss-board').style.display = 'none'; T.body.querySelector('.ss-bar').style.display = 'none'; if (practice) T.body.insertAdjacentHTML('beforeend', `<div class="pl-done"><p class="pl-done-t">${P.fmtKo(ms)}</p><p class="pl-done-s">새 판은 순위에 반영되지 않습니다.</p></div>`); else P.finish('shisen', ms, P.fmtKo(ms), T.body); const b = document.createElement('button'); b.type = 'button'; b.className = 'btn line pl-again'; b.innerHTML = '새 판 더 하기 <small>· 순위에 반영되지 않습니다</small>'; b.onclick = () => mount(root, true); T.body.appendChild(b); return; }
       if (!pairs(B).length) shuffle(false);
     }, 240);
   }

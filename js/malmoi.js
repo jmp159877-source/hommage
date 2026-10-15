@@ -32,16 +32,19 @@ function score(guess, ans) {
 
 const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
-export async function mount(el, { toast, esc, dateLabel }) {
+export async function mount(el, opts, practice = false) {
+  const { toast, esc } = opts, root = el;
   let data; try { data = await (await fetch('data/malmoi.json', { cache: 'no-cache' })).json(); } catch (e) { el.innerHTML = '<p class="note">오늘의 낱말을 불러오지 못했습니다.</p>'; return; }
   const now = new Date(), day = Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - START) / 864e5);
-  const no = day + 1, [word, meaning] = data.words[((day % data.words.length) + data.words.length) % data.words.length], ans = dec(word);
-  const key = 'malmoi:' + no, st = ls.get(key, { rows: [], done: false, win: false, ms: 0 });
+  const no = day + 1, L = data.words.length, todayIdx = ((day % L) + L) % L;
+  let pi = todayIdx; if (practice) { while (pi === todayIdx) pi = Math.floor(Math.random() * L); }
+  const [word, meaning] = data.words[pi], ans = dec(word);
+  const key = 'malmoi:' + no, st = practice ? { rows: [], done: false, win: false, ms: 0 } : ls.get(key, { rows: [], done: false, win: false, ms: 0 });
   let cur = [];
   const T = P.shell(el, 'malmoi'); el = T.body;
 
   el.innerHTML = `<div class="mm">
-    <p class="mm-head"><span>제${no}회 · 오늘의 낱말</span></p>
+    ${practice ? '<p class="pr-band">연습 판 · 순위에 반영되지 않습니다 <button type="button" class="linkbtn" id="mm-today">오늘 판으로</button></p>' : `<p class="mm-head"><span>제${no}회 · 오늘의 낱말</span></p>${st.rows.length || st.done ? '' : '<button type="button" class="pr-try" id="mm-prac">처음이세요? <b>연습 한 판</b> 먼저 해 보기 <small>순위에 반영되지 않습니다</small></button>'}`}
     <details class="mm-how"><summary>놀이 방법</summary><p>오늘의 <b>두 글자 낱말</b>을 자음·모음 <b>여섯 칸</b>으로 나눠 맞힙니다. 기회는 여섯 번.<br>예) 단풍 → ㄷ ㅏ ㄴ ㅍ ㅜ ㅇ · 과일 → ㄱ ㅗ ㅏ ㅇ ㅣ ㄹ</p><p class="mm-legend"><span class="t hit">ㄱ</span> 자리까지 맞음 <span class="t near">ㄱ</span> 들어 있지만 자리가 다름 <span class="t miss">ㄱ</span> 없음</p></details>
     <div class="mm-board" id="mm-board"></div>
     <div class="mm-end" id="mm-end" hidden></div>
@@ -77,12 +80,19 @@ export async function mount(el, { toast, esc, dateLabel }) {
   }
   function drawEnd(fresh) {
     if (!st.done) { end.hidden = true; return; }
+    if (practice) {
+      end.hidden = false;
+      end.innerHTML = `<p class="mm-verdict">${st.win ? st.rows.length + '번 만에 맞혔어요!' : '아쉽게 놓쳤어요'}</p><div class="mm-answer"><b>${esc(word)}</b><span>${esc(meaning)}</span></div><div class="pl-done-b" style="margin-top:16px"><button type="button" class="btn green" id="mm-more">새 판 더 하기</button><button type="button" class="btn line" id="mm-back">오늘 판으로</button></div><p class="note" style="text-align:center">연습 판은 순위에 반영되지 않습니다.</p>`;
+      end.querySelector('#mm-more').onclick = () => mount(root, opts, true); end.querySelector('#mm-back').onclick = () => mount(root, opts, false);
+      return;
+    }
     const s = record();
     end.hidden = false;
     end.innerHTML = `<p class="mm-verdict">${st.win ? ['단번에! 놀랍습니다', '두 번 만에, 대단해요', '세 번 만에 맞혔습니다', '네 번 만에 맞혔습니다', '다섯 번 만에, 아슬아슬', '마지막에 맞혔습니다'][st.rows.length - 1] : '아쉽게 놓쳤습니다'}</p>
       <div class="mm-answer"><b>${esc(word)}</b><span>${esc(meaning)}</span></div>
       <div class="mm-stats"><span><b>${s.played}</b>참여</span><span><b>${s.played ? Math.round(s.wins / s.played * 100) : 0}%</b>맞힘</span><span><b>${s.streak}</b>연속</span><span><b>${s.best}</b>최고 연속</span></div>
-      <p class="note" style="text-align:center;margin-top:12px">내일 아침, 새 낱말이 기다립니다.</p>`;
+      <p class="note" style="text-align:center;margin-top:12px">내일 아침, 새 낱말이 기다립니다.</p><button type="button" class="btn line pl-again" id="mm-more">새 판 더 하기 <small>· 순위에 반영되지 않습니다</small></button>`;
+    end.querySelector('#mm-more').onclick = () => mount(root, opts, true);
     if (st.win && fresh) P.finish('malmoi', st.rows.length * 1e6 + Math.min(st.ms, 999999), `${st.rows.length}번 · ${P.fmtKo(st.ms)}`, end);
     else if (st.win) end.insertAdjacentHTML('beforeend', `<button type="button" class="btn green mm-share" data-rk="1">순위 보기</button>`), end.querySelector('[data-rk]').onclick = () => P.showRank('malmoi');
   }
@@ -97,12 +107,14 @@ export async function mount(el, { toast, esc, dateLabel }) {
       if (s.every(x => x === 'hit')) { st.done = true; st.win = true; }
       else if (st.rows.length >= TRIES) st.done = true;
       st.ms = st.done ? T.stop() : T.ms();
-      ls.set(key, st); drawBoard(); drawKeys(); drawEnd(true);
+      if (!practice) ls.set(key, st); drawBoard(); drawKeys(); drawEnd(true);
       if (st.done) { if (st.win) P.sfx('win'); else P.sfx('bad'); setTimeout(() => end.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300); } else P.sfx(s.some(x => x === 'hit') ? 'ok' : 'tap');
       return;
     }
     if (cur.length < N) { cur.push(k); P.sfx('tap'); drawBoard(); }
   }
   keysEl.onclick = e => { const b = e.target.closest('[data-k]'); if (b) press(b.dataset.k); };
+  const pb = el.querySelector('#mm-prac'); if (pb) pb.onclick = () => mount(root, opts, true);
+  const tb = el.querySelector('#mm-today'); if (tb) tb.onclick = () => mount(root, opts, false);
   drawBoard(); drawKeys(); drawEnd();
 }
