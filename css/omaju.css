@@ -877,3 +877,16 @@ body.in-detail .tabs-mini { display: none; }
 .gate-modal .linkbtn, .gate-modal a { color: #6b5410; }
 .gate-modal .modal-box button:not(.btn):not(.x) { background: transparent; color: #6b5410; }
 .gate-modal .modal-box h2 { font-size: 1.5rem; }
+/* ── 단추 색 통일: 따뜻한 연노랑 (카카오톡에 익숙한 느낌) ── */
+:root { --warm: #F9E9A8; --warm-line: #E8D58A; --warm-ink: #3A2E00; --warm-hover: #F5DF86; }
+.btn.green, .modal-actions .btn.green, .cmt-form .btn.green, .memo .btn.green { background: var(--warm) !important; color: var(--warm-ink) !important; border: 1px solid var(--warm-line) !important; font-weight: 800; }
+.btn.green:hover { background: var(--warm-hover) !important; }
+.btn.green[disabled] { opacity: 0.5; }
+.song-play { background: var(--warm); color: var(--warm-ink); border: 1px solid var(--warm-line); }
+.nb-mic { background: var(--warm); color: var(--warm-ink); border: 1px solid var(--warm-line); }
+.nb-mic .mic-ic { color: var(--warm-ink); }
+.mic-big { background: var(--warm); color: var(--warm-ink); }
+.genre button[aria-pressed="true"], .cu-tabs button[aria-pressed="true"] { background: var(--warm); color: var(--warm-ink); border-color: var(--warm-line); }
+.opts button[aria-pressed="true"] { border-color: #C9A24A; background: #FFF8E3; }
+.ph-actions .btn.green { background: var(--warm) !important; }
+.pl-nav .btn.green { background: var(--warm) !important; color: var(--warm-ink) !important; }
