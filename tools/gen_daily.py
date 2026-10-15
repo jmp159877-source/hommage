@@ -11,7 +11,24 @@ import os, sys, json, re, time, datetime, urllib.request, urllib.error, random
 KST = datetime.timezone(datetime.timedelta(hours=9))
 HERE = os.path.dirname(os.path.abspath(__file__))
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
-MODELS = ["gemini-2.5-flash", "gemini-2.0-flash"]  # 앞에서부터 시도
+MODELS = ["gemini-3-flash-preview", "gemini-2.5-flash", "gemini-2.0-flash"]  # 목록 조회가 안 될 때의 예비
+
+def list_models():
+    """구글에서 지금 쓸 수 있는 Flash 모델을 최신순으로 고른다 (이름이 바뀌어도 코드를 안 고치게)."""
+    try:
+        with urllib.request.urlopen(f"https://generativelanguage.googleapis.com/v1beta/models?key={GEMINI_KEY}&pageSize=200", timeout=30) as r:
+            ms = json.load(r).get("models", [])
+        names = [m["name"].split("/")[-1] for m in ms if "generateContent" in m.get("supportedGenerationMethods", [])]
+        flash = [n for n in names if "flash" in n and "lite" not in n and "image" not in n and "tts" not in n and "live" not in n and "audio" not in n]
+        def ver(n):
+            m = re.search(r"gemini-(\d+)(?:\.(\d+))?", n); return (int(m.group(1)), int(m.group(2) or 0), 0 if "preview" in n or "exp" in n else 1) if m else (0, 0, 0)
+        flash.sort(key=ver, reverse=True)
+        picked = flash[:3] + [m for m in MODELS if m not in flash]
+        print("[models]", picked[:4])
+        return picked
+    except Exception as e:
+        print("[models] 목록 조회 실패, 예비 목록 사용:", e, file=sys.stderr)
+        return MODELS
 
 ZODIAC = ["쥐", "소", "호랑이", "토끼", "용", "뱀", "말", "양", "원숭이", "닭", "개", "돼지"]
 QUIZ_KINDS = ["사자성어", "속담", "우리말", "상식", "역사"]
@@ -33,7 +50,7 @@ def gemini(prompt, json_mode=True, search=False, max_retry=3):
     if not GEMINI_KEY:
         raise RuntimeError("GEMINI_API_KEY 없음")
     last = None
-    for model in MODELS:
+    for model in gemini.models:
         for attempt in range(max_retry):
             body = {
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
@@ -162,6 +179,7 @@ def firestore():
 
 
 def main():
+    gemini.models = list_models()
     force = "--force" in sys.argv
     d = today()
     for a in sys.argv:
