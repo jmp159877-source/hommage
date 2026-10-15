@@ -162,18 +162,18 @@ export async function vote(date, idx, n) {
 export async function loadPoll(date) {
   try { const s = await getDoc(doc(db, 'polls', date)); return s.exists() ? s.data().counts : null; } catch (e) { return null; }
 }
-export async function addComment(date, text) {
+export async function addComment(date, text, corner = '') {
   if (!me || !profile) throw new Error('로그인이 필요합니다.');
   text = text.trim(); if (!text) return;
   if (text.length > 200) throw new Error('200자 안으로 적어 주세요.');
   if (BAD.some(w => text.includes(w))) throw new Error('고운 말로 다시 적어 주세요.');
-  await addDoc(collection(db, 'comments'), { uid: me.uid, nick: profile.nick, date, text, ts: serverTimestamp(), reports: 0, hidden: false });
+  await addDoc(collection(db, 'comments'), { uid: me.uid, nick: profile.nick, date, text, corner, ts: serverTimestamp(), reports: 0, hidden: false });
 }
-export async function listComments(date) {
+export async function listComments(date, corner = '') {
   try {
     const q = query(collection(db, 'comments'), where('date', '==', date));
     const ms = x => x && x.ts && x.ts.toMillis ? x.ts.toMillis() : 0;
-    return (await getDocs(q)).docs.map(d => ({ id: d.id, ...d.data() })).filter(c => !c.hidden).sort((a, b) => ms(b) - ms(a)).slice(0, 50);
+    return (await getDocs(q)).docs.map(d => ({ id: d.id, ...d.data() })).filter(c => !c.hidden && (c.corner || '') === corner).sort((a, b) => ms(b) - ms(a)).slice(0, 50);
   } catch (e) { return []; }
 }
 export async function reportComment(id) {

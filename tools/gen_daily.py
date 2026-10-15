@@ -80,7 +80,7 @@ def gemini(prompt, json_mode=True, search=False, max_retry=None):
             body = {
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
                 "systemInstruction": {"parts": [{"text": STYLE}]},
-                "generationConfig": {"temperature": 0.9, "maxOutputTokens": 4096},
+                "generationConfig": {"temperature": 0.9, "maxOutputTokens": 8192},
             }
             if json_mode and not search:
                 body["generationConfig"]["responseMimeType"] = "application/json"
@@ -323,23 +323,46 @@ def gen_culture(d):
     n = d.toordinal()
     poem = data["poems"][n % len(data["poems"])]
     quote = data["quotes"][(n * 7) % len(data["quotes"])]
+    bible = data["bible"][(n * 5) % len(data["bible"])]
+    dharma = data["dharma"][(n * 3) % len(data["dharma"])]
     ps = data["paintings"]; paint = None
     for k in range(len(ps)):
         cand = ps[(n * 3 + k) % len(ps)]
         im = wiki_image(cand["wiki"])
         if im:
             paint = {**cand, **im}; break
-    j = gemini(f"""오늘의 문화 코너 글 세 가지를 써라.
-1) 시 감상 (poem_note): 아래 시를 처음 읽는 사람에게 건네는 감상 두세 문장(80~140자). 시의 핵심 정서와 오늘 읽기 좋은 까닭. 시 구절을 길게 인용하지 말 것.
-   시: {poem["author"]} 「{poem["title"]}」 ({poem["year"]})
-2) 그림 이야기 (painting_story): {paint["artist"] if paint else ""}의 「{paint["title"] if paint else ""}」({paint["year"] if paint else ""})에 대해, 무엇을 보면 좋은지와 얽힌 이야기 세 문장(120~200자). 확실한 사실만.
-3) 한 문장 풀이 (quote_note): "{quote["text"]}" ({quote["who"]})를 오늘 하루에 어떻게 쓸지 두 문장(60~100자).
-형식: {{"poem_note":"...","painting_story":"...","quote_note":"..."}}""")
-    out = {"poem": {**poem, "note": j.get("poem_note", "").strip()}, "quote": {**quote, "note": j.get("quote_note", "").strip()}}
+    season = ["한겨울", "늦겨울", "이른 봄", "봄", "늦봄", "초여름", "한여름", "늦여름", "초가을", "가을", "늦가을", "초겨울"][d.month - 1]
+    a = gemini(f"""오늘의 문화 코너 해설을 써라. 확실한 사실만, 모르는 건 쓰지 말 것.
+[시] {poem["author"]} 「{poem["title"]}」 ({poem["year"]})
+본문:
+{poem["text"]}
+- poem_bg: 이 시가 언제, 어떤 시집이나 자리에서 나왔고 시대 배경이 어땠는지 세 문장(120~200자).
+- poem_words: 지금은 잘 안 쓰는 옛말·어려운 낱말 풀이 3~6개. [["낱말","뜻"], ...] (없으면 빈 목록)
+- poem_note: 감상 세 문장(120~180자). 시 구절을 길게 인용하지 말 것.
+[그림] {paint["artist"] if paint else "-"} 「{paint["title"] if paint else "-"}」 ({paint["year"] if paint else "-"})
+- painting_about: 작품 소개 세 문장(130~200자). 어디에 있는지(소장처)도 확실하면.
+- painting_points: 그림에서 눈여겨볼 곳 세 가지, 각각 한 문장. ["...","...","..."]
+- painting_artist: 화가 이야기 두세 문장(90~150자).
+[한 문장] "{quote["text"]}" — {quote["who"]}
+- quote_note: 출처 이야기 한 문장과 오늘 하루에 어떻게 쓸지 한 문장.
+형식: {{"poem_bg":"...","poem_words":[["",""]],"poem_note":"...","painting_about":"...","painting_points":["","",""],"painting_artist":"...","quote_note":"..."}}""")
+    b = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일, {season}.
+1) essay: '오늘의 에세이' 한 편. 지금 계절의 풍경·소리·냄새로 시작하는 1인칭 수필, 세 문단(각 120~180자), 제목 12자 이내. 교훈·설교 금지. 담백하고 따뜻하게.
+2) bible_note: 다음 성경 구절에 대한 짧은 묵상 두 문장(70~120자). 특정 교파 주장 없이 부드럽게. 구절: {bible["ref"]} "{bible["text"]}"
+3) dharma_note: 다음 불교 가르침에 대한 쉬운 풀이 두 문장(70~120자). 출처: {dharma["src"]} "{dharma["text"]}"
+형식: {{"essay": {{"title":"...","paras":["...","...","..."]}}, "bible_note":"...", "dharma_note":"..."}}""")
+    out = {
+        "poem": {**poem, "bg": a.get("poem_bg", "").strip(), "words": [w for w in a.get("poem_words", []) if isinstance(w, list) and len(w) == 2 and w[0]], "note": a.get("poem_note", "").strip()},
+        "quote": {**quote, "note": a.get("quote_note", "").strip()},
+        "bible": {**bible, "note": b.get("bible_note", "").strip()},
+        "dharma": {**dharma, "note": b.get("dharma_note", "").strip()},
+    }
+    e = b.get("essay") or {}
+    if e.get("title") and len(e.get("paras", [])) >= 2:
+        out["essay"] = {"title": e["title"].strip(), "paras": [x.strip() for x in e["paras"]], "by": "오마주 편집실"}
     if paint:
-        out["painting"] = {**paint, "story": j.get("painting_story", "").strip()}
+        out["painting"] = {**paint, "about": a.get("painting_about", "").strip(), "points": [x for x in a.get("painting_points", []) if x], "artist_story": a.get("painting_artist", "").strip()}
     return out
-
 
 # ── 저장 ────────────────────────────────────────────────
 

@@ -159,38 +159,50 @@ renderFollow(); renderPhrase(); renderOuting();
 
 
 
+// 위키 그림 사진이 안 열리면 다른 크기 → 원본 순서로 다시 시도
+window.imgRetry = el => { const f = +(el.dataset.f || 0); el.dataset.f = f + 1; if (f === 0) el.src = el.src.replace(/\/\d+px-/, '/960px-'); else if (f === 1) el.src = el.src.replace(/\/thumb(\/.+?)\/[^/]+$/, '$1'); };
 // ── 오늘의 문화: 시 · 그림 · 한 문장 ──
 let CULT = null;
 async function wikiImg(ref) {
   try { const [lang, title] = ref.split(/:(.+)/); const j = await (await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)).json(); const th = (j.thumbnail || {}).source || ''; return th ? { img: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/1280px-') : th, thumb: th.includes('/thumb/') ? th.replace(/\/\d+px-/, '/640px-') : th } : null; } catch (e) { return null; }
 }
+const CU_TABS = [['poem', '시'], ['painting', '그림'], ['quote', '한 문장'], ['essay', '에세이'], ['bible', '성경'], ['dharma', '법문'], ['music', '음악']];
+let cuTab = store.get('cuTab', 'poem'), muGenre = store.get('muGenre', '발라드');
+const MU_GENRES = ['발라드', '트로트', '댄스', '팝', '클래식'];
+function dayN() { return Math.floor(new Date(Y, M, D).getTime() / 86400000) + 719163; }
 async function loadCulture() {
-  if (C.culture && C.culture.poem) { CULT = C.culture; }
-  else {
-    try {
-      const d = await (await fetch('data/culture.json', { cache: 'no-cache' })).json();
-      const n = Math.floor(new Date(Y, M, D).getTime() / 86400000) + 719163; // 파이썬 toordinal 과 같은 값
-      const ps = d.paintings; let paint = null;
-      for (let k = 0; k < 4 && !paint; k++) { const c = ps[(n * 3 + k) % ps.length]; const im = await wikiImg(c.wiki); if (im) paint = { ...c, ...im }; }
-      CULT = { poem: d.poems[n % d.poems.length], quote: d.quotes[(n * 7) % d.quotes.length], painting: paint };
-    } catch (e) { return; }
-  }
+  let d = {}; try { d = await (await fetch('data/culture.json', { cache: 'no-cache' })).json(); } catch (e) {}
+  const n = dayN(), base = { poem: d.poems && d.poems[n % d.poems.length], quote: d.quotes && d.quotes[(n * 7) % d.quotes.length], bible: d.bible && d.bible[(n * 5) % d.bible.length], dharma: d.dharma && d.dharma[(n * 3) % d.dharma.length] };
+  CULT = Object.assign({}, base, C.culture || {});
+  if (!CULT.painting && d.paintings) { const ps = d.paintings; for (let k = 0; k < 4 && !CULT.painting; k++) { const c = ps[(n * 3 + k) % ps.length]; const im = await wikiImg(c.wiki); if (im) CULT.painting = { ...c, ...im }; } }
   renderCulture();
 }
 function renderCulture() {
-  const c = CULT; if (!c) return;
+  const c = CULT; if (!c || !c.poem) return;
   $('culture-title').textContent = `「${c.poem.title}」 · ${c.painting ? c.painting.title : ''}`;
-  $('culture-sub').textContent = `${c.poem.author}의 시와 ${c.painting ? c.painting.artist + '의 그림' : '오늘의 그림'}`;
-  $('culture-body').innerHTML = `
-    <div class="cu-block"><p class="cu-kind">오늘의 시</p><h2 class="cu-title">${esc(c.poem.title)}</h2><p class="cu-by">${esc(c.poem.author)} · ${esc(c.poem.year)}</p><div class="cu-poem">${esc(c.poem.text)}</div>${c.poem.note ? `<p class="cu-note">${esc(c.poem.note)}</p>` : ''}</div>
-    ${c.painting ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(c.painting.img)}" alt="${esc(c.painting.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/\/\d+px-/,'/960px-')}else if(this.dataset.f==1){this.dataset.f=2;this.src=this.src.replace(/\/thumb(\/.+?)\/[^/]+$/,'$1')}"></figure><h2 class="cu-title">${esc(c.painting.title)}</h2><p class="cu-by">${esc(c.painting.artist)} · ${esc(c.painting.year)}</p>${c.painting.story ? `<p class="cu-note">${esc(c.painting.story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : ''}
-    <div class="cu-block cu-quote"><p class="cu-kind">오늘의 한 문장</p><blockquote>${esc(c.quote.text)}</blockquote><p class="cu-by">— ${esc(c.quote.who)}</p>${c.quote.note ? `<p class="cu-note">${esc(c.quote.note)}</p>` : ''}</div>`;
+  $('culture-sub').textContent = '시 · 그림 · 한 문장 · 에세이 · 성경 · 법문 · 음악';
+  const tabs = `<div class="cu-tabs" id="cu-tabs">${CU_TABS.map(([k, l]) => `<button type="button" data-cu="${k}" aria-pressed="${k === cuTab}">${l}</button>`).join('')}</div>`;
+  let body = '';
+  if (cuTab === 'poem') { const p = c.poem; body = `<div class="cu-block"><p class="cu-kind">오늘의 시</p><h2 class="cu-title">${esc(p.title)}</h2><p class="cu-by">${esc(p.author)} · ${esc(p.year)}</p><div class="cu-poem">${esc(p.text)}</div>${p.bg ? `<p class="is-sub">이 시가 나온 때</p><p class="cu-note">${esc(p.bg)}</p>` : ''}${p.words && p.words.length ? `<p class="is-sub">낱말 풀이</p><dl class="cu-words">${p.words.map(w => `<dt>${esc(w[0])}</dt><dd>${esc(w[1])}</dd>`).join('')}</dl>` : ''}${p.note ? `<p class="is-sub">감상</p><p class="cu-note">${esc(p.note)}</p>` : ''}</div>`; }
+  else if (cuTab === 'painting') { const p = c.painting; body = p ? `<div class="cu-block"><p class="cu-kind">오늘의 그림</p><figure class="cu-fig"><img src="${esc(p.img)}" alt="${esc(p.title)}" referrerpolicy="no-referrer" onerror="imgRetry(this)"></figure><h2 class="cu-title">${esc(p.title)}</h2><p class="cu-by">${esc(p.artist)} · ${esc(p.year)}</p>${p.about ? `<p class="is-sub">작품 이야기</p><p class="cu-note">${esc(p.about)}</p>` : (p.story ? `<p class="cu-note">${esc(p.story)}</p>` : '')}${p.points && p.points.length ? `<p class="is-sub">눈여겨볼 곳</p><ol class="cu-points">${p.points.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}${p.artist_story ? `<p class="is-sub">화가 이야기</p><p class="cu-note">${esc(p.artist_story)}</p>` : ''}<p class="note" style="font-size:.8rem">그림 사진: 위키백과 (저작권이 끝난 공공 저작물)</p></div>` : '<p class="note">그림을 불러오는 중입니다.</p>'; }
+  else if (cuTab === 'quote') { const q = c.quote; body = `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 한 문장</p><blockquote>${esc(q.text)}</blockquote><p class="cu-by">— ${esc(q.who)}</p>${q.note ? `<p class="cu-note">${esc(q.note)}</p>` : ''}</div>`; }
+  else if (cuTab === 'essay') { const e = c.essay; body = e ? `<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><h2 class="cu-title">${esc(e.title)}</h2><div class="cu-essay">${e.paras.map(x => `<p>${esc(x)}</p>`).join('')}</div><p class="cu-by" style="text-align:right">${esc(e.by || '오마주 편집실')}</p></div>` : '<div class="cu-block"><p class="cu-kind">오늘의 에세이</p><p class="cu-note">계절에 맞는 짧은 글이 내일 아침부터 매일 새로 실립니다.</p></div>'; }
+  else if (cuTab === 'bible') { const b = c.bible; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 성경</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.ref)} (개역한글)</p>${b.note ? `<p class="is-sub">묵상</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
+  else if (cuTab === 'dharma') { const b = c.dharma; body = b ? `<div class="cu-block cu-quote"><p class="cu-kind">오늘의 법문</p><blockquote>${esc(b.text)}</blockquote><p class="cu-by">— ${esc(b.src)}</p>${b.note ? `<p class="is-sub">풀이</p><p class="cu-note">${esc(b.note)}</p>` : ''}</div>` : ''; }
+  else if (cuTab === 'music') { const list = musicList(muGenre); body = `<div class="cu-block"><p class="cu-kind">오늘의 음악</p><div class="genre mu-genre" id="mu-genre" style="grid-template-columns:repeat(5,1fr)">${MU_GENRES.map(g => `<button type="button" data-mu="${g}" aria-pressed="${g === muGenre}">${g}</button>`).join('')}</div><div class="rows">${list.map((s, i) => `<button type="button" class="row song-row" data-msong="${i}"><span class="song-no">${i + 1}</span><p><strong>${esc(s[0])}</strong><span>${esc(s[1])}</span></p><span class="song-play" aria-hidden="true">▶</span></button>`).join('') || '<p class="note">목록을 불러오는 중입니다.</p>'}</div></div>`; }
+  $('culture-body').innerHTML = tabs + body;
 }
+function musicList(g) { const l = (SONGS_ALL && SONGS_ALL['genre:' + g]) || []; if (!l.length) return []; const st = (dayN() * 2) % l.length; return Array.from({ length: Math.min(5, l.length) }, (_, i) => l[(st + i) % l.length]); }
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-cu]'); if (t) { cuTab = t.dataset.cu; store.set('cuTab', cuTab); renderCulture(); DB.track('culture_tab', { tab: cuTab }); return; }
+  const g = e.target.closest('[data-mu]'); if (g) { muGenre = g.dataset.mu; store.set('muGenre', muGenre); renderCulture(); return; }
+  const m = e.target.closest('[data-msong]'); if (m) playFrom(musicList(muGenre), +m.dataset.msong, '오늘의 ' + muGenre);
+});
 loadCulture();
 
 // ── 가요 / 팝송 ──
 let genre = store.get('genre', 'kpop'), SONGS_ALL = null;
-fetch('data/songs.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGS_ALL = j; renderSongs(); }).catch(() => {});
+fetch('data/songs.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGS_ALL = j; renderSongs(); if (typeof renderCulture === 'function' && CULT) renderCulture(); }).catch(() => {});
 function pickPop(yr) {
   const l = (SONGS_ALL && SONGS_ALL['pop:' + yr]) || []; if (!l.length) return [];
   const start = (Math.floor((Date.now() - new Date(Y, 0, 0)) / 86400000) * 3) % l.length;
@@ -207,20 +219,35 @@ $('genre').onclick = e => { const b = e.target.closest('[data-genre]'); if (!b) 
 // ── 노래 재생기: 오마주 안에서 유튜브 영상 재생 (검색 화면·추천 광고로 나가지 않음) ──
 let SONGV = null;
 fetch('data/song_videos.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { SONGV = j; }).catch(() => { SONGV = {}; });
-function playSong(i) {
-  const list = songList(), s = list[i]; if (!s) return;
+function playSong(i) { playFrom(songList(), i, `${Y - ago}년 ${genre === 'pop' ? '팝송' : '가요'}`); }
+function playFrom(list, i, tag) {
+  const s = list[i]; if (!s) return;
   const v = SONGV && SONGV[`${s[0]}|${s[1]}`];
   const nav = `<div class="pl-nav"><button type="button" class="btn line" id="pl-prev" ${i === 0 ? 'disabled' : ''}>이전 곡</button><button type="button" class="btn green" id="pl-next" ${i === list.length - 1 ? 'disabled' : ''}>다음 곡</button></div>`;
   const body = v && v.v
     ? `<div class="pl-video"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.v)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${esc(s[0])}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`
-    : `<p class="note" style="margin:16px 0">이 노래는 아직 영상을 준비하지 못했습니다.</p><a class="btn line" style="display:block;text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">유튜브에서 찾아보기</a>`;
-  modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${list.length}</span><h2>${esc(s[0])}</h2><p>${esc(s[1])} · ${Y - ago}년 ${genre === 'pop' ? '팝송' : '가요'}</p></div>${body}${nav}`, () => {
+    : `<p class="note" style="margin:16px 0">이 곡은 영상을 준비하는 중입니다. 내일 아침이면 여기서 바로 들으실 수 있습니다.</p><a class="btn line" style="display:block;text-align:center;text-decoration:none" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s[1] + ' ' + s[0])}" target="_blank" rel="noopener">유튜브에서 찾아보기</a>`;
+  modal(`<div class="pl-head"><span class="pl-no">${i + 1} / ${list.length}</span><h2>${esc(s[0])}</h2><p>${esc(s[1])} · ${esc(tag)}</p></div>${body}${nav}`, () => {
     $('modal').classList.add('pl-modal');
-    $('pl-prev').onclick = () => playSong(i - 1); $('pl-next').onclick = () => playSong(i + 1);
+    $('pl-prev').onclick = () => playFrom(list, i - 1, tag); $('pl-next').onclick = () => playFrom(list, i + 1, tag);
   });
-  DB.track('song_play', { year: Y - ago });
+  DB.track('song_play', { tag });
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-song]'); if (b) playSong(+b.dataset.song); });
+
+
+// ── 코너별 한마디 (운세·한 끼·시사 상식·문화) ──
+const CBOX = { fortune: '오늘의 운세', food: '오늘의 한 끼', quiz: '오늘의 시사 상식', culture: '오늘의 문화' };
+Object.keys(CBOX).forEach(k => { const sec = document.querySelector(`.dsec[data-k="${k}"]`); if (!sec) return; const d = document.createElement('div'); d.className = 'cbox'; d.dataset.cbox = k; d.innerHTML = `<p class="is-sub" style="margin-top:34px">한마디 나누기</p><form class="cmt-form" data-cform="${k}"><input type="text" maxlength="200" placeholder="${CBOX[k]}에 대한 한마디"><button type="submit" class="btn green">남기기</button></form><div class="cmts" data-clist="${k}"></div>`; sec.appendChild(d); });
+async function renderCbox(k) {
+  const el = document.querySelector(`[data-clist="${k}"]`); if (!el) return;
+  const list = await DB.listComments(TODAY, k), me = DB.currentUser();
+  el.innerHTML = list.map(c => `<div class="cmt"><b>${esc(c.nick)}</b><p>${esc(c.text)}</p>${me && me.uid === c.uid ? `<button type="button" data-cdel="${c.id}" data-ck="${k}">지우기</button>` : `<button type="button" data-crep="${c.id}">신고</button>`}</div>`).join('') || '<p class="note">첫 한마디를 남겨 보세요.</p>';
+}
+document.addEventListener('submit', async e => { const f = e.target.closest('[data-cform]'); if (!f) return; e.preventDefault(); const k = f.dataset.cform, inp = f.querySelector('input'); if (!DB.currentUser()) return openGate('한마디를 남기려면'); try { await DB.addComment(TODAY, inp.value, k); inp.value = ''; renderCbox(k); } catch (err) { toast(err.message); } });
+document.addEventListener('click', async e => { const d = e.target.closest('[data-cdel]'), r = e.target.closest('[data-crep]'); try { if (d) { await DB.deleteMyComment(d.dataset.cdel); renderCbox(d.dataset.ck); } if (r) { if (!DB.currentUser()) return openGate('신고하려면'); await DB.reportComment(r.dataset.crep); toast('신고했습니다. 확인 후 처리합니다.'); } } catch (err) { toast(err.message); } });
+window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (CBOX[k]) renderCbox(k); });
+if (CBOX[location.hash.slice(1)]) renderCbox(location.hash.slice(1));
 
 NB.init({ toast, modal, closeModal, openGate });
 
