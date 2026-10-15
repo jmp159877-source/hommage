@@ -208,6 +208,9 @@ def main():
     out["generatedAt"] = datetime.datetime.now(KST).isoformat()
     out["errors"] = errors
     ref.set(out, merge=True)
+    os.makedirs(os.path.join(HERE, "..", "daily"), exist_ok=True)
+    with open(os.path.join(HERE, "..", "daily", key + ".json"), "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=1)
     print(f"{key} 저장 완료. 코너 {len(out) - 3}개" + (f", 실패 {len(errors)}개" if errors else ""))
 
 

@@ -14,6 +14,8 @@ on:
       force:
         description: '이미 있어도 다시 만들기 (yes)'
         required: false
+permissions:
+  contents: write
 jobs:
   make:
     runs-on: ubuntu-latest
@@ -31,3 +33,9 @@ jobs:
           ARGS="${{ github.event.inputs.date }}"
           if [ "${{ github.event.inputs.force }}" = "yes" ]; then ARGS="$ARGS --force"; fi
           python tools/gen_daily.py $ARGS
+      - name: 만든 내용을 저장소에 기록
+        run: |
+          git config user.name "omaju-bot"
+          git config user.email "bot@omaju.kr"
+          git add daily/*.json || true
+          git diff --cached --quiet || (git commit -m "오늘의 콘텐츠 기록 [skip ci]" && git push)
