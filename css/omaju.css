@@ -943,3 +943,7 @@ body.in-detail .tabs-mini { display: none; }
 .cu-humor .hu-text { font-size: 1.2rem; line-height: 1.9; color: #1f1f1f; margin: 10px 0 22px; }
 .cu-humor .hu-open { width: 100%; font-size: 1.1rem; padding: 14px; }
 .cu-humor .hu-punch { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 1.45rem; line-height: 1.6; color: #3A2E00; background: #FFF8E3; border: 1px solid #E8D58A; border-radius: 12px; padding: 18px 20px; margin: 0; text-align: center; }
+/* Contents 앞 잎 로고를 글자보다 크게 */
+.toc-l { gap: 10px; align-items: center; }
+.toc-l img { width: 124px; flex: none; }
+@media (max-width: 380px) { .toc-l img { width: 104px; } }
