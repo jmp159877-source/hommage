@@ -1138,3 +1138,20 @@ body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 body.in-detail.nav-solid .top-nav { background: rgba(244,241,234,0.97); box-shadow: 0 1px 0 var(--line); padding-top: 12px; padding-bottom: 12px; }
 body.in-detail.nav-solid .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 body.in-detail.nav-solid .top-nav img { display: none; }
+/* 5초 세고 시작 */
+.pl-hidden { filter: blur(9px); pointer-events: none; user-select: none; }
+.pl-cd { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(244,241,234,0.35); pointer-events: none; }
+.pl-cd-n { font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 6rem; line-height: 1; color: var(--dark-green); text-shadow: 0 2px 0 #fff; animation: plpop 0.9s ease-out; }
+.pl-cd-n.go { font-size: 3.6rem; color: #B8862F; }
+.pl-cd-t { font-size: 1.05rem; color: #555; background: rgba(255,255,255,0.85); padding: 4px 12px; border-radius: 999px; }
+@keyframes plpop { 0% { transform: scale(1.5); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1); } }
+/* 말모이 놀이 방법 */
+.mm-steps { margin: 8px 0 12px; padding-left: 1.3em; line-height: 1.75; }
+.mm-steps li { margin-bottom: 6px; }
+.mm-steps small { color: #666; }
+.mm-steps .t, .mm-exrow .t { display: inline-flex; width: 1.6em; height: 1.6em; font-size: 0.9rem; border-radius: 5px; vertical-align: middle; margin: 0 2px; aspect-ratio: auto; }
+.mm-exp { margin: 10px 0 4px; font-size: 0.95rem; color: var(--dark-green); }
+.mm-exrow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 4px 0; }
+.mm-ex { display: inline-flex; gap: 2px; }
+.mm-exrow em { font-style: normal; font-size: 0.88rem; color: #555; }
+.pl-cd.local { position: absolute; inset: 0; align-items: center; justify-content: flex-start; padding-top: 70px; background: transparent; }

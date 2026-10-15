@@ -32,6 +32,7 @@ export function mount(el, practice = false) {
   function ready() {
     T.reset(); B = practice ? make(day, Math.floor(Math.random() * 1e9)) : make(day); sel = null; left = SR * SC; shuf = 3; hints = 0;
     T.body.innerHTML = `${practice ? '<p class="pr-band">새 판 · 순위에 반영되지 않습니다 <button type="button" class="linkbtn" id="ss-today">오늘 판으로</button></p>' : ''}<div class="ss-board" id="ss-board"></div><div class="ss-bar"><button type="button" class="btn line" id="ss-hint">힌트 <small>+15초</small></button><button type="button" class="btn line" id="ss-shuf">섞기 (3) <small>+20초</small></button><button type="button" class="btn line" id="ss-new">처음부터</button></div><p class="note ss-tip">같은 그림 두 장을 이어 보세요. 꺾이는 곳은 두 번까지!</p>`;
+    setTimeout(() => T.countdown(null, 0, T.body.querySelector('#ss-board')), 50);
     T.body.querySelector('#ss-hint').onclick = hint; T.body.querySelector('#ss-shuf').onclick = () => shuffle(true); T.body.querySelector('#ss-new').onclick = ready; const tb = T.body.querySelector('#ss-today'); if (tb) tb.onclick = () => mount(root, false);
     draw();
   }
@@ -54,7 +55,7 @@ export function mount(el, practice = false) {
     sv.appendChild(pl); document.body.appendChild(sv); setTimeout(() => sv.remove(), 280);
   }
   function tap(r, c) {
-    if (!B[r][c]) return; if (!T.running() && left === SR * SC) T.start();
+    if (!B[r][c] || !T.running()) return;
     if (!sel) { sel = [r, c]; P.sfx('tap'); draw(); return; }
     const [r0, c0] = sel;
     if (r0 === r && c0 === c) { sel = null; draw(); return; }

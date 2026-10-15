@@ -59,6 +59,19 @@ export function shell(el, game, { timer = true } = {}) {
     ms() { return t0 ? Date.now() - t0 + extra : 0; },
     reset() { clearInterval(iv); iv = null; t0 = 0; extra = 0; clock.textContent = '0:00'; },
     running: () => !!iv,
+    // 5초 세고 바로 시작 (그동안 판은 흐리게 가려서 미리 풀어 볼 수 없게)
+    countdown(cb, extraMs = 0, target, local = false) {
+      const cover = target || T.body; cover.classList.add('pl-hidden');
+      const ov = document.createElement('div'); ov.className = 'pl-cd' + (local ? ' local' : '');
+      if (local) { cover.parentElement.style.position = 'relative'; cover.parentElement.appendChild(ov); } else el.appendChild(ov);
+      let n = 5; const step = () => {
+        if (!document.body.contains(ov)) return;
+        if (n > 0) { ov.innerHTML = `<span class="pl-cd-n">${n}</span><span class="pl-cd-t">곧 시작합니다</span>`; sfx('flip'); n--; setTimeout(step, 1000); return; }
+        ov.innerHTML = '<span class="pl-cd-n go">시작!</span>'; sfx('ok');
+        setTimeout(() => { ov.remove(); cover.classList.remove('pl-hidden'); T.start(); if (extraMs) T.add(extraMs); if (cb) cb(); }, 450);
+      };
+      step();
+    },
   };
   return T;
 }

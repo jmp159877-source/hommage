@@ -45,10 +45,18 @@ export async function mount(el, opts, practice = false) {
 
   el.innerHTML = `<div class="mm">
     ${practice ? '<p class="pr-band">연습 판 · 순위에 반영되지 않습니다 <button type="button" class="linkbtn" id="mm-today">오늘 판으로</button></p>' : `<p class="mm-head"><span>제${no}회 · 오늘의 낱말</span></p>${st.rows.length || st.done ? '' : '<button type="button" class="pr-try" id="mm-prac">처음이세요? <b>연습 한 판</b> 먼저 해 보기 <small>순위에 반영되지 않습니다</small></button>'}`}
-    <details class="mm-how"><summary>놀이 방법</summary><p>오늘의 <b>두 글자 낱말</b>을 자음·모음 <b>여섯 칸</b>으로 나눠 맞힙니다. 기회는 여섯 번.<br>예) 단풍 → ㄷ ㅏ ㄴ ㅍ ㅜ ㅇ · 과일 → ㄱ ㅗ ㅏ ㅇ ㅣ ㄹ</p><p class="mm-legend"><span class="t hit">ㄱ</span> 자리까지 맞음 <span class="t near">ㄱ</span> 들어 있지만 자리가 다름 <span class="t miss">ㄱ</span> 없음</p></details>
-    <div class="mm-board" id="mm-board"></div>
+    <details class="mm-how"${(ls.get('malmoi:stats', {}).played || practice) ? '' : ' open'}><summary>놀이 방법 (처음이면 꼭 읽어 보세요)</summary>
+      <ol class="mm-steps"><li>오늘의 정답은 <b>두 글자 낱말</b> 하나예요. 무엇인지는 비밀!</li>
+      <li>아무 두 글자 낱말이나 떠올려 <b>자음·모음으로 풀어</b> 여섯 칸에 넣고 <b>확인</b>을 누르세요.<br><small>예) 감귤 → ㄱ ㅏ ㅁ ㄱ ㅠ ㄹ · 과일 → ㄱ ㅗ ㅏ ㅇ ㅣ ㄹ</small></li>
+      <li>칸 색깔이 힌트예요. <span class="t hit">ㄱ</span> 초록: 그 자리에 맞음 <span class="t near">ㄱ</span> 노랑: 들어 있지만 자리가 다름 <span class="t miss">ㄱ</span> 회색: 정답에 없음</li>
+      <li>힌트를 보고 좁혀 가며 <b>여섯 번 안에</b> 맞히면 성공!</li></ol>
+      <p class="mm-exp"><b>이렇게 풀어요</b> (정답이 '단풍'일 때)</p>
+      <p class="mm-exrow"><span class="mm-ex"><span class="t miss">ㄱ</span><span class="t hit">ㅏ</span><span class="t miss">ㅁ</span><span class="t miss">ㄱ</span><span class="t miss">ㅠ</span><span class="t miss">ㄹ</span></span><em>감귤 → ㅏ만 맞았네</em></p>
+      <p class="mm-exrow"><span class="mm-ex"><span class="t miss">ㅅ</span><span class="t hit">ㅏ</span><span class="t hit">ㄴ</span><span class="t near">ㄷ</span><span class="t miss">ㅡ</span><span class="t miss">ㄹ</span></span><em>산들 → ㄴ도 맞고, ㄷ은 자리가 달라</em></p>
+      <p class="mm-exrow"><span class="mm-ex"><span class="t hit">ㄷ</span><span class="t hit">ㅏ</span><span class="t hit">ㄴ</span><span class="t hit">ㅍ</span><span class="t hit">ㅜ</span><span class="t hit">ㅇ</span></span><em>단풍 → 정답!</em></p></details>
+    <div class="mm-play"><div class="mm-board" id="mm-board"></div>
     <div class="mm-end" id="mm-end" hidden></div>
-    <div class="mm-keys" id="mm-keys"></div></div>`;
+    <div class="mm-keys" id="mm-keys"></div></div></div>`;
   const board = el.querySelector('#mm-board'), keysEl = el.querySelector('#mm-keys'), end = el.querySelector('#mm-end');
 
   function drawBoard() {
@@ -98,7 +106,7 @@ export async function mount(el, opts, practice = false) {
   }
   function press(k) {
     if (st.done) return;
-    if (!T.running()) { T.start(); T.add(st.ms || 0); }
+    if (!T.running()) return;
     if (k === 'del') { cur.pop(); drawBoard(); return; }
     if (k === 'ok') {
       if (cur.length < N) { toast('여섯 칸을 모두 채워 주세요.'); return; }
@@ -117,4 +125,5 @@ export async function mount(el, opts, practice = false) {
   const pb = el.querySelector('#mm-prac'); if (pb) pb.onclick = () => mount(root, opts, true);
   const tb = el.querySelector('#mm-today'); if (tb) tb.onclick = () => mount(root, opts, false);
   drawBoard(); drawKeys(); drawEnd();
+  if (!st.done) { const mp = el.querySelector('.mm-play'), wrap = document.createElement('div'); mp.parentElement.insertBefore(wrap, mp); wrap.appendChild(mp); T.countdown(null, st.ms || 0, mp, true); }
 }

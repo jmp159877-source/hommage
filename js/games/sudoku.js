@@ -31,10 +31,9 @@ export function mount(el, practice = false) {
       const cls = ['sd', puz[i] ? 'given' : '', v && v !== sol[i] ? 'bad' : '', i === sel ? 'sel' : same ? 'near' : '', sv && v === sv && i !== sel ? 'samev' : '', c % 3 === 2 && c < 8 ? 'br' : '', r % 3 === 2 && r < 8 ? 'bb' : ''].filter(Boolean).join(' ');
       return `<button type="button" class="${cls}" data-i="${i}">${v || ''}</button>`; }).join('');
   }
-  G.onclick = e => { const b = e.target.closest('[data-i]'); if (!b || st.done) return; sel = +b.dataset.i; if (!T.running()) { T.start(); T.add(st.ms); } P.sfx('tap'); draw(); };
+  G.onclick = e => { const b = e.target.closest('[data-i]'); if (!b || st.done || !T.running()) return; sel = +b.dataset.i; P.sfx('tap'); draw(); };
   T.body.querySelector('#sd-pad').onclick = e => {
-    const b = e.target.closest('[data-n]'); if (!b || sel < 0 || st.done || puz[sel]) return; const n = +b.dataset.n;
-    if (!T.running()) { T.start(); T.add(st.ms); }
+    const b = e.target.closest('[data-n]'); if (!b || sel < 0 || st.done || puz[sel] || !T.running()) return; const n = +b.dataset.n;
     if (q('#sd-prac')) q('#sd-prac').remove();
     st.cur[sel] = n; if (n && n !== sol[sel]) { st.mis++; T.add(20000); P.sfx('bad'); } else if (n) P.sfx('ok');
     st.ms = T.ms(); save(); draw();
@@ -42,5 +41,6 @@ export function mount(el, practice = false) {
   };
   window.addEventListener('pagehide', () => { if (!st.done && T.running()) { st.ms = T.ms(); save(); } });
   draw();
+  if (!st.done) T.countdown(null, st.ms || 0, G);
   if (st.done) { T.body.insertAdjacentHTML('beforeend', `<p class="pl-done-t" style="text-align:center">오늘 판은 다 풀었어요 · ${P.fmtKo(st.ms)}</p>`); more(); }
 }
