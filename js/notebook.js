@@ -118,8 +118,42 @@ function editor(kind, n = {}, id = null) {
   const msg = t => { $('nb-msg').textContent = t; };
 }
 
+// ── 달력 보기: 메모(적은 날)·일정·기억할 날을 한 달 달력에 점으로, 날짜를 누르면 그날 것 ──
+let calY = new Date().getFullYear(), calM = new Date().getMonth(), calSel = todayKey();
+function itemsOn(key) {
+  const [y, m, d] = key.split('-').map(Number), out = [];
+  notes.forEach(n => {
+    if (n.kind === 'event' && n.date === key) out.push({ n, t: '일정', c: 'ev' });
+    else if (n.kind === 'memo' && todayKey(new Date(n.createdAt || 0)) === key) out.push({ n, t: '메모', c: 'mm' });
+    else if (n.kind === 'anniv') { const sd = n.lunar ? solarForLunar(n.month, n.day, y) : new Date(y, n.month - 1, n.day); if (sd && sd.getMonth() + 1 === m && sd.getDate() === d) out.push({ n, t: '기억할 날', c: 'an' }); }
+  });
+  return out;
+}
+function renderCal() {
+  const el = $('nb-cal'); if (!el) return;
+  const first = new Date(calY, calM, 1), start = first.getDay(), days = new Date(calY, calM + 1, 0).getDate(), today = todayKey();
+  let cells = '';
+  for (let i = 0; i < start; i++) cells += '<span class="cal-d empty"></span>';
+  for (let d = 1; d <= days; d++) {
+    const key = `${calY}-${pad(calM + 1)}-${pad(d)}`, it = itemsOn(key), wd = (start + d - 1) % 7;
+    const dots = ['ev', 'mm', 'an'].filter(c => it.some(x => x.c === c)).map(c => `<i class="${c}"></i>`).join('');
+    cells += `<button type="button" class="cal-d${key === today ? ' today' : ''}${key === calSel ? ' sel' : ''}${wd === 0 ? ' sun' : wd === 6 ? ' sat' : ''}" data-cal="${key}"><b>${d}</b><span class="dots">${dots}</span></button>`;
+  }
+  const list = itemsOn(calSel);
+  el.innerHTML = `<div class="cal-head"><button type="button" class="cal-nav" data-calm="-1" aria-label="지난달">‹</button><b>${calY}년 ${calM + 1}월</b><button type="button" class="cal-nav" data-calm="1" aria-label="다음 달">›</button></div>
+    <div class="cal-wk">${WD.map((w, i) => `<span class="${i === 0 ? 'sun' : i === 6 ? 'sat' : ''}">${w}</span>`).join('')}</div><div class="cal-grid">${cells}</div>
+    <p class="cal-key"><span><i class="ev"></i>일정</span><span><i class="mm"></i>메모</span><span><i class="an"></i>기억할 날</span></p>
+    <div class="cal-day"><p class="cal-day-h">${fmtDate(calSel)}${calSel === today ? ' · 오늘' : ''}</p>${list.length ? list.map(({ n, t, c }) => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when"><i class="cal-tag ${c}">${t}</i>${n.time ? ' ' + fmtTime(n.time) : ''}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '<p class="nb-empty">이날 적어 둔 것이 없습니다.</p>'}</div>`;
+}
+window.addEventListener('hashchange', () => { if (location.hash === '#g4' && DB.currentUser()) refresh(); });
+document.addEventListener('click', e => {
+  const d = e.target.closest('[data-cal]'); if (d) { calSel = d.dataset.cal; renderCal(); return; }
+  const m = e.target.closest('[data-calm]'); if (m) { calM += +m.dataset.calm; if (calM < 0) { calM = 11; calY--; } if (calM > 11) { calM = 0; calY++; } renderCal(); }
+});
+
 // ── 목록 ──
 function render() {
+  renderCal();
   const by = k => notes.filter(n => n.kind === k);
   const memo = by('memo'); $('nb-memo').innerHTML = memo.length ? memo.map(n => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when">${fmtDate(todayKey(new Date(n.createdAt || Date.now())))}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '<p class="nb-empty">아직 메모가 없습니다. 위의 "말로 적기"를 눌러 보세요.</p>';
   const ev = by('event').filter(n => n.date >= todayKey()).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
