@@ -947,3 +947,17 @@ body.in-detail .tabs-mini { display: none; }
 .toc-l { gap: 10px; align-items: center; }
 .toc-l img { width: 124px; flex: none; }
 @media (max-width: 380px) { .toc-l img { width: 104px; } }
+/* 오늘의 문화 칸: 두 줄로 한눈에 */
+.cu-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; overflow: visible; margin: 0; }
+.cu-tabs button { padding: 10px 4px; font-size: 1rem; white-space: nowrap; text-align: center; min-width: 0; }
+/* 그림 크게 보기 */
+.cu-fig[data-zoom] { position: relative; cursor: zoom-in; }
+.cu-zoom { position: absolute; right: 10px; bottom: 10px; background: rgba(20,16,10,0.62); color: #fff; font-size: 0.85rem; padding: 5px 10px; border-radius: 999px; pointer-events: none; }
+#modal.lightbox { background: rgba(10,8,6,0.97) !important; align-items: center; }
+#modal.lightbox .modal-box { background: transparent; box-shadow: none; padding: 48px 0 20px; max-width: 100%; width: 100%; max-height: 100vh; overflow: auto; }
+#modal.lightbox .modal-box .x { color: #fff; background: rgba(255,255,255,0.18); border-radius: 50%; width: 44px; height: 44px; top: 4px; right: 12px; z-index: 2; }
+.lb-wrap { touch-action: pinch-zoom; overflow: auto; }
+.lb-wrap img { display: block; width: 100%; height: auto; max-height: 78vh; object-fit: contain; }
+.lb-cap { color: #f4efe4; text-align: center; margin: 16px 18px 4px; font-size: 1.05rem; line-height: 1.6; }
+.lb-cap b { font-family: 'Nanum Myeongjo', serif; }
+.lb-tip { color: rgba(255,255,255,0.6); text-align: center; font-size: 0.85rem; margin: 0; }
