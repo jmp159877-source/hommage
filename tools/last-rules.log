@@ -1,0 +1,14 @@
+ruleset: 200 {
+  "name": "projects/omaju-d7862/rulesets/f90d1afe-1fce-48d4-8c4a-a10b42b34361",
+  "source": {
+    "files": [
+      {
+        "content": "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{db}/documents {\n    function signedIn() { return request.auth != null; }\n    function isMe
+release: 200 {
+  "name": "projects/omaju-d7862/releases/cloud.firestore",
+  "rulesetName": "projects/omaju-d7862/rulesets/f90d1afe-1fce-48d4-8c4a-a10b42b34361",
+  "createTime": "2026-10-14T09:12:01.312163Z",
+  "updateTime": "2026-10-15T04:37:46.391703Z"
+}
+
+게시 완료 2026-10-15T04:37:46.436881
