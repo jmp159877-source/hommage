@@ -344,7 +344,7 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 const GAME = { malmoi: () => MM.mount($('mm-root'), { toast, esc }), shisen: async () => (await import('./games/shisen.js')).mount($('ss-root')), num50: async () => (await import('./games/num50.js')).mount($('n5-root')), sudoku: async () => (await import('./games/sudoku.js')).mount($('sd-root')) };
 const gameDone = {};
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
-  if (/^g[1-4]$/.test(k)) setChapter(k); else if (!k) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
+  if (/^g[1-4]$/.test(k)) setChapter(k); else if (!cur) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
   document.body.classList.toggle('game-mode', !!GAME[cur] || cur === 'play'); if (!GAME[cur]) PLAY.stopAll();
   if (cur === 'play') PLAY.hub($('play-root'));
   if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
@@ -562,7 +562,7 @@ const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g
 function setChapter(g) {
   document.body.classList.toggle('in-chapter', !!g);
   const tabG = g || 'g1';
-  document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x.dataset.tab === tabG));
+  document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x.dataset.tab === g));
   document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === tabG));
   let head = $('ch-head');
   if (g) {
