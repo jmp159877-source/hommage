@@ -2,6 +2,15 @@
  "autumn": [
   {
    "f": "img/cards/autumn/01.jpg",
+   "id": 2603562,
+   "by": "StockSnap",
+   "tags": "sunrise, sunlight, sunshine, nature, tree, leaves, branch, plant, sky, autumn",
+   "q": "autumn leaves bright sky",
+   "bright": 195,
+   "sat": 49
+  },
+  {
+   "f": "img/cards/autumn/02.jpg",
    "id": 5291453,
    "by": "MariaM31",
    "tags": "autumn, leaves, foliage, autumn leaves, autumn foliage, autumn colors, autumn season, fall foliage, fall leaves, fall colors, nature, autumn, autumn, autumn, autumn, autumn, leaves, autumn leaves, fall leaves, nature",
@@ -10,7 +19,16 @@
    "sat": 148
   },
   {
-   "f": "img/cards/autumn/02.jpg",
+   "f": "img/cards/autumn/03.jpg",
+   "id": 7541980,
+   "by": "mariya_m",
+   "tags": "leaves, leaves in the autumn, nature, fall, forest, autumn colors, season, autumn leaves",
+   "q": "autumn leaves bright sky",
+   "bright": 169,
+   "sat": 160
+  },
+  {
+   "f": "img/cards/autumn/04.jpg",
    "id": 411491,
    "by": "371865",
    "tags": "forest, light, nature, fall, trees, leaves, coloured, sunbeams",
@@ -19,16 +37,16 @@
    "sat": 110
   },
   {
-   "f": "img/cards/autumn/03.jpg",
-   "id": 3737568,
-   "by": "Lolame",
-   "tags": "walk, sunbeams, nature, forest, mood, sun, trees, fall, path, hike, the atmosphere, fog, sunlight, haze, glade, october, golden autumn, golden october, autumn mood, stroller, go for a walk, morning hour",
-   "q": "autumn golden sunlight",
-   "bright": 117,
-   "sat": 167
+   "f": "img/cards/autumn/05.jpg",
+   "id": 4581762,
+   "by": "HeungSoon",
+   "tags": "leaves, leaf, autumn, tree, nature, colorful, season, autumn leaves",
+   "q": "autumn leaves bright sky",
+   "bright": 146,
+   "sat": 121
   },
   {
-   "f": "img/cards/autumn/04.jpg",
+   "f": "img/cards/autumn/06.jpg",
    "id": 7557866,
    "by": "matthiasboeckel",
    "tags": "fall, leaves, vine leaves, nature, autumn, autumn mood, autumn leaves, leaves, leaves, leaves, leaves, leaves",
@@ -37,16 +55,16 @@
    "sat": 153
   },
   {
-   "f": "img/cards/autumn/05.jpg",
-   "id": 76849,
-   "by": "19306",
-   "tags": "leaves, multicoloured, fall, forest, nature, colorful, red, yellow, golden, autumn forest, tree, maple, maple leaves, leaves, leaves, leaves, fall, forest, forest, forest, forest, forest, nature, nature, nature, red, yellow, autumn forest, autumn forest, autumn forest, tree, maple, maple, maple, maple, maple",
-   "q": "autumn golden sunlight",
-   "bright": 119,
-   "sat": 192
+   "f": "img/cards/autumn/07.jpg",
+   "id": 5126815,
+   "by": "NadinNandin",
+   "tags": "grape, nature, autumn, harvest, basket, leaves",
+   "q": "autumn leaves bright sky",
+   "bright": 159,
+   "sat": 68
   },
   {
-   "f": "img/cards/autumn/06.jpg",
+   "f": "img/cards/autumn/08.jpg",
    "id": 605847,
    "by": "Sponchia",
    "tags": "fall, autumn leaf, candle, lantern, wick, mood, autumn color, autumn leaves, leaves, plant, nature, coloring, autumn colors, yellow, golden, bright, golden autumn, october, lighting mood",
@@ -55,31 +73,13 @@
    "sat": 163
   },
   {
-   "f": "img/cards/autumn/07.jpg",
-   "id": 1044923,
-   "by": "AllanW",
-   "tags": "chester, park, autumn, nature, high dynamic range, historic, sunset, travel, tourism, landscape, light, tree, sky, benches, seating, path, evening, scenic, cloud, season, brown path",
-   "q": "autumn golden sunlight",
-   "bright": 118,
-   "sat": 105
-  },
-  {
-   "f": "img/cards/autumn/08.jpg",
-   "id": 2806196,
-   "by": "Felix-Mittermeier",
-   "tags": "fall, coloured, orange, golden autumn, leaves, multicoloured, colorful, autumn leaves, bright, red, autumn run, nature, sunlight, canopy, mood, to dye, coloring, golden october, october, colorful leaves, yellowish red, beautiful, tree",
-   "q": "autumn golden sunlight",
-   "bright": 122,
-   "sat": 208
-  },
-  {
    "f": "img/cards/autumn/09.jpg",
-   "id": 2651230,
-   "by": "ReneVenema",
-   "tags": "red rock, rock, skirt, landscape, nature, fall, landscapes, sunset, bad kreuznach, lighting mood, top, bad münster, germany",
-   "q": "autumn golden sunlight",
-   "bright": 121,
-   "sat": 118
+   "id": 6786657,
+   "by": "JillWellington",
+   "tags": "trees, nature, autumn, season, outdoors, fall, leaves, autumn, autumn, autumn, autumn, autumn",
+   "q": "autumn leaves bright sky",
+   "bright": 164,
+   "sat": 144
   },
   {
    "f": "img/cards/autumn/10.jpg",
@@ -92,12 +92,12 @@
   },
   {
    "f": "img/cards/autumn/11.jpg",
-   "id": 2956988,
-   "by": "Engin_Akyurt",
-   "tags": "yellow, autumn, leaf, tree, branches, high, live, nature, dry leaf, view, forest, herb, spring, winter, leaves, colour, daytime, composition, day light, environment, morning, background, perspective, beautiful wallpaper, beautiful, photography, tissue, iphone wallpaper",
-   "q": "autumn golden sunlight",
-   "bright": 115,
-   "sat": 190
+   "id": 3732919,
+   "by": "Photorama",
+   "tags": "branch, autumn, fall, red, nature, leaves",
+   "q": "autumn leaves bright sky",
+   "bright": 149,
+   "sat": 169
   },
   {
    "f": "img/cards/autumn/12.jpg",
@@ -110,6 +110,15 @@
   },
   {
    "f": "img/cards/autumn/13.jpg",
+   "id": 2379074,
+   "by": "ps2you",
+   "tags": "cosmos, pink, beautiful flowers, flower background, flower wallpaper, nature, flower",
+   "q": "cosmos flowers blue sky",
+   "bright": 193,
+   "sat": 66
+  },
+  {
+   "f": "img/cards/autumn/14.jpg",
    "id": 1001196,
    "by": "JillWellington",
    "tags": "autumn, fall, yellow, season, leaf, leaves, forest, golden, colorful, nature, tree",
@@ -118,16 +127,16 @@
    "sat": 138
   },
   {
-   "f": "img/cards/autumn/14.jpg",
-   "id": 197536,
-   "by": "70154",
-   "tags": "tree, autumn, landscape, nature, seasons, fall, branch, foliage, environment, floral, oak, maple, scenic, ecology, countryside, trunk, scenery, vibrant, lush, golden, deciduous, outdoors, beech, leaves, twig, vegetation, growth",
-   "q": "autumn golden sunlight",
-   "bright": 115,
-   "sat": 119
+   "f": "img/cards/autumn/15.jpg",
+   "id": 1678336,
+   "by": "3308894",
+   "tags": "flower, beautiful flowers, flower wallpaper, spring flowers, flower background, nature, sky, garden, beautiful, white",
+   "q": "cosmos flowers blue sky",
+   "bright": 162,
+   "sat": 60
   },
   {
-   "f": "img/cards/autumn/15.jpg",
+   "f": "img/cards/autumn/16.jpg",
    "id": 2759158,
    "by": "monika1607",
    "tags": "oak, oak leaves, tree, deciduous tree, fall, colored leaves, yellow, golden, foliage coloring, nature",
@@ -136,7 +145,16 @@
    "sat": 129
   },
   {
-   "f": "img/cards/autumn/16.jpg",
+   "f": "img/cards/autumn/17.jpg",
+   "id": 5095258,
+   "by": "JessicaKwok",
+   "tags": "grass, flower wallpaper, flowers, plant, flower background, bloom, blossom, field, phone wallpaper, nature, beautiful flowers, closeup, aesthetic wallpaper, iphone wallpaper",
+   "q": "cosmos flowers blue sky",
+   "bright": 197,
+   "sat": 74
+  },
+  {
+   "f": "img/cards/autumn/18.jpg",
    "id": 231687,
    "by": "Hans",
    "tags": "autumn leaves, golden, shine, shining, yellow, yellow-green, autumn colors, gold, tree, nature, chestnut, chestnut tree, backlighting, fall, beautiful, multicoloured, autumn color, buckeye, aesculus, common horse chestnut, aesculus hippocastanum, white horse chestnut, chestnut style, autumn day, autumnal, sunshine, sun, sunlight, illuminated",
@@ -145,7 +163,7 @@
    "sat": 235
   },
   {
-   "f": "img/cards/autumn/17.jpg",
+   "f": "img/cards/autumn/19.jpg",
    "id": 1832420,
    "by": "makamuki0",
    "tags": "poplar, yellow sheets, leaf fall, autumn, populus alba, poplar, poplar, poplar, poplar, poplar, leaf fall, leaf fall, leaf fall, leaf fall, leaf fall",
@@ -154,7 +172,7 @@
    "sat": 152
   },
   {
-   "f": "img/cards/autumn/18.jpg",
+   "f": "img/cards/autumn/20.jpg",
    "id": 10712,
    "by": "Hans",
    "tags": "willow leaves, leaves, silver willow, salix alba, pasture, sali, golden autumn, golden october, fall, october, forest, golden, bright, sun, backlighting, multicoloured, coloured, colorful, tree, branch, autumn forest, nature, autumn leaves",
@@ -163,7 +181,7 @@
    "sat": 173
   },
   {
-   "f": "img/cards/autumn/19.jpg",
+   "f": "img/cards/autumn/21.jpg",
    "id": 2986182,
    "by": "vv8888vv",
    "tags": "oak, autumn, yellow, oak leaf, nature, leaf, leaves, tree, forest, fall, yellowed leaf, autumn leaves, yellow leaves, branch",
@@ -172,7 +190,7 @@
    "sat": 163
   },
   {
-   "f": "img/cards/autumn/20.jpg",
+   "f": "img/cards/autumn/22.jpg",
    "id": 10756,
    "by": "Hans",
    "tags": "beech, european beech, fagus sylvatica, fagus, deciduous tree, golden autumn, golden october, fall, nature, october, forest, leaves, golden, bright, sun, backlighting, multicoloured, coloured, colorful, tree, branch, autumn forest, autumn leaves",
@@ -181,7 +199,7 @@
    "sat": 129
   },
   {
-   "f": "img/cards/autumn/21.jpg",
+   "f": "img/cards/autumn/23.jpg",
    "id": 2558332,
    "by": "Olesya88",
    "tags": "autumn, rowan, autumn leaves, nature, rowan clusters, rowan leaves, orange, golden autumn, crimson leaf, garden, sky",
@@ -190,7 +208,7 @@
    "sat": 134
   },
   {
-   "f": "img/cards/autumn/22.jpg",
+   "f": "img/cards/autumn/24.jpg",
    "id": 6199828,
    "by": "RyanK14",
    "tags": "frames, decoration, sunlight, sunset, light, wall, interior, nature, home",
