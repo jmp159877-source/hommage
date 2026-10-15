@@ -1318,3 +1318,9 @@ body .tabs3:not(.compact) button.soon { filter: grayscale(0.7) brightness(0.82) 
 body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.72) 0%, rgba(30,28,24,0.45) 55%, rgba(30,28,24,0.38) 100%) !important; }
 @media (max-width: 768px) { body:not(.in-chapter) .foot.colophon { margin-top: 19px !important; } }
 @media (max-width: 768px) { body:not(.in-chapter) .foot.colophon { margin-top: 0 !important; padding-top: 14px !important; } }
+/* 그해 오늘: 소식마다 대표 사진 */
+.era-fig { margin: 18px 0 22px; padding: 0; }
+.era-fig img { display: block; width: 100%; max-height: 62vw; object-fit: cover; border-radius: 12px; filter: sepia(0.18) saturate(0.9); box-shadow: 0 6px 18px rgba(60,40,10,0.14); }
+.era-fig figcaption { padding: 12px 2px 0; }
+.era-fig figcaption b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 1.15rem; color: var(--dark-green); margin-bottom: 4px; }
+.era-fig figcaption span { font-size: 1.02rem; line-height: 1.75; color: #333; }
