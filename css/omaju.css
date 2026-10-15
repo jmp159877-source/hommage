@@ -1116,3 +1116,10 @@ body.game-mode .top-nav .back { color: #1f1f1f !important; text-shadow: none; }
 .pr-band .linkbtn { font-size: 0.92rem; }
 .sd-reset { display: block; width: 100%; max-width: 440px; margin: 10px auto 0; font-size: 1rem; padding: 10px; }
 .sd-reset small, .pl-again small { color: #8a6d2c; font-size: 0.82rem; }
+/* 오늘 PLAY 목록: 사진 카드 */
+.pl-card.has-photo { padding: 0; overflow: hidden; gap: 0; }
+.pl-photo { display: block; width: 100%; aspect-ratio: 3 / 2; background-size: cover; background-position: center 60%; }
+.pl-txt { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px 14px; width: 100%; min-width: 0; }
+.pl-txt b { font-family: 'Nanum Myeongjo', serif; font-size: 1.25rem; color: #1f1f1f; margin: 0; }
+.pl-txt span { font-size: 0.9rem; color: #666; line-height: 1.45; word-break: keep-all; }
+.pl-txt em { font-style: normal; font-size: 0.8rem; color: #8a6d2c; margin-top: 4px; }

@@ -8,7 +8,7 @@ export function init(h) { H = h; }
 
 export const GAMES = {
   malmoi: { name: '말모이', sub: '두 글자 낱말 맞히기', icon: '<span class="gi-tiles"><i class="g"></i><i class="y"></i><i></i><i class="g"></i></span>' },
-  shisen: { name: '사천성', sub: '같은 그림 짝 잇기', icon: '<span class="gi-emoji">🀄</span>' },
+  shisen: { name: '사천성', sub: '같은 그림 <span style="white-space:nowrap">짝 잇기</span>', icon: '<span class="gi-emoji">🀄</span>' },
   num50: { name: '1 to 50', sub: '숫자 순서대로 빨리 누르기', icon: '<span class="gi-num">1·50</span>' },
   sudoku: { name: '스도쿠', sub: '하루 한 판 숫자 퍼즐', icon: '<span class="gi-num">9×9</span>' },
 };
@@ -142,7 +142,7 @@ export async function showRank(game, period = 'day') {
 export function hub(el) {
   el.innerHTML = `<div class="pl-hub-head"><span>TODAY PLAY</span><h2>오늘 PLAY</h2><p>하루 한 판, 오늘의 순위에 도전해 보세요.</p></div><div class="pl-hub">${Object.entries(GAMES).map(([k, g]) => {
     const b = ls.get('best.' + k + '.' + DB.todayKey(), null);
-    return `<button type="button" class="pl-card" data-go="${k}"><span class="pl-ic">${g.icon}</span><b>${g.name}</b><span>${g.sub}</span><em>${b ? '오늘 기록 · ' + H.esc(b.label) : '오늘 아직 안 함'}</em></button>`;
+    return `<button type="button" class="pl-card has-photo" data-go="${k}"><span class="pl-photo" style="background-image:url('img/play-${k}.jpg')"></span><span class="pl-txt"><b>${g.name}</b><span>${g.sub}</span><em>${b ? '오늘 기록 · ' + H.esc(b.label) : '오늘 아직 안 함'}</em></span></button>`;
   }).join('')}</div>`;
   el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { location.hash = b.dataset.go; });
 }
