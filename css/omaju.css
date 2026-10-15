@@ -1295,3 +1295,6 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .ph-read span { transition: color .15s, background .15s; border-radius: 4px; padding: 0 1px; }
 .ph-read span.done { color: #8a6d2c; }
 .ph-read span.on { background: var(--warm); color: #3A2E00; font-weight: 800; }
+/* 오늘의 경제: 운영자 제공 배경(펼친 모눈 노트와 경제 지면) */
+.mk-card { background: #F6F1E7 url('../img/market-bg.jpg') 0% 40% / 124% auto no-repeat !important; border: 1px solid #E6DCC6; padding: 10px 16px 10px !important; }
+.mk-card::before { background: linear-gradient(to right, rgba(250,247,240,0.72) 0%, rgba(250,247,240,0.6) 60%, rgba(250,247,240,0.4) 100%) !important; }

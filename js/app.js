@@ -4,6 +4,7 @@ import * as NB from './notebook.js';
 import { drawCard, photoFor } from './cards.js';
 import * as MM from './malmoi.js';
 import * as PLAY from './play.js';
+const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
 let modalPushed = false, skipPop = false, exitOpen = false;
 
 const $ = id => document.getElementById(id);
@@ -144,7 +145,8 @@ document.addEventListener('click', e => {
   document.querySelectorAll('.ph-read span.on, .ph-read span.done').forEach(x => x.classList.remove('on', 'done'));
   const ws = [...document.querySelectorAll(`#ph-read-${k} span`)], rate = +b.dataset.rate; let i = -1, tm = null, byB = false;
   const mark = n => { if (n <= i || n >= ws.length) return; ws.forEach((w, j) => { w.classList.toggle('done', j < n); w.classList.toggle('on', j === n); }); i = n; };
-  const per = (k === 'en' ? 380 : 330) / rate;
+  const est = k === 'en' ? x.text.split(/\s+/).length * 330 : x.text.replace(/[\s。、！？,.!?]/g, '').length * (k === 'ja' ? 120 : 210);
+  const per = Math.max(140, est / Math.max(1, ws.length)) / rate;
   u.onstart = () => { mark(0); tm = setInterval(() => { if (!byB) mark(i + 1); }, per); };
   u.onboundary = ev => { if (ev.name && ev.name !== 'word') return; byB = true; mark(Math.min(ws.length - 1, Math.floor(ev.charIndex / Math.max(1, x.text.length) * ws.length))); };
   u.onend = u.onerror = () => { clearInterval(tm); ws.forEach(w => { w.classList.remove('on'); w.classList.add('done'); }); setTimeout(() => ws.forEach(w => w.classList.remove('done')), 1200); };
@@ -568,7 +570,6 @@ DB.onUser((u, p) => {
 
 // ── 세 묶음 탭 ──
 // 네 칸을 누르면 그 장(章) 안으로 들어간다: 사진이 화면 가득 커지며 넘어가고, 맨 위에 그 장의 표지
-const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
 function setChapter(g) {
   document.body.classList.toggle('in-chapter', !!g);
   const tabG = g || 'g1';
