@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Gaegu:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Allura&family=Gaegu:wght@700&display=swap');
 
 :root {
   --ivory: #F4F1EA; --ivory2: #F7F4ED; --dark-green: #0F4A35; --green2: #1C7A52;
@@ -1299,3 +1299,7 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .mk-card { background: #F6F1E7 url('../img/market-bg.jpg') 0% 40% / 124% auto no-repeat !important; border: 1px solid #E6DCC6; padding: 10px 16px 10px !important; }
 .mk-card::before { background: linear-gradient(to right, rgba(250,247,240,0.72) 0%, rgba(250,247,240,0.6) 60%, rgba(250,247,240,0.4) 100%) !important; }
 .tabs3 button[data-tab="g3"], .tabs-mini button[data-tab="g3"] { background-position: center 35% !important; }
+/* 판권면 헌사 */
+.colophon .co-ded { margin: 26px 0 0; line-height: 1; color: #6b665c; }
+.colophon .co-ded span { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 0.95rem; letter-spacing: 0.12em; margin-bottom: 2px; }
+.colophon .co-ded em { font-family: 'Allura', 'Cormorant Garamond', cursive; font-style: normal; font-size: 2rem; }
