@@ -1161,3 +1161,16 @@ body.in-detail.nav-solid .top-nav img { display: none; }
 .toc-c .tc-leaf { width: min(22vw, 96px); height: auto; flex: 0 1 auto; min-width: 0; }
 .toc-c .tc-leaf.r { transform: scaleX(-1); }
 @media (max-width: 768px) { .toc-c em { font-size: min(7.4vw, 1.9rem); } }
+/* 네 칸 메인 단추: 화면 끝까지 넓고 세로로 길게 (A안) */
+@media (max-width: 768px) {
+  .tabs3:not(.compact) { margin-left: -16px; margin-right: -16px; gap: 8px; }
+  .tabs3:not(.compact) button { min-height: 0; aspect-ratio: 4 / 5.3; padding: 18px 10px 18px; border-radius: 16px; background-size: cover !important; }
+  .tabs3:not(.compact) button b { font-size: 1.85rem !important; line-height: 1.22; }
+  .tabs3:not(.compact) button small { font-size: 1.05rem !important; }
+  .tabs3:not(.compact) button[aria-pressed="true"] { transform: scale(1.02) !important; }
+}
+@media (max-width: 768px) {
+  .tabs3:not(.compact) button, .tabs3:not(.compact) button[aria-pressed="true"] { background-size: cover !important; background-position: center !important; }
+  .tabs3:not(.compact) button b { font-size: min(1.85rem, 7.2vw) !important; word-break: keep-all; }
+  .tabs3:not(.compact) button small { font-size: min(1.05rem, 4.2vw) !important; word-break: keep-all; }
+}
