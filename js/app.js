@@ -585,6 +585,7 @@ function setChapter(g) {
   }
 }
 $('tabs3').onclick = e => {
+  const sn = e.target.closest('[data-soon]'); if (sn) { toast('정성껏 준비하고 있습니다. 곧 찾아올게요.'); return; }
   const b = e.target.closest('[data-tab]'); if (!b) return; const g = b.dataset.tab; DB.track('tab', { tab: g });
   const r = b.getBoundingClientRect(), z = document.createElement('div'); z.className = 'ch-zoom';
   z.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(b).backgroundImage}`;

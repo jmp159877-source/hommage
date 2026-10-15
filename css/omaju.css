@@ -1303,3 +1303,16 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .colophon .co-ded { margin: 26px 0 0; line-height: 1; color: #6b665c; }
 .colophon .co-ded span { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 0.95rem; letter-spacing: 0.12em; margin-bottom: 2px; }
 .colophon .co-ded em { font-family: 'Allura', 'Cormorant Garamond', cursive; font-style: normal; font-size: 2rem; }
+/* 준비 중인 두 칸 */
+.tabs3 button.soon { background-color: #CFC6B4; background-size: cover; background-position: center; }
+.tabs3 button.soon[data-soon="g5"] { background-image: url('../img/tab-travel.jpg'), linear-gradient(160deg, #D9CDB4, #A99A7E); }
+.tabs3 button.soon[data-soon="g6"] { background-image: url('../img/tab-health.jpg'), linear-gradient(160deg, #C9D3C2, #8FA088); }
+.tabs3 button.soon small { opacity: 0.9; letter-spacing: 0.08em; }
+.tabs3 button.soon[data-soon="g5"] { background-position: center 30% !important; }
+.tabs3 button.soon[data-soon="g6"] { background-position: 70% 25% !important; }
+/* 준비 중: 흐리고 차분하게(아직 열리지 않은 느낌) */
+.tabs3 button.soon { filter: grayscale(0.65) brightness(0.88) !important; }
+.tabs3 button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.7) 0%, rgba(30,28,24,0.42) 55%, rgba(30,28,24,0.35) 100%) !important; }
+.tabs3 button.soon small { display: inline-block; margin-top: 4px; padding: 3px 12px; border: 1px solid rgba(255,255,255,0.7); border-radius: 999px; font-size: min(0.9rem, 3.6vw) !important; }
+body .tabs3:not(.compact) button.soon { filter: grayscale(0.7) brightness(0.82) contrast(0.92) !important; }
+body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.72) 0%, rgba(30,28,24,0.45) 55%, rgba(30,28,24,0.38) 100%) !important; }
