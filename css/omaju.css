@@ -808,3 +808,21 @@ body.in-detail .tabs-mini { display: none; }
 .pl-nav { display: flex; gap: 10px; margin-top: 14px; }
 .pl-nav .btn { flex: 1; padding: 14px; font-size: 1.05rem; }
 .pl-nav .btn[disabled] { opacity: 0.35; }
+/* 위계: Contents(목차) > 코너 소제목 */
+.toc-l img { width: 72px; height: auto; }
+.toc-l em { font-size: 1.9rem !important; letter-spacing: 0.04em; }
+.label { font-size: 1.12rem !important; gap: 10px; padding-bottom: 8px; border-bottom-width: 1.5px !important; }
+.label .lb-ic { width: 30px; height: 30px; flex: 0 0 30px; }
+@media (max-width: 768px) { .toc-l em { font-size: 1.8rem !important; } .label { font-size: 1.08rem !important; } }
+/* 오늘의 경제: 3분의 2 높이 */
+.mk-card { padding: 0 12px 4px; }
+.mk-item { padding: 3px 0 !important; }
+.mk-item .mk-l { font-size: 0.84rem; }
+.mk-item .mk-v { font-size: 0.9rem !important; }
+.mk-item .mk-c { font-size: 0.7rem !important; min-width: 56px; }
+.mk-foot { font-size: 0.72rem; margin: 2px 0 0; }
+.toc { flex-wrap: nowrap; align-items: center; }
+.toc-r { font-size: 0.8rem; flex: 0 1 auto; }
+.toc-l { gap: 8px; }
+.toc-l img { width: 60px; }
+@media (max-width: 768px) { .toc-l em { font-size: 1.65rem !important; } }
