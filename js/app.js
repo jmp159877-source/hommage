@@ -125,7 +125,7 @@ cardsEl.onclick = async e => {
 
 
 // ── 앞으로 나아가기: 따라하기 · 회화 · 나들이 ──
-const FOLLOW_ORDER = ['gym', 'sing', 'dance', 'golf', 'park'];
+const FOLLOW_ORDER = ['gym', 'meditate', 'sing', 'dance', 'golf', 'park'];
 const unent = t => String(t || '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 function renderFollow() {
   const f = C.follow; if (!f) { $('follow-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 영상이 준비되지 않았습니다. 내일 다시 들러 주세요.</p>'; return; }
@@ -134,12 +134,21 @@ function renderFollow() {
 const LANG = { en: ['영어', 'en-US'], ja: ['일본어', 'ja-JP'], zh: ['중국어', 'zh-CN'] };
 function renderPhrase() {
   const p = C.phrase; if (!p) { $('phrase-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 문장이 준비되지 않았습니다.</p>'; return; }
-  $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read">${esc(x.reading || '')}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
+  $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read" id="ph-read-${k}">${String(x.reading || '').split(/\s+/).filter(Boolean).map(w => `<span>${esc(w)}</span>`).join(' ')}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
   if (C.phrase.topic) $('phrase-title').textContent = '오늘의 상황: ' + C.phrase.topic;
 }
 document.addEventListener('click', e => {
   const zf = e.target.closest('[data-zoom]'); if (zf && CULT && CULT.painting) { const p = CULT.painting; modal(`<div class="lb-wrap"><img src="${esc(p.img)}" alt="${esc(p.title)}" referrerpolicy="no-referrer"></div><p class="lb-cap"><b>${esc(p.title)}</b> · ${esc(p.artist)}, ${esc(p.year)}</p><p class="lb-tip">두 손가락으로 벌리면 더 크게 볼 수 있습니다</p>`, () => $('modal').classList.add('lightbox')); return; }
-  if (e.target.id === 'hu-open') { $('hu-punch').hidden = false; e.target.hidden = true; return; } const b = e.target.closest('[data-say]'); if (!b) return; const k = b.dataset.say, x = C.phrase[k]; if (!('speechSynthesis' in window)) return toast('이 기기에서는 듣기를 쓸 수 없습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(x.text); u.lang = LANG[k][1]; u.rate = +b.dataset.rate; const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(LANG[k][1].slice(0, 2).toLowerCase())).sort((a, b) => (/google|natural|neural|premium/i.test(b.name) ? 1 : 0) - (/google|natural|neural|premium/i.test(a.name) ? 1 : 0))[0]; if (v) u.voice = v; speechSynthesis.speak(u); DB.track('phrase_listen', { lang: k }); });
+  if (e.target.id === 'hu-open') { $('hu-punch').hidden = false; e.target.hidden = true; return; } const b = e.target.closest('[data-say]'); if (!b) return; const k = b.dataset.say, x = C.phrase[k]; if (!('speechSynthesis' in window)) return toast('이 기기에서는 듣기를 쓸 수 없습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(x.text); u.lang = LANG[k][1]; u.rate = +b.dataset.rate; const v = speechSynthesis.getVoices().filter(v => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(LANG[k][1].slice(0, 2).toLowerCase())).sort((a, b) => (/google|natural|neural|premium/i.test(b.name) ? 1 : 0) - (/google|natural|neural|premium/i.test(a.name) ? 1 : 0))[0]; if (v) u.voice = v;
+  // 소리에 맞춰 한글 발음이 한 낱말씩 따라가며 칠해지게
+  document.querySelectorAll('.ph-read span.on, .ph-read span.done').forEach(x => x.classList.remove('on', 'done'));
+  const ws = [...document.querySelectorAll(`#ph-read-${k} span`)], rate = +b.dataset.rate; let i = -1, tm = null, byB = false;
+  const mark = n => { if (n <= i || n >= ws.length) return; ws.forEach((w, j) => { w.classList.toggle('done', j < n); w.classList.toggle('on', j === n); }); i = n; };
+  const per = (k === 'en' ? 380 : 330) / rate;
+  u.onstart = () => { mark(0); tm = setInterval(() => { if (!byB) mark(i + 1); }, per); };
+  u.onboundary = ev => { if (ev.name && ev.name !== 'word') return; byB = true; mark(Math.min(ws.length - 1, Math.floor(ev.charIndex / Math.max(1, x.text.length) * ws.length))); };
+  u.onend = u.onerror = () => { clearInterval(tm); ws.forEach(w => { w.classList.remove('on'); w.classList.add('done'); }); setTimeout(() => ws.forEach(w => w.classList.remove('done')), 1200); };
+  speechSynthesis.speak(u); DB.track('phrase_listen', { lang: k }); });
 let outRegion = store.get('outRegion', '서울');
 function renderOuting() {
   const o = C.outing; if (!o || !Object.keys(o).length) { $('outing-tabs').innerHTML = ''; $('outing-body').innerHTML = '<p class="note" style="margin-top:30px">이번 주 소식이 준비되지 않았습니다.</p>'; return; }

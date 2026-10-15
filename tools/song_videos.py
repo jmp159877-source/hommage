@@ -25,7 +25,7 @@ for y in sorted([k for k in songs if not k.startswith("_")], key=prio):
     for t, a in songs[y]:
         if f"{t}|{a}" not in have and (t, a) not in seen: seen.add((t, a)); todo.append((t, a))
 print("남은 노래", len(todo))
-for t, a in todo[:90]:
+for t, a in todo[:80]:
     try:
         items = search(f"{a} {t}")
     except Exception as e:

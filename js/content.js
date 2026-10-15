@@ -57,7 +57,8 @@ export const DEFAULT_CONTENT = {
     by: '오마주 편집실'
   },
   follow: {
-    gym: { name: '아침 체조', query: '10분 아침 스트레칭 전신', say: '일어나자마자 10분, 몸이 가벼워집니다.' },
+    gym: { name: '요가', query: '아침 요가 초보 15분', say: '일어나자마자 10분, 몸이 가벼워집니다.' },
+    meditate: { name: '명상', query: '10분 아침 명상', say: '숨을 고르며 마음을 가만히 내려놓아 보세요.' },
     sing: { name: '노래 교실', query: '노래교실 트로트 배우기', say: '오늘은 한 곡, 끝까지 불러 봅니다.' },
     dance: { name: '댄스', query: '라인댄스 기초 배우기', say: '동작은 천천히, 박자는 즐겁게.' },
     golf: { name: '골프 레슨', query: '골프 드라이버 기본 레슨', say: '스윙은 힘이 아니라 리듬입니다.' },
