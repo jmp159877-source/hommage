@@ -1303,3 +1303,8 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .colophon .co-ded { margin: 26px 0 0; line-height: 1; color: #6b665c; }
 .colophon .co-ded span { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 0.95rem; letter-spacing: 0.12em; margin-bottom: 2px; }
 .colophon .co-ded em { font-family: 'Allura', 'Cormorant Garamond', cursive; font-style: normal; font-size: 2rem; }
+/* 준비 중인 두 칸 */
+.tabs3 button.soon { background-color: #CFC6B4; background-size: cover; background-position: center; }
+.tabs3 button.soon[data-soon="g5"] { background-image: url('../img/tab-travel.jpg'), linear-gradient(160deg, #D9CDB4, #A99A7E); }
+.tabs3 button.soon[data-soon="g6"] { background-image: url('../img/tab-health.jpg'), linear-gradient(160deg, #C9D3C2, #8FA088); }
+.tabs3 button.soon small { opacity: 0.9; letter-spacing: 0.08em; }
