@@ -150,6 +150,14 @@ def main():
     db = fs.Client(project=info["project_id"], credentials=service_account.Credentials.from_service_account_info(info))
     db.collection("settings").document("market").set(doc)
     if os.environ.get("SAVE_LOG"):
+        # 점검용: 화면과 같은 날씨 요청(서울, 기상청 모델) 결과도 함께 남겨 기상청·네이버와 맞춰 볼 수 있게
+        try:
+            w = get("https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&current=temperature_2m,weather_code"
+                    "&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=1&models=kma_seamless")
+            doc["wx_seoul"] = {"now": w["current"]["temperature_2m"], "code": w["current"]["weather_code"],
+                               "max": w["daily"]["temperature_2m_max"][0], "min": w["daily"]["temperature_2m_min"][0]}
+        except Exception as e:
+            doc["wx_seoul"] = {"error": str(e)[:120]}
         json.dump(doc, open(os.path.join(HERE, "last-market.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("저장 완료", doc["updatedAt"])
 
