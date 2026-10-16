@@ -1,7 +1,8 @@
 # 오프닝 목소리 견본 (Gemini TTS) — 문장 조각마다 따로 만들어 out_voice/{who}_{n}.wav 로 저장 (자막·장면 맞추기 쉽게)
 import os, json, base64, urllib.request, wave, time
 KEY = os.environ['GEMINI_API_KEY']
-MODELS = ['gemini-3.1-flash-tts-preview', 'gemini-2.5-pro-preview-tts', 'gemini-2.5-flash-preview-tts']
+MODELS = ['gemini-3.1-flash-tts-preview']
+ONLY = set(filter(None, os.environ.get('ONLY', '').split(',')))
 PROFILE = {
  'miso': '[목소리 설정] 45세 한국 여성 진행자. 세련되고 생기 있는 사람. 맑고 탄력 있는 중음, 웃음이 잘 묻어남. 차분한 낭독조·나이 든 말투 금지.',
  'hangyeol': '[목소리 설정] 46세 한국 남성 진행자. 유쾌하고 센스 있는 사람. 따뜻한 중저음이지만 무겁지 않고 경쾌함. 느린 설명조·아저씨 말투 금지.',
@@ -40,14 +41,16 @@ def tts(model, voice, text):
     return base64.b64decode(d['candidates'][0]['content']['parts'][0]['inlineData']['data'])
 for who, segs in SEG.items():
     for n, (kind, line) in enumerate(segs):
+        if ONLY and f'{who}_{n}' not in ONLY: continue
+        time.sleep(7)
         prompt = '[아래 설정과 연출은 소리 내어 읽지 말 것]\n' + PROFILE[who] + '\n' + STYLE[kind] + '\n\n[읽을 대본 — 이 부분만 읽기]\n' + line
         done = False
         for m in MODELS:
-            for attempt in range(3):
+            for attempt in range(4):
                 try: pcm = tts(m, VOICE[who], prompt)
                 except Exception as e:
                     det = e.read().decode()[:200] if hasattr(e, 'read') else ''
-                    say('실패', who, n, m, attempt, str(e)[:120], det); time.sleep(4); continue
+                    say('실패', who, n, m, attempt, str(e)[:120], det); time.sleep(20); continue
                 sec = len(pcm) / 48000
                 if sec > len(line) * 0.35 + 3: say('지시문까지 읽음?', who, n, round(sec, 1)); continue
                 with wave.open(f'out_voice/{who}_{n}.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
