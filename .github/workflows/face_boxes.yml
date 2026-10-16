@@ -1,0 +1,19 @@
+name: 진행자 얼굴 위치 찾기
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  faces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: host-assets
+      - run: git fetch -q origin main && git show origin/main:tools/face_boxes.py > /tmp/face_boxes.py
+      - env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 /tmp/face_boxes.py
+      - if: always()
+        run: |
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git add out/faces.json && git commit -qm "얼굴 위치" && git push -q origin host-assets || true
