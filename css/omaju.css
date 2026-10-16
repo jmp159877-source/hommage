@@ -1402,6 +1402,6 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 .mine-acts { display: flex; gap: 18px; align-items: center; justify-content: flex-end; font-size: 0.92rem; }
 .mine-acts .linkbtn { text-decoration: none; color: #8A6D2C; border-bottom: 1px solid rgba(201,162,74,0.6); padding: 2px 0; background: none; }
 .mine-ask { color: #3a2e2a; }
-/* '앱 아이콘 설치하기'는 옅은 살구빛 (친구에게 보내기의 노란색과 구분) */
-.ghost.go:not(.kakao) { background: #F4E4D8 !important; color: #5A3A28 !important; border: 1px solid #E6CDBB !important; box-shadow: none; }
-.ghost.go:not(.kakao):hover { background: #EFD9C8 !important; }
+/* '앱 아이콘 설치하기'는 옅은 세이지(쑥색) — 친구에게 보내기의 노란색과 구분 */
+.ghost.go:not(.kakao) { background: #E3EBDF !important; color: #2F4A3C !important; border: 1px solid #C9D8C4 !important; box-shadow: none; }
+.ghost.go:not(.kakao):hover { background: #D8E4D2 !important; }
