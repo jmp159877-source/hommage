@@ -25,11 +25,12 @@ def good(img):
     r, g, b = ImageStat.Stat(small).mean
     bright = (r * 299 + g * 587 + b * 114) / 1000
     sat = ImageStat.Stat(small.convert("HSV")).mean[1]
-    return bright > int(os.environ.get("MINB", "115")) and sat > 45, round(bright), round(sat)
+    return bright > int(os.environ.get("MINB", "115")) and sat > (25 if WIDE else 45), round(bright), round(sat)
 
 
 ONLY = [x for x in os.environ.get("ONLY", "").split(",") if x]
 OUT = os.environ.get("OUT", "img/cards")
+WIDE = any(k.startswith("wide") for k in ONLY)  # 'wide…' 묶음은 가로 사진(날씨 칸 등)
 if os.environ.get("QUERIES"):
     Q = {k: v for k, v in Q.items()}
     for part in os.environ["QUERIES"].split(";"):
@@ -47,7 +48,7 @@ def main():
         for q in qs:
             for page in (1, 2):
                 if len(got) >= PER: break
-                u = "https://pixabay.com/api/?" + urllib.parse.urlencode({"key": KEY, "q": q, "image_type": "photo", "orientation": "vertical", "per_page": 60, "page": page, "safesearch": "true", "editors_choice": "false", "min_width": 900, "order": "popular"})
+                u = "https://pixabay.com/api/?" + urllib.parse.urlencode({"key": KEY, "q": q, "image_type": "photo", "orientation": "horizontal" if WIDE else "vertical", "per_page": 60, "page": page, "safesearch": "true", "editors_choice": "false", "min_width": 900, "order": "popular"})
                 j = json.loads(get(u))
                 for p in j.get("hits", []):
                     if len(got) >= PER or p["id"] in seen: continue
@@ -59,9 +60,15 @@ def main():
                     ok, br, sat = good(im)
                     if not ok: continue
                     n = len(got) + 1
-                    w, h = im.size; th = int(w * 1.25)
-                    if h > th: top = (h - th) // 2; im = im.crop((0, top, w, top + th))
-                    im = im.convert("RGB").resize((800, 1000), Image.LANCZOS)
+                    w, h = im.size
+                    if WIDE:
+                        th = int(w * 0.6)
+                        if h > th: top = (h - th) // 2; im = im.crop((0, top, w, top + th))
+                        im = im.convert("RGB").resize((1200, 720), Image.LANCZOS)
+                    else:
+                        th = int(w * 1.25)
+                        if h > th: top = (h - th) // 2; im = im.crop((0, top, w, top + th))
+                        im = im.convert("RGB").resize((800, 1000), Image.LANCZOS)
                     im.save(f"{OUT}/{season}/{n:02d}.jpg", "JPEG", quality=84, optimize=True, progressive=True)
                     got.append({"f": f"{OUT}/{season}/{n:02d}.jpg", "id": p["id"], "by": p.get("user", ""), "tags": p.get("tags", ""), "q": q, "bright": br, "sat": sat})
             print(season, q, len(got))
