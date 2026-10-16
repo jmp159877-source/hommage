@@ -1,7 +1,7 @@
 import { DEFAULT_CONTENT } from './content.js';
 import * as DB from './db.js';
 import * as NB from './notebook.js';
-import { drawCard, photoFor } from './cards.js';
+import { drawCard } from './cards.js';
 import * as MM from './malmoi.js';
 import * as PLAY from './play.js';
 const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future2'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
@@ -85,10 +85,15 @@ $('wx-here').onclick = () => askHere(false);
 // ── 인사말 (그림 카드) ──
 const cardsEl = $('cards');
 const GREET = C.greetings.slice(0, 4);
-cardsEl.innerHTML = GREET.map((c, i) => `<button type="button" class="gcard photo pic" data-copy="${i}"><img class="g-logo" src="logo-light.png" alt=""><q>${esc(c).replace(/\n/g, '<br>')}</q><span class="g-send">눌러서 보내기</span></button>`).join('');
-GREET.forEach(async (c, i) => { const b = cardsEl.querySelector(`[data-copy="${i}"]`); if (b) b.style.backgroundImage = `url('${await photoFor(i)}')`; });
+// 인사 카드: 고급 문구점 편지지 6가지(사진·동물 없음). 날마다 돌아가며, 하루 4장은 서로 다른 디자인.
+const CARD_DOW = ['일', '월', '화', '수', '목', '금', '토'][new Date().getDay()];
+const CARD_DATE = `${M + 1}월 ${D}일 · ${CARD_DOW}요일`;
+const CARD_SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
+const cardVar = i => ['v1', 'v2', 'v3', 'v4', 'v5', 'v6'][(Math.floor(Date.UTC(Y, M, D) / 864e5) * 4 + i) % 6];
+const CARD_ORN = { v1: '<img class="gp-leaf" src="leaf.png" alt="">', v2: '<span class="gp-foil"></span>' };
+cardsEl.innerHTML = GREET.map((c, i) => { const v = cardVar(i); return `<button type="button" class="gcard paper ${v}" data-copy="${i}" data-v="${v}" aria-label="인사 카드 보내기"${v === 'v6' ? ` style="background-image:url('img/wc/${CARD_SEASON}.jpg')"` : ''}><span class="gp-date">${v === 'v6' ? `${M + 1}월 ${D}일<br>${CARD_DOW}요일` : CARD_DATE}</span>${CARD_ORN[v] || ''}<q>${esc(c).replace(/\n/g, '<br>')}</q><span class="${v === 'v4' ? 'gp-brush' : 'gp-rule'}"></span>${v === 'v3' ? '<span class="gp-seal">오마주</span>' : ''}<span class="gp-brand">Omaju</span></button>`; }).join('');
 async function makeCard(i) {
-  const cv = await drawCard(C.greetings[i], i, { dateText: `${M + 1}월 ${D}일 ${['일', '월', '화', '수', '목', '금', '토'][new Date().getDay()]}요일` });
+  const cv = await drawCard(C.greetings[i], i, { dateText: CARD_DATE, variant: cardVar(i), season: CARD_SEASON });
   return new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
 }
 cardsEl.onclick = async e => {

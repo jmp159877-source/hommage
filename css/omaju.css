@@ -1348,3 +1348,43 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 .wx-card { background-position: center 40% !important; }
 .wx-card::after { background: linear-gradient(to right, rgba(24,22,18,0.62) 0%, rgba(24,22,18,0.42) 50%, rgba(24,22,18,0.06) 100%) !important; }
 .wx-card .wx-in, .wx-card .wx-in * { text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 2px 12px rgba(0,0,0,0.3); }
+
+/* ── 인사 카드: 고급 편지지 6가지 (2026-10-16) ── */
+.gcard.paper { flex: none; position: relative; width: min(70vw, 290px); aspect-ratio: 4 / 5; height: auto; min-height: 0; border: 0; border-radius: 10px; box-shadow: 0 8px 22px rgba(70,52,22,0.10), 0 1px 3px rgba(70,52,22,0.08); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 34px 18px 40px; overflow: hidden; scroll-snap-align: center; background-repeat: no-repeat; }
+.gcard.paper::after { display: none !important; }
+.gcard.paper::before { content: none; }
+.gcard.paper > q, .gcard.paper > .gp-rule, .gcard.paper > .gp-leaf, .gcard.paper > .gp-brush, .gcard.paper > .gp-foil { position: relative; z-index: 1; }
+.gcard.paper .gp-date { position: absolute; top: 22px; left: 0; right: 0; z-index: 1; font-family: 'Noto Sans KR', sans-serif; font-weight: 400; font-size: min(0.74rem, 3.2vw); letter-spacing: 0.14em; }
+.gcard.paper .gp-leaf { position: relative; width: 44px; height: auto; opacity: 0.92; margin: 0 0 14px; }
+.gcard.paper .gp-foil { display: block; width: 26px; height: 26px; border-radius: 50%; margin: 0 0 18px; border: 1.5px solid #C2A05A; box-shadow: 0 0 0 3px #EFEAE1, 0 0 0 4px rgba(194,160,90,0.55); }
+.gcard.paper q { display: block; quotes: none; padding: 0; margin: 0; background: none; text-shadow: none; font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: min(1.2rem, 5.2vw); line-height: 1.75; word-break: keep-all; }
+.gcard.paper .gp-rule { display: block; width: 26px; height: 1px; margin: 16px auto 0; }
+.gcard.paper .gp-brush { display: block; width: 84px; height: 12px; margin: 14px auto 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 20'%3E%3Cpath d='M4 12 C30 6 70 5 136 9 C100 13 50 15 6 15 Z' fill='%23221e19' opacity='.85'/%3E%3C/svg%3E") center/contain no-repeat; }
+.gcard.paper .gp-brand { position: absolute; bottom: 20px; left: 0; right: 0; z-index: 1; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: min(1rem, 4.4vw); letter-spacing: 0.06em; }
+.gcard.paper .gp-seal { position: absolute; right: 24px; bottom: 17px; z-index: 1; width: 19px; padding: 5px 0; background: #B5322A; color: #F6E7D8; font: 800 10px/1.15 'Nanum Myeongjo', serif; writing-mode: vertical-rl; text-orientation: upright; border-radius: 2px; transform: rotate(-3deg); opacity: 0.9; display: flex; align-items: center; justify-content: center; }
+/* 1 아이보리 금테 */
+.gcard.paper.v1 { background-color: #FBF8F1; color: #2E2618; }
+.gcard.paper.v1::before, .gcard.paper.v5::before { content: ''; position: absolute; inset: 9px; border-radius: 5px; pointer-events: none; display: block; }
+.gcard.paper.v1::before { border: 1px solid rgba(176,141,74,0.5); }
+.gcard.paper.v1 .gp-date { color: #A88B55; } .gcard.paper.v1 .gp-brand { color: #8A7A5A; } .gcard.paper.v1 .gp-rule { background: #C9A24A; }
+/* 2 리넨 + 금 고리 */
+.gcard.paper.v2 { background-color: #EFEAE1; background-repeat: repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06 .9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23m)'/%3E%3C/svg%3E"); color: #3A3328; }
+.gcard.paper.v2 .gp-date { color: #9A8A6E; } .gcard.paper.v2 .gp-brand { color: #857559; } .gcard.paper.v2 .gp-rule { background: #C9A24A; }
+/* 3 크라프트 + 낙관 */
+.gcard.paper.v3 { background-color: #D9C3A0; background-repeat: repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E"); color: #3B2B18; }
+.gcard.paper.v3 .gp-date { color: #7A5F3A; } .gcard.paper.v3 .gp-brand { color: #6E5534; } .gcard.paper.v3 .gp-rule { background: #7A5F3A; }
+/* 4 한지 + 먹 */
+.gcard.paper.v4 { background-color: #F7F3EA; background-repeat: repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .6' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .10 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); color: #1E1B17; }
+.gcard.paper.v4 .gp-date { color: #8C8070; } .gcard.paper.v4 .gp-brand { color: #6E655A; }
+/* 5 새벽 하늘 */
+.gcard.paper.v5 { background-image: linear-gradient(170deg, #DCE7EE 0%, #EEF1EE 55%, #F7EFE3 100%); color: #2A3440; }
+.gcard.paper.v5::before { border: 1px solid rgba(255,255,255,0.9); }
+.gcard.paper.v5 .gp-date, .gcard.paper.v5 .gp-brand { color: #6F8293; } .gcard.paper.v5 .gp-rule { background: #9FB2C2; }
+/* 6 수채 (계절 그림은 화면에서 넣음) */
+.gcard.paper.v6 { background-color: #FCFAF6; background-position: right top; background-size: 74% auto; color: #3A2E2A; }
+.gcard.paper.v6 .gp-date { text-align: left; padding-left: 24px; line-height: 1.7; color: #B08A7A; }
+.gcard.paper.v6 .gp-brand { color: #9A7A6A; } .gcard.paper.v6 .gp-rule { background: #D6A79A; }
+/* 예전 인사 카드 규칙(.gcard q / .gcard img 의 위치·색)이 새 편지지에 섞이지 않게 */
+.gcard.paper > q, .gcard.paper > .gp-leaf, .gcard.paper > .gp-rule, .gcard.paper > .gp-brush, .gcard.paper > .gp-foil { top: auto !important; left: auto !important; right: auto !important; bottom: auto !important; }
+.gcard.paper q { color: inherit !important; font-size: min(1.2rem, 5.2vw) !important; line-height: 1.75 !important; }
+.gcard.paper .gp-leaf { width: 44px !important; }
