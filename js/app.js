@@ -287,7 +287,7 @@ NB.init({ toast, modal, closeModal, openGate });
   const fmt = (v, u) => { if (u === '') return v.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); const n = Math.round(v); if (n >= 100000000) { const eok = Math.floor(n / 100000000), man = Math.round((n % 100000000) / 10000); return `${eok}억${man ? ' ' + man.toLocaleString('ko-KR') + '만' : ''}${u}`; } if (n >= 10000000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만' + u; return n.toLocaleString('ko-KR') + u; };
   const ORDER = ['코스피', '코스닥', '미국 달러', '일본 엔 (100엔)', '유로', '금 1돈', '은 1돈', '비트코인', '이더리움']; const items = [...m.items].sort((a, b) => (ORDER.indexOf(a.label) + 99) % 99 - (ORDER.indexOf(b.label) + 99) % 99);
   $('mk-grid').innerHTML = items.map(i => `<div class="mk-item"><span class="mk-l">${esc(i.label)}</span><b class="mk-v">${fmt(i.value, i.unit)}</b>${i.change == null ? '' : `<span class="mk-c ${i.change > 0 ? 'up' : i.change < 0 ? 'down' : ''}">${i.change > 0 ? '▲' : i.change < 0 ? '▼' : '－'} ${Math.abs(i.change).toFixed(2)}%</span>`}</div>`).join('');
-  const t = new Date(m.updatedAt); $('mk-foot').textContent = `${t.getMonth() + 1}월 ${t.getDate()}일 ${t.getHours()}시 기준 · 금은 한국거래소, 은은 국제 시세 환산(1돈)`;
+  const t = new Date(m.updatedAt); $('mk-foot').textContent = `${t.getMonth() + 1}월 ${t.getDate()}일 ${t.getHours()}시 ${String(t.getMinutes()).padStart(2, '0')}분 기준 · 금은 한국거래소, 은은 국제 시세 환산(1돈)`;
   $('mk-sec').hidden = false;
 })();
 
