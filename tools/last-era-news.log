@@ -2,5 +2,47 @@
 1976 후보 0 → 실은 것 없음
 1986 후보 0 → 실은 것 없음
 1996 후보 0 → 실은 것 없음
-2006 후보 128 → 5건 사회/문화/연예/스포츠
+2006 후보 138 → 5건 문화/연예/스포츠
 2016 후보 288 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+--- 자세히 ---
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
+서울신문90 probe /1996101901001 → 없음
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101908002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101908001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101908003 HTTP Error 404: Not Found
+서울신문90 probe /1996102001001 → 없음
