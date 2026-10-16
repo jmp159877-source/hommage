@@ -197,7 +197,7 @@ def gen_era(d):
             if not isinstance(f, (list, tuple)) or len(f) < 2 or not str(f[1]).strip(): continue
             item = [str(f[0]).strip(), str(f[1]).strip()]
             ref = str(f[2]).strip() if len(f) > 2 else ""
-            im = era_photo(item[0], ref, yr)
+            im = era_photo(item[0], ref, yr, item[1])
             if im: item.append(im["thumb"])  # 그 소식의 대표 사진 (위키백과, 없으면 제목으로 찾기)
             facts.append(item)
         assert j.get("mood") and facts, f"{yr} 그해 오늘 비어 있음"
@@ -302,9 +302,17 @@ def youtube_pick(query):
         return None
 
 
+UA_BOT = "OmajuBot/1.0 (https://omaju.kr; bot@omaju.kr)"  # 위키백과 규칙: 누가 요청하는지 밝혀야 막히지 않는다
+
+
 def get_json(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "omaju"}), timeout=30) as r:
-        return json.load(r)
+    for t in range(4):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA_BOT}), timeout=30) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and t < 3: time.sleep(2 * (t + 1) ** 2); continue  # 너무 잦다고 하면 쉬었다가
+            raise
 
 
 FOLLOW_FALLBACK = {"gym": ("아침 요가 초보", "가볍게 몸을 펴며 하루를 열어 보세요"), "meditate": ("10분 아침 명상", "숨을 고르며 마음을 가만히 내려놓아 보세요"), "sing": ("노래교실 인기 가요", "목을 풀고 한 곡 시원하게 불러 보세요"),
@@ -388,25 +396,39 @@ def wiki_image(ref):
     return None
 
 
-def wiki_find(q, year=None):
-    """위키백과에서 검색어로 문서를 찾아 대표 사진을 가져온다(한국어 → 영어). 사진이 있는 첫 문서."""
+def _norm(t):
+    return re.sub(r"[\s·'\"「」『』]", "", re.sub(r"\s*\(.*?\)", "", t or ""))
+
+
+def wiki_find(q, year=None, text=""):
+    """위키백과 검색으로 사진 있는 문서 찾기. 단, 문서 이름이 소식 글(text) 안에 실제로 나오는 것만 — 엉뚱한 사람·사진 막기"""
+    body = _norm(text)
     for lang in ("ko", "en"):
         for query in ([f"{q} {year}", q] if year else [q]):
             try:
-                u = f"https://{lang}.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "list": "search", "srsearch": query, "srlimit": 4, "format": "json"})
+                u = f"https://{lang}.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "list": "search", "srsearch": query, "srlimit": 5, "format": "json"})
                 hits = get_json(u).get("query", {}).get("search", [])
             except Exception as e:
                 print(f"[era] 위키 검색 실패 {query}: {str(e)[:60]}", file=sys.stderr); hits = []
             for h in hits:
+                # 문서 이름의 낱말(연도 빼고)이 모두 소식 글에 나와야 함: '1986년 아시안 게임' ↔ '서울 아시안게임' 은 통과, '한강 (작가)' ↔ 밥 딜런 소식은 탈락
+                words = [w for w in re.split(r"\s+", re.sub(r"\s*\(.*?\)", "", h["title"])) if w and not re.fullmatch(r"\d+년?", w)]
+                if not words or (body and not all(_norm(w) in body for w in words)) or len(_norm(h["title"])) < 2:
+                    continue
+                time.sleep(0.4)
                 im = wiki_image(f"{lang}:{h['title']}")
                 if im: return im
+            time.sleep(0.4)
     return None
 
 
-def era_photo(title, ref, year):
-    """그해 오늘 소식 사진: AI가 준 위키 문서 → 없거나 사진이 없으면 제목으로 위키 검색"""
+def era_photo(title, ref, year, desc=""):
+    """그해 오늘 소식 사진: AI가 준 위키 문서 → 없거나 사진이 없으면 소식 글로 위키 검색(글에 나오는 문서만)"""
     im = wiki_image(ref) if re.match(r"^(ko|en):.+", ref or "") else None
-    return im or wiki_find(re.sub(r"\s*(개막|종영|소식|열기|시작|인수|출시)$", "", title), year)
+    if im: return im
+    text = f"{title} {desc}"
+    key = re.sub(r"\s*(개막|종영|소식|열기|시작|인수|출시)$", "", title)
+    return wiki_find(key, year, text) or wiki_find(re.sub(r"^\d+월 \d+일,\s*", "", desc)[:40], None, text)
 
 
 def gen_culture(d):
