@@ -1,7 +1,7 @@
-widewx sheer curtain sunlight 30
-widewx linen curtain window light 30
-widewx morning light wall shadow 30
-widewx soft clouds sky pastel 30
-widewx window sill morning light 30
-widewx beige interior sunlight 30
-완료 {'widewx': 30}
+widesky blue sky white clouds 30
+widesky clear sky soft clouds 30
+widesky morning sky light clouds 30
+widesky summer sky clouds bright 30
+widesky sky cumulus clouds blue 30
+widesky pastel sky clouds 30
+완료 {'widesky': 30}
