@@ -76,7 +76,7 @@ if os.environ.get('AUDITION'):
 for who, segs in SEG.items():
     for n, (kind, line) in enumerate(segs):
         if ONLY and f'{who}_{n}' not in ONLY: continue
-        time.sleep(7)
+        time.sleep(int(os.environ.get('PAUSE', '7')))
         prompt = '[아래 설정과 연출은 소리 내어 읽지 말 것]\n' + PROFILE_ANCHOR[who] + '\n' + STYLE[kind] + '\n\n[읽을 대본 — 이 부분만 읽기]\n' + line
         done = False
         for m in MODELS:
@@ -84,7 +84,7 @@ for who, segs in SEG.items():
                 try: pcm = tts(m, VOICE[who], prompt)
                 except Exception as e:
                     det = e.read().decode()[:200] if hasattr(e, 'read') else ''
-                    say('실패', who, n, m, attempt, str(e)[:120], det); time.sleep(20); continue
+                    say('실패', who, n, m, attempt, str(e)[:120], det); time.sleep(60); continue
                 sec = len(pcm) / 48000
                 if sec > len(line) * 0.35 + 3: say('지시문까지 읽음?', who, n, round(sec, 1)); continue
                 with wave.open(f'out_voice/{who}_{n}.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)

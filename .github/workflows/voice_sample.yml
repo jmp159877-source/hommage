@@ -22,6 +22,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ONLY: ${{ inputs.only }}
           AUDITION: ${{ inputs.audition }}
+          PAUSE: '30'
         run: python3 tools/voice_sample.py
       - name: 견본 가지에 올리기
         if: always()
