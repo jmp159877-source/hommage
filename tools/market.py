@@ -30,6 +30,37 @@ def yahoo(sym):
     return price, prev
 
 
+def get_text(url, timeout=20):
+    req = urllib.request.Request(url, headers=UA)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode(r.headers.get_content_charset() or "euc-kr", "replace")
+
+
+def naver_market(cd):
+    """네이버 증권 시장지표(우리가 늘 보는 하나은행 매매기준율·한국거래소 금): 현재값과 전날 값.
+    cd 예: FX_USDKRW, FX_JPYKRW(100엔), FX_EURKRW, M04020000(국내 금, 원/g)"""
+    num = lambda x: float(str(x).replace(",", ""))
+    cat = "metals" if cd.startswith("M0") else "exchange"
+    try:  # 1) 모바일 증권 JSON
+        j = get(f"https://m.stock.naver.com/front-api/marketIndex/productDetail?category={cat}&reutersCode={cd}")
+        j = j.get("result", j)
+        price = num(j["closePrice"]); diff = num(j["fluctuations"])
+        kind = str((j.get("fluctuationsType") or {}).get("name", j.get("fluctuationsType", ""))).upper()
+        if kind in ("FALLING", "LOWER_LIMIT") and diff > 0: diff = -diff
+        return price, price - diff
+    except Exception:
+        pass
+    # 2) PC 시장지표 화면
+    import re
+    html = get_text("https://finance.naver.com/marketindex/")
+    i = html.index(f"marketindexCd={cd}")
+    blk = html[i:i + 1500]
+    price = num(re.search(r'class="value">([\d,.]+)<', blk).group(1))
+    diff = num(re.search(r'class="change">\s*([\d,.]+)\s*<', blk).group(1))
+    if re.search(r'point_dn|하락', blk[:blk.find('class="change"') + 200]): diff = -diff
+    return price, price - diff
+
+
 def naver_index(code):
     """네이버 증권 지수(코스피 KOSPI / 코스닥 KOSDAQ): 현재가와 전날 대비 → 전날 종가"""
     j = get(f"https://m.stock.naver.com/api/index/{code}/basic")
@@ -49,24 +80,24 @@ def item(label, value, prev, unit, digits=0, note=""):
 def main():
     out, errors = [], []
     usd = None
-    # 1) 환율: 실시간에 가까운 시장 환율(야후). 실패하면 하루 한 번 갱신되는 공개 환율로
-    try:
-        usd, usd0 = yahoo("KRW=X")
-        jpy, jpy0 = yahoo("JPYKRW=X")
-        eur, eur0 = yahoo("EURKRW=X")
-        out.append(item("미국 달러", usd, usd0, "원", 1))
-        out.append(item("일본 엔 (100엔)", jpy * 100, (jpy0 * 100) if jpy0 else None, "원", 1))
-        out.append(item("유로", eur, eur0, "원", 1))
-    except Exception as e:
-        errors.append(f"환율(야후): {e}")
+    # 1) 환율: 네이버(하나은행 매매기준율)를 먼저, 안 되면 야후 시장 환율, 그것도 안 되면 공개 환율
+    fx = {}
+    for cd, key in (("FX_USDKRW", "usd"), ("FX_JPYKRW", "jpy"), ("FX_EURKRW", "eur")):
+        try: fx[key] = naver_market(cd)
+        except Exception as e: errors.append(f"{key}(네이버): {e}")
+    for sym, key, mul in (("KRW=X", "usd", 1), ("JPYKRW=X", "jpy", 100), ("EURKRW=X", "eur", 1)):
+        if key in fx: continue
+        try: v, v0 = yahoo(sym); fx[key] = (v * mul, (v0 * mul) if v0 else None)
+        except Exception as e: errors.append(f"{key}(야후): {e}")
+    if len(fx) < 3:
         try:
-            fx = get("https://open.er-api.com/v6/latest/USD")["rates"]
-            usd = fx["KRW"]
-            out.append(item("미국 달러", usd, None, "원", 1))
-            out.append(item("일본 엔 (100엔)", usd / fx["JPY"] * 100, None, "원", 1))
-            out.append(item("유로", usd / fx["EUR"], None, "원", 1))
-        except Exception as e2:
-            errors.append(f"환율: {e2}")
+            r = get("https://open.er-api.com/v6/latest/USD")["rates"]; u = r["KRW"]
+            fx.setdefault("usd", (u, None)); fx.setdefault("jpy", (u / r["JPY"] * 100, None)); fx.setdefault("eur", (u / r["EUR"], None))
+        except Exception as e:
+            errors.append(f"환율: {e}")
+    for key, label in (("usd", "미국 달러"), ("jpy", "일본 엔 (100엔)"), ("eur", "유로")):
+        if key in fx: out.append(item(label, fx[key][0], fx[key][1], "원", 2))
+    usd = fx.get("usd", (None,))[0]
     # 2) 코스피·코스닥
     # 네이버 증권(우리가 늘 보는 숫자)을 먼저, 안 되면 야후
     for code, sym, label in (("KOSPI", "^KS11", "코스피"), ("KOSDAQ", "^KQ11", "코스닥")):
@@ -81,15 +112,23 @@ def main():
         # 하루에 ±15% 넘게 움직였다고 나오면 잘못 받은 값 → 등락은 비워 둠
         if prev and abs(p - prev) / prev > 0.15: prev = None
         out.append(item(label, p, prev, "", 2))
-    # 3) 금·은 (국제 시세를 원/돈으로 환산. 1돈 = 3.75g, 1온스 = 31.1035g)
-    if usd:
-        for sym, label in (("GC=F", "금 1돈"), ("SI=F", "은 1돈")):
+    # 3) 금: 한국거래소 금시장 1g 값 × 3.75 (네이버 '국내 금'과 같은 숫자). 안 되면 국제 시세 환산
+    try:
+        g, g0 = naver_market("M04020000")
+        out.append(item("금 1돈", g * 3.75, (g0 * 3.75) if g0 else None, "원", 0, "한국거래소 기준"))
+    except Exception as e:
+        errors.append(f"금(네이버): {e}")
+        if usd:
             try:
-                p, prev = yahoo(sym)
-                k = usd / 31.1035 * 3.75
-                out.append(item(label, p * k, (prev * k) if prev else None, "원", 0, "국제 시세 환산"))
-            except Exception as e:
-                errors.append(f"{label}: {e}")
+                p, prev = yahoo("GC=F"); k = usd / 31.1035 * 3.75
+                out.append(item("금 1돈", p * k, (prev * k) if prev else None, "원", 0, "국제 시세 환산"))
+            except Exception as e2: errors.append(f"금: {e2}")
+    # 은: 국내 거래소가 없어 국제 시세를 원으로 환산 (1돈 = 3.75g, 1온스 = 31.1035g)
+    if usd:
+        try:
+            p, prev = yahoo("SI=F"); k = usd / 31.1035 * 3.75
+            out.append(item("은 1돈", p * k, (prev * k) if prev else None, "원", 0, "국제 시세 환산"))
+        except Exception as e: errors.append(f"은: {e}")
     # 4) 비트코인·이더리움 (업비트, 원화)
     try:
         for t in get("https://api.upbit.com/v1/ticker?markets=KRW-BTC,KRW-ETH"):
