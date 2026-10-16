@@ -10,7 +10,7 @@ export const GAMES = {
   malmoi: { name: '말모이', sub: '두 글자 낱말 맞히기', icon: '<span class="gi-tiles"><i class="g"></i><i class="y"></i><i></i><i class="g"></i></span>' },
   shisen: { name: '사천성', sub: '같은 그림 <span style="white-space:nowrap">짝 잇기</span>', icon: '<span class="gi-emoji">🀄</span>' },
   num50: { name: '1 to 50', sub: '숫자 순서대로 빨리 누르기', icon: '<span class="gi-num">1·50</span>' },
-  sudoku: { name: '스도쿠', sub: '하루 한 판 숫자 퍼즐', icon: '<span class="gi-num">9×9</span>' },
+  sudoku: { name: '스도쿠', sub: '9×9 숫자 퍼즐', icon: '<span class="gi-num">9×9</span>' },
 };
 
 // ── 소리: 파일 없이 직접 만드는 잔잔한 소리 ──
@@ -120,7 +120,7 @@ export async function finish(game, score, label, el) {
 // 몇 명 중 몇 등 대신 상위·중위·하위 % 와 한마디 (이용자 수가 드러나지 않게)
 export function tier(rank, total) {
   const p = Math.max(1, Math.ceil(rank / Math.max(total, 1) * 100));
-  if (rank === 1) return { t: '오늘 1등이에요!', m: '정말 대단합니다. 내일도 이 자리를 지켜 보세요 👏' };
+  if (rank === 1) return { t: '1등이에요!', m: '정말 대단합니다. 내일도 이 자리를 지켜 보세요 👏' };
   if (p <= 10) return { t: `상위 ${p}%`, m: '대단해요! 최상위권입니다 👏' };
   if (p <= 40) return { t: `상위 ${p}%`, m: '훌륭해요! 조금만 더 하면 최상위권이에요.' };
   if (p <= 70) return { t: '중위권', m: '좋아요! 한 판 더 하면 쑥 올라갈 거예요. 화이팅!' };
@@ -159,7 +159,7 @@ export async function showRank(game, period = 'day') {
 
 // ── 놀이 목록 ──
 export function hub(el) {
-  el.innerHTML = `<div class="pl-hub-head"><span>TODAY PLAY</span><h2>오늘 PLAY</h2><p>하루 한 판, 오늘의 순위에 도전해 보세요.</p></div><div class="pl-hub">${Object.entries(GAMES).map(([k, g]) => {
+  el.innerHTML = `<div class="pl-hub-head"><span>TODAY PLAY</span><h2>오늘 PLAY</h2><p>몇 판이든 좋아요. 가장 좋은 기록이 오늘 순위에 오릅니다.</p></div><div class="pl-hub">${Object.entries(GAMES).map(([k, g]) => {
     const b = ls.get('best.' + k + '.' + DB.todayKey(), null);
     return `<button type="button" class="pl-card has-photo" data-go="${k}"><span class="pl-photo" style="background-image:url('img/play-${k}.jpg')"></span><span class="pl-txt"><b>${g.name}</b><span>${g.sub}</span><em>${b ? '오늘 기록 · ' + H.esc(b.label) : '오늘 아직 안 함'}</em></span></button>`;
   }).join('')}</div>`;

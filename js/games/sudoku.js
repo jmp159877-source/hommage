@@ -1,4 +1,4 @@
-// 스도쿠 — 하루 한 판(모두 같은 판). 가로·세로·굵은 칸 안에 1~9가 한 번씩.
+// 스도쿠 — 오늘 판(모두 같은 판) + 새 판 여러 번, 가장 좋은 기록이 순위에. 가로·세로·굵은 칸 안에 1~9가 한 번씩.
 import * as P from '../play.js';
 import { todayKey } from '../db.js';
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -17,12 +17,12 @@ export function mount(el, practice = false) {
   const save = () => { if (!practice) P.store.set(key, st); };
   let sel = -1;
   const fresh = !practice && !st.done && st.cur.every((v, i) => v === puz[i]);
-  T.body.innerHTML = `${practice ? '<p class="pr-band">연습 판 · 순위에 반영되지 않습니다 <button type="button" class="linkbtn" id="sd-today">오늘 판으로</button></p>' : fresh ? '<button type="button" class="pr-try" id="sd-prac">처음이세요? <b>연습 한 판</b> 먼저 해 보기 <small>순위에 반영되지 않습니다</small></button>' : ''}<div class="sd-grid" id="sd-grid"></div><div class="sd-pad" id="sd-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-n="${n}">${n}</button>`).join('')}<button type="button" data-n="0" class="wide">지우기</button></div>${st.done ? '' : '<button type="button" class="btn line sd-reset" id="sd-reset">지우고 다시 <small>· 시계는 계속 갑니다</small></button>'}<p class="note sd-tip">칸을 고르고 숫자를 누르세요. 틀린 숫자는 빨갛게 보이고 20초가 더해져요.</p>`;
+  T.body.innerHTML = `${practice ? '<p class="pr-band">새 판 · 더 좋은 기록이 오늘 순위에 오릅니다 <button type="button" class="linkbtn" id="sd-today">오늘 판으로</button></p>' : fresh ? '<button type="button" class="pr-try" id="sd-prac">처음이세요? <b>연습 한 판</b> 먼저 해 보기 <small>오늘 판은 그대로 남아 있어요</small></button>' : ''}<div class="sd-grid" id="sd-grid"></div><div class="sd-pad" id="sd-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-n="${n}">${n}</button>`).join('')}<button type="button" data-n="0" class="wide">지우기</button></div>${st.done ? '' : '<button type="button" class="btn line sd-reset" id="sd-reset">지우고 다시 <small>· 시계는 계속 갑니다</small></button>'}<p class="note sd-tip">칸을 고르고 숫자를 누르세요. 틀린 숫자는 빨갛게 보이고 20초가 더해져요.</p>`;
   const q = id => T.body.querySelector(id);
   if (q('#sd-prac')) q('#sd-prac').onclick = () => mount(root, true);
   if (q('#sd-today')) q('#sd-today').onclick = () => mount(root, false);
   if (q('#sd-reset')) q('#sd-reset').onclick = () => { if (!confirm('적은 숫자를 모두 지우고 처음부터 풀까요? 시계는 계속 갑니다.')) return; st.cur = puz.slice(); if (T.running()) st.ms = T.ms(); save(); sel = -1; draw(); };
-  const more = () => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn line pl-again'; b.innerHTML = '새 판 더 하기 <small>· 순위에 반영되지 않습니다</small>'; b.onclick = () => mount(root, true); T.body.appendChild(b); };
+  const more = () => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn line pl-again'; b.innerHTML = '한 판 더 <small>· 더 좋은 기록이 순위에 오릅니다</small>'; b.onclick = () => mount(root, true); T.body.appendChild(b); };
   const G = T.body.querySelector('#sd-grid');
   function draw() {
     const sv = sel >= 0 ? st.cur[sel] : 0;
@@ -37,7 +37,7 @@ export function mount(el, practice = false) {
     if (q('#sd-prac')) q('#sd-prac').remove();
     st.cur[sel] = n; if (n && n !== sol[sel]) { st.mis++; T.add(20000); P.sfx('bad'); } else if (n) P.sfx('ok');
     st.ms = T.ms(); save(); draw();
-    if (st.cur.every((v, i) => v === sol[i])) { st.done = true; const ms = T.stop(); st.ms = ms; save(); P.sfx('win'); sel = -1; draw(); if (q('#sd-reset')) q('#sd-reset').remove(); if (practice) { T.body.insertAdjacentHTML('beforeend', `<div class="pl-done"><p class="pl-done-t">${P.fmtKo(ms)}</p><p class="pl-done-s">연습 판은 순위에 반영되지 않습니다.</p></div>`); } else P.finish('sudoku', ms, P.fmtKo(ms) + (st.mis ? ` (실수 ${st.mis})` : ''), T.body); more(); }
+    if (st.cur.every((v, i) => v === sol[i])) { st.done = true; const ms = T.stop(); st.ms = ms; save(); P.sfx('win'); sel = -1; draw(); if (q('#sd-reset')) q('#sd-reset').remove(); P.finish('sudoku', ms, P.fmtKo(ms) + (st.mis ? ` (실수 ${st.mis})` : ''), T.body); /* 몇 판을 하든 가장 좋은 기록이 순위에 */ more(); }
   };
   window.addEventListener('pagehide', () => { if (!st.done && T.running()) { st.ms = T.ms(); save(); } });
   draw();

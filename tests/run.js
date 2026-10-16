@@ -65,6 +65,20 @@ srv.listen(0, '127.0.0.1', async () => {
       const drawn = await p.evaluate(async () => { const m = await import('./js/cards.js'); const out = []; for (const v of ['v1', 'v2', 'v3', 'v4', 'v5', 'v6']) { const cv = await m.drawCard('시험 문장\n둘째 줄\n셋째 줄', 0, { dateText: '1월 1일 · 월요일', variant: v, season: 'autumn' }); const d = cv.getContext('2d').getImageData(540, 640, 1, 1).data; out.push(cv.width === 1080 && cv.height === 1350 && d[3] === 255); } return out; });
       ok('인사 카드 4장 서로 다른 디자인', vs.length === 4 && new Set(vs).size === 4, vs.join(','));
       ok('보내기 그림 6가지 그려짐', drawn.every(Boolean), drawn.join(',')); await c.close(); }
+    // 6) 오늘 PLAY: 몇 판을 하든 순위에 반영 (1 to 50 을 실제로 두 판) + 사천성·스도쿠 새 판도 순위로
+    { const c = await ctx(false); const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); await p.goto(base + '/index.html'); await wait(p, 1500);
+      await p.click('#login-btn'); await wait(p, 300); await p.click('#g-signup'); await wait(p, 300);
+      await p.fill('#s-id', 'play1960'); await p.click('#s-id-chk'); await wait(p, 200); await p.fill('#s-pw', '123456'); await p.fill('#s-nick', '놀이시험'); await p.click('#s-nick-chk'); await wait(p, 200);
+      await p.fill('#s-phone', '01012345679'); await p.click('#s-gender [data-g="남"]'); await p.selectOption('#s-birth', '1962'); await p.check('#s-terms'); await p.check('#s-agree'); await p.click('#s-go'); await wait(p, 800);
+      await p.evaluate(() => { const m = document.getElementById('modal-root'); if (m) m.innerHTML = ''; });
+      await p.evaluate(() => window.omajuNav('g1')); await wait(p, 600); await p.evaluate(() => window.omajuNav('play')); await wait(p, 600); await p.evaluate(() => window.omajuNav('num50')); await wait(p, 4500);
+      const playOnce = async () => { for (let n = 1; n <= 50; n++) { await p.evaluate(n => { const b = [...document.querySelectorAll('#n5-grid .n5')].find(x => x.textContent.trim() === String(n)); b && b.click(); }, n); } await wait(p, 2500);
+        return p.evaluate(() => (document.getElementById('pl-done-s') || {}).textContent || ''); };
+      const r1 = await playOnce(); await p.evaluate(() => document.querySelector('.pl-again').click()); await wait(p, 4500); const r2 = await playOnce();
+      const okr = t => /상위|1등|중위|하위/.test(t);
+      ok('1 to 50 두 판 모두 순위 반영', okr(r1) && okr(r2) && !errs.length, `1판: ${r1.replace(/\s+/g, ' ').slice(0, 40)} / 2판: ${r2.replace(/\s+/g, ' ').slice(0, 40)}`);
+      const src = ['shisen', 'sudoku'].map(g => fs.readFileSync(path.join(ROOT, 'js/games', g + '.js'), 'utf8'));
+      ok('사천성·스도쿠 새 판도 순위로', src.every(t => !/반영되지 않/.test(t) && /P\.finish\(/.test(t))); await c.close(); }
   } catch (e) { ok('시험 실행', false, e.message); }
   await b.close(); srv.close();
   const fails = results.filter(r => !r[0]).length; console.log(fails ? `\n실패 ${fails}개 — 올리지 말고 고칠 것` : '\n모두 통과'); process.exit(fails ? 1 : 0);
