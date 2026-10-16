@@ -10,7 +10,7 @@ from gen_daily import gemini, list_models, parse_json, firestore, KST
 
 DBG = []
 FIELDS = ["정치", "경제", "사회", "문화", "연예", "생활", "스포츠"]
-UA = {"User-Agent": "Mozilla/5.0 (omaju.kr era-news; +https://omaju.kr)"}
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.5", "Referer": "https://www.seoul.co.kr/"}
 NL = lambda y, m, d, o: f"https://newslibrary.naver.com/viewer/index.naver?publishDate={y}-{m:02d}-{d:02d}&officeId={o}"
 
 def fetch(url, timeout=20):
@@ -103,7 +103,7 @@ newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"fi
     try:
         j = gemini(prompt, json_mode=True, search=True)
     except Exception as e:
-        print(f"[search] {y} 실패 {str(e)[:100]}", file=sys.stderr); return []
+        DBG.append(f"검색 {y} 실패: {str(e)[:160]}"); print(f"[search] {y} 실패 {str(e)[:100]}", file=sys.stderr); return []
     items = j if isinstance(j, list) else j.get("items", []) if isinstance(j, dict) else []
     DBG.append(f"검색 {y}: Gemini 후보 {len(items)}개 " + "; ".join(str(it.get("url",""))[:60] for it in items[:6]))
     out = []
