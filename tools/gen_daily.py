@@ -72,7 +72,7 @@ QUALITY = """
 뻔하고 상투적인 표현, 누구나 아는 흔한 소재, 유치한 말장난, 과장된 감탄은 쓰지 않는다. 그렇다고 어렵거나 현학적이지 않게, 담백하고 구체적으로.
 '시니어·어르신·노인·치매·두뇌·은퇴' 같은 말은 쓰지 않는다."""
 
-def gemini(prompt, json_mode=True, search=False, max_retry=None):
+def gemini(prompt, json_mode=True, search=False, max_retry=None, timeout=None):
     """Gemini REST 호출. json_mode면 JSON 객체를 파싱해 돌려준다."""
     if max_retry is None:
         max_retry = 1 if search else 4
@@ -97,7 +97,7 @@ def gemini(prompt, json_mode=True, search=False, max_retry=None):
             req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
             _pace()
             try:
-                with urllib.request.urlopen(req, timeout=(60 if search else 90)) as r:
+                with urllib.request.urlopen(req, timeout=(timeout or (60 if search else 90))) as r:
                     res = json.load(r)
                 text = "".join(p.get("text", "") for p in res["candidates"][0]["content"]["parts"])
                 return text if not json_mode else parse_json(text)

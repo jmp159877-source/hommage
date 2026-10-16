@@ -101,7 +101,9 @@ def search_candidates(y, m, d, fields_needed):
 분야마다 2~3개, 기사·기록 페이지 주소를 반드시 붙인다(위키백과·나무위키·신문사·공공기관·기록 사이트). 날짜가 그 페이지에 적혀 있는 것만.
 newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"field":"정치","title":"...","url":"https://...","why":"페이지에 적힌 날짜 표기"}}]"""
     try:
-        j = gemini(prompt, json_mode=True, search=True)
+        txt = gemini(prompt, json_mode=False, search=True, timeout=150)
+        m = re.search(r"\[\s*\{.*\}\s*\]", txt, re.S)
+        j = json.loads(m.group(0)) if m else parse_json(txt)
     except Exception as e:
         DBG.append(f"검색 {y} 실패: {str(e)[:160]}"); print(f"[search] {y} 실패 {str(e)[:100]}", file=sys.stderr); return []
     items = j if isinstance(j, list) else j.get("items", []) if isinstance(j, dict) else []
@@ -132,6 +134,7 @@ def gather(y, m, d):
         cands += crawl_seoul_2010s(y, m, d)
     print(f"[gather] {y}: 직접 훑은 후보 {len(cands)}", file=sys.stderr)
     need = FIELDS if len(cands) < 30 else ["정치", "경제", "사회", "문화", "생활"]
+    if y <= 1999: need = FIELDS
     cands += search_candidates(y, m, d, need)
     seen, uniq = set(), []
     for c in cands:
