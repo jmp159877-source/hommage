@@ -168,21 +168,28 @@ def gen_fortune(d):
 
 
 def gen_era(d):
-    era = {}
+    era, used = {}, []
     for ago in (50, 40, 30, 20, 10):
         yr = d.year - ago
+        avoid = ("\n이미 다른 해에서 고른 소식과 겹치는 종류는 피하라: " + ", ".join(used)) if used else ""
         prompt = f"""{yr}년 {d.month}월(가능하면 {d.month}월 {d.day}일 전후 한 주 안)에 실제로 있었던 일을 구글 검색으로 확인해서 2~3개 골라라.
-한국 소식 위주로 하되 세계 소식 1개를 섞어도 된다. 정치 논쟁·사건사고·죽음은 피하고 문화·생활·방송·유행·스포츠 위주로.
+한국 소식 위주로 하되 세계 소식 1개를 섞어도 된다. 정치 논쟁·사건사고·죽음은 피하고 문화·생활·방송·유행 위주로.
+해마다 되풀이되는 행사(프로야구 한국시리즈·미국 월드시리즈·전국체전·정기 시상식 개막 등)는 고르지 않는다. 스포츠는 그해에만 있었던 특별한 일(첫 우승, 올림픽 메달 등)일 때만 1개까지.
+잡지 독자가 "아, 그때 그랬지" 하고 이야기를 꺼낼 만한, 그해만의 소식이어야 한다.{avoid}
 남성 위주 소식(스포츠·정치·경제)만 고르지 말고, 3개 중 적어도 1개는 여성들이 공감할 감수성 있는 소식(드라마·영화·노래·책·패션·살림과 생활 문화·여성 인물의 활약 등)으로 고른다.
 반드시 검색으로 확인된 사실만 쓰고, 날짜가 확실하면 "{d.month}월 N일," 로 시작한다. 확인이 안 되면 그 항목은 빼라.
 또 그 시절(한국 {yr}년 무렵)의 생활 풍경을 떠올리게 하는 분위기 문장 한 개(40~60자)도 써라. "~그 시절을 다시 꺼내어 봅니다."로 끝낸다.
 각 소식마다 그 소식을 대표하는 위키백과 문서 제목도 하나 적어라(한국어 위키백과에 있으면 "ko:문서제목", 없으면 "en:Article title"). 드라마·영화·노래·책·인물·행사·건물처럼 사진이 있을 만한 문서로.
 형식(JSON만): {{"mood":"...", "facts":[["짧은 제목(4~8자)","설명 한두 문장(40~90자)","ko:위키백과 문서 제목"], ...]}}"""
-        try:
-            j = gemini(prompt, json_mode=True, search=True)
-        except Exception as e:
-            print(f"[era] {yr} 검색 호출 실패, 검색 없이 재시도: {e}", file=sys.stderr)
-            j = gemini(prompt.replace("구글 검색으로 확인해서", "네가 확실히 아는 것만으로").replace("반드시 검색으로 확인된 사실만 쓰고", "확실한 사실만 쓰고") + "\n확실하지 않으면 그 해의 널리 알려진 큰 사건(올림픽·월드컵·유행가·방송)으로 대신해도 된다.", json_mode=True)
+        j = None
+        for t in range(3):  # 검색으로 확인한 사실만 쓰도록 검색 호출을 몇 번 더 해 본다
+            try:
+                j = gemini(prompt, json_mode=True, search=True); break
+            except Exception as e:
+                print(f"[era] {yr} 검색 호출 실패 {t + 1}: {str(e)[:80]}", file=sys.stderr); time.sleep(5)
+        if j is None:
+            # 검색 없이 날짜를 지어내면 틀리기 쉽다 → 날짜 없이, 그해 누구나 아는 큰 문화 소식만
+            j = gemini(prompt.replace("구글 검색으로 확인해서", "네가 확실히 아는 것만으로").replace("반드시 검색으로 확인된 사실만 쓰고, 날짜가 확실하면", "날짜는 쓰지 말고(\"{yr}년,\"으로 시작), 그해 크게 유행한 드라마·노래·영화·책처럼 누구나 아는 확실한 것만. 날짜가 확실해도") , json_mode=True)
         facts = []
         for f in j.get("facts", [])[:3]:
             if not isinstance(f, (list, tuple)) or len(f) < 2 or not str(f[1]).strip(): continue
@@ -192,6 +199,7 @@ def gen_era(d):
             if im: item.append(im["thumb"])  # 그 소식의 대표 사진 (위키백과)
             facts.append(item)
         assert j.get("mood") and facts, f"{yr} 그해 오늘 비어 있음"
+        used += [f[0] for f in facts]
         era[str(ago)] = {"mood": j["mood"].strip(), "facts": facts, "songs": pick_songs(yr, d), "pop": pick_songs(f"pop:{yr}", d)}
     return era
 
