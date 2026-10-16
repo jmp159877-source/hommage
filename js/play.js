@@ -163,5 +163,5 @@ export function hub(el) {
     const b = ls.get('best.' + k + '.' + DB.todayKey(), null);
     return `<button type="button" class="pl-card has-photo" data-go="${k}"><span class="pl-photo" style="background-image:url('img/play-${k}.jpg')"></span><span class="pl-txt"><b>${g.name}</b><span>${g.sub}</span><em>${b ? '오늘 기록 · ' + H.esc(b.label) : '오늘 아직 안 함'}</em></span></button>`;
   }).join('')}</div>`;
-  el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { location.hash = b.dataset.go; });
+  el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { (window.omajuNav || (h => { location.hash = h; }))(b.dataset.go); });
 }

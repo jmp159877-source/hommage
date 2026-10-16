@@ -308,7 +308,7 @@ renderZ();
 // ── 배너 펼치기 / 안쪽 화면 ──
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-toggle]'); if (t) { t.classList.toggle('open'); if (t.classList.contains('open') && t.dataset.corner) DB.bumpClick(t.dataset.corner); }
-  const o = e.target.closest('[data-open]'); if (o) { route.y = window.scrollY; DB.bumpClick(o.dataset.corner); location.hash = o.dataset.open; }
+  const o = e.target.closest('[data-open]'); if (o) { route.y = window.scrollY; DB.bumpClick(o.dataset.corner); nav(o.dataset.open); }
 });
 
 // ── 그해 오늘 · 노래 ──
@@ -363,12 +363,31 @@ function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 
 const GAME = { malmoi: () => MM.mount($('mm-root'), { toast, esc }), shisen: async () => (await import('./games/shisen.js')).mount($('ss-root')), num50: async () => (await import('./games/num50.js')).mount($('n5-root')), sudoku: async () => (await import('./games/sudoku.js')).mount($('sd-root')) };
 const gameDone = {};
+
+// ── 화면 이동: 잡지 넘기듯 '단계'로 쌓는다 (첫 화면 0 → 장 1 → 코너 2 → 놀이 3).
+// 같은 단계끼리 옮겨 다니면 쌓지 않고 바꿔 끼운다 → 몇 개를 열어 봐도 뒤로 가기는 한 단계씩 위로, 많아야 4번이면 나간다.
+const NAV_GAMES = new Set(['malmoi', 'shisen', 'num50', 'sudoku']);
+const LV = k => !k ? 0 : /^g[1-4]$/.test(k) ? 1 : NAV_GAMES.has(k) ? 3 : 2;
+const NS = [location.hash.slice(1)]; let navOurs = false, navPending = null;
+function nav(h) {
+  h = String(h || '').replace(/^#/, ''); const top = NS[NS.length - 1]; if (h === top) return;
+  if (LV(h) > LV(top)) { NS.push(h); navOurs = true; location.hash = h; return; }
+  let steps = 0; while (steps < NS.length - 1 && LV(NS[NS.length - 1 - steps]) >= LV(h)) steps++;
+  if (!steps) { NS[NS.length - 1] = h; navOurs = true; location.replace('#' + h); return; }
+  const base = NS[NS.length - 1 - steps]; NS.length -= steps; navPending = base === h ? null : h; navOurs = true; history.go(-steps);
+}
+window.omajuNav = nav;
+window.addEventListener('hashchange', () => {
+  const k = location.hash.slice(1);
+  if (navOurs) { navOurs = false; if (navPending != null) { const h = navPending; navPending = null; if (LV(h) > LV(NS[NS.length - 1])) { NS.push(h); navOurs = true; location.hash = h; } else { NS[NS.length - 1] = h; navOurs = true; location.replace('#' + h); } } return; }
+  if (NS.length > 1 && NS[NS.length - 2] === k) NS.pop(); else NS[NS.length - 1] = k; // 휴대폰 뒤로 가기
+});
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
   if (/^g[1-4]$/.test(k)) setChapter(k); else if (!cur) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
   document.body.classList.toggle('game-mode', !!GAME[cur] || cur === 'play'); if (!GAME[cur]) PLAY.stopAll();
   if (cur === 'play') PLAY.hub($('play-root'));
   if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
-$('back').onclick = () => { if (route.y != null) history.back(); else location.hash = ''; };
+$('back').onclick = () => { const up = NS.length > 1 ? NS[NS.length - 2] : null; if (up != null && LV(up) < LV(location.hash.slice(1))) history.back(); else nav(/^g[1-4]$/.test(NS[0]) ? NS[0] : ''); };
 window.addEventListener('hashchange', route);
 window.addEventListener('scroll', () => document.body.classList.toggle('nav-solid', document.body.classList.contains('in-detail') && window.scrollY > 160), { passive: true });
 renderEra(); route();
@@ -600,7 +619,7 @@ $('tabs3').onclick = e => {
   z.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(b).backgroundImage}`;
   document.body.appendChild(z);
   requestAnimationFrame(() => { z.style.left = '0px'; z.style.top = '0px'; z.style.width = innerWidth + 'px'; z.style.height = innerHeight + 'px'; z.style.borderRadius = '0'; });
-  setTimeout(() => { location.hash = g; window.scrollTo(0, 0); requestAnimationFrame(() => requestAnimationFrame(() => { z.classList.add('out'); setTimeout(() => z.remove(), 650); })); }, 460);
+  setTimeout(() => { nav(g); window.scrollTo(0, 0); requestAnimationFrame(() => requestAnimationFrame(() => { z.classList.add('out'); setTimeout(() => z.remove(), 650); })); }, 460);
 };
 
 // ── 서비스 워커 ──
