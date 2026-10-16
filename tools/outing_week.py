@@ -14,13 +14,24 @@ if cur.get("week") != sat.isoformat():
 missing = [r for r in g.REGIONS if r not in cur["regions"]]
 limit = int(os.environ.get("LIMIT", "9"))
 print("이번 주", sat, "채운 지역", len(cur["regions"]), "남은 지역", len(missing))
+def save():
+    cur["updated"] = datetime.datetime.now(KST).isoformat(timespec="minutes")
+    json.dump(cur, open(P, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
+save()  # 파일이 늘 있게
 if missing:
+    import time
+    t0 = time.time()
     g.gemini.models = g.list_models()
-    g.gen_outing.regions = missing[:limit]
-    try:
-        cur["regions"].update(g.gen_outing(today))
-    except Exception as e:
-        print("나들이 실패:", str(e)[:150])
-cur["updated"] = datetime.datetime.now(KST).isoformat(timespec="minutes")
-json.dump(cur, open(P, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    for r in missing[:limit]:  # 한 지역씩 만들고 바로 저장 → 시간 제한에 걸려도 만든 만큼은 남음
+        if time.time() - t0 > 25 * 60:
+            print("시간이 다 되어 여기까지:", r); break
+        g.gen_outing.regions = [r]
+        try:
+            got = g.gen_outing(today)
+            if got.get(r): cur["regions"][r] = got[r]; save(); print("[ok]", r, len(got[r]))
+            else: print("[빈 결과]", r)
+        except Exception as e:
+            print("[실패]", r, str(e)[:150])
+save()
 print("저장: 지역", len(cur["regions"]), list(cur["regions"]))
