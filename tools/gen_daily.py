@@ -145,6 +145,8 @@ def gen_greetings(d):
 형식: {{"greetings": ["...","...","...","..."]}}""")
     g = [str(x).strip() for x in j.get("greetings", []) if str(x).strip()]
     assert len(g) == 4, "인사말 4개 아님"
+    # 카드 한 줄에 10자(띄어쓰기 포함)를 넘으면 낱말 하나가 혼자 떨어진다 → 다시 만들게
+    assert all(len(line) <= 10 for x in g for line in x.split("\n")), "인사말 한 줄이 너무 김"
     return g
 
 

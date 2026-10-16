@@ -46,24 +46,6 @@
    "sat": 121
   },
   {
-   "f": "img/cards/autumn/06.jpg",
-   "id": 7557866,
-   "by": "matthiasboeckel",
-   "tags": "fall, leaves, vine leaves, nature, autumn, autumn mood, autumn leaves, leaves, leaves, leaves, leaves, leaves",
-   "q": "autumn golden sunlight",
-   "bright": 128,
-   "sat": 153
-  },
-  {
-   "f": "img/cards/autumn/07.jpg",
-   "id": 5126815,
-   "by": "NadinNandin",
-   "tags": "grape, nature, autumn, harvest, basket, leaves",
-   "q": "autumn leaves bright sky",
-   "bright": 159,
-   "sat": 68
-  },
-  {
    "f": "img/cards/autumn/08.jpg",
    "id": 605847,
    "by": "Sponchia",
@@ -206,15 +188,6 @@
    "q": "autumn golden sunlight",
    "bright": 147,
    "sat": 134
-  },
-  {
-   "f": "img/cards/autumn/24.jpg",
-   "id": 6199828,
-   "by": "RyanK14",
-   "tags": "frames, decoration, sunlight, sunset, light, wall, interior, nature, home",
-   "q": "autumn leaves warm light",
-   "bright": 163,
-   "sat": 99
   }
  ],
  "winter": [
@@ -264,15 +237,6 @@
    "sat": 73
   },
   {
-   "f": "img/cards/winter/06.jpg",
-   "id": 3799812,
-   "by": "jameswheeler",
-   "tags": "british columbia, canada, clouds, dynamic, hiking, manning park, morning, mountain, natural, nature, nobody, outdoor, skies, snow, sun, sunlight, sunrise, sunset, travel, tree, weather, white, wilderness, winter, woodland",
-   "q": "winter morning sunlight snow",
-   "bright": 122,
-   "sat": 65
-  },
-  {
    "f": "img/cards/winter/07.jpg",
    "id": 1154940,
    "by": "Bertsz",
@@ -280,15 +244,6 @@
    "q": "winter morning sunlight snow",
    "bright": 123,
    "sat": 62
-  },
-  {
-   "f": "img/cards/winter/08.jpg",
-   "id": 91932,
-   "by": "Hans",
-   "tags": "sunbeam, up, morning mood, heaven, sunrise, nature, natural wonders, yellow, orange, romantic, roofs, houses, fire siren, siren, alerting, alarm, warning, howling, mechanical siren, motor siren, reporting system, chimney, smoke",
-   "q": "winter morning sunlight snow",
-   "bright": 124,
-   "sat": 77
   },
   {
    "f": "img/cards/winter/09.jpg",
@@ -327,15 +282,6 @@
    "sat": 72
   },
   {
-   "f": "img/cards/winter/13.jpg",
-   "id": 7326487,
-   "by": "BlenderTimer",
-   "tags": "snow, morning, stick, branch, nature, mound, winter, macro, sunshine",
-   "q": "winter morning sunlight snow",
-   "bright": 169,
-   "sat": 148
-  },
-  {
    "f": "img/cards/winter/14.jpg",
    "id": 5942468,
    "by": "susnpics",
@@ -352,15 +298,6 @@
    "q": "winter morning sunlight snow",
    "bright": 160,
    "sat": 80
-  },
-  {
-   "f": "img/cards/winter/16.jpg",
-   "id": 6071475,
-   "by": "Kanenori",
-   "tags": "snow, mountains, peak, summit, mountainous, mountain landscape, nature, snowy, landscape, mountain, snow mountain, oyama, japan",
-   "q": "winter morning sunlight snow",
-   "bright": 137,
-   "sat": 83
   },
   {
    "f": "img/cards/winter/17.jpg",
@@ -417,15 +354,6 @@
    "q": "spring blossom sunlight",
    "bright": 171,
    "sat": 59
-  },
-  {
-   "f": "img/cards/spring/06.jpg",
-   "id": 10240502,
-   "by": "wal_172619",
-   "tags": "flower, yellow color, bokeh, dew, spring flowers, nature, dew drop, blur, garden, macro, beauty, freshness, shortly after rain, isolation, flower wallpaper, simplicity, minimalism, flower background, beautiful flowers, morning, outdoor, zen",
-   "q": "spring blossom sunlight",
-   "bright": 117,
-   "sat": 107
   },
   {
    "f": "img/cards/spring/07.jpg",
@@ -563,33 +491,6 @@
    "sat": 81
   },
   {
-   "f": "img/cards/spring/22.jpg",
-   "id": 2336518,
-   "by": "Pezibear",
-   "tags": "primrose, auricle, alpine auricles, primula auricula, primula, alpine flower, alpine plant, blossoms, meadow, nature, spring, wildflower, plant, flora",
-   "q": "spring blossom sunlight",
-   "bright": 122,
-   "sat": 118
-  },
-  {
-   "f": "img/cards/spring/23.jpg",
-   "id": 5552968,
-   "by": "lucasgeorgewendt",
-   "tags": "flower, plant, bloom, blossom, flora, floriculture, botany, flower wallpaper, horticulture, flower background, spring, nature, beautiful flowers, garden, sunlight, close up, bokeh",
-   "q": "spring blossom sunlight",
-   "bright": 147,
-   "sat": 127
-  },
-  {
-   "f": "img/cards/spring/24.jpg",
-   "id": 439662,
-   "by": "ValeriaRodrigues",
-   "tags": "tree, yellow, nature, spring, farm, beautiful, ipê, landscape",
-   "q": "spring blossom sunlight",
-   "bright": 162,
-   "sat": 105
-  },
-  {
    "f": "img/cards/spring/25.jpg",
    "id": 9581563,
    "by": "Oliverstar",
@@ -600,15 +501,6 @@
   }
  ],
  "summer": [
-  {
-   "f": "img/cards/summer/01.jpg",
-   "id": 6208614,
-   "by": "fleglsebastian7",
-   "tags": "lake, sunrise, sunset, bavaria, germany, water, water sports, alps, mountains, nature, reflection, sun, summer, spring, sunlight, outdoors, dusk, dawn, morning, evening, travel, landscape",
-   "q": "summer morning sunlight nature",
-   "bright": 189,
-   "sat": 126
-  },
   {
    "f": "img/cards/summer/02.jpg",
    "id": 2780693,
@@ -635,24 +527,6 @@
    "q": "summer morning sunlight nature",
    "bright": 122,
    "sat": 106
-  },
-  {
-   "f": "img/cards/summer/05.jpg",
-   "id": 2728701,
-   "by": "bones64",
-   "tags": "mountain view, lake, trees, sky, clouds, park, landscape, nature, valley, outdoor, summer, blue, scenic, blue sky, green, sunshine, color, sunlight, bright, morning, natural, sunny, season, forest, environment, blue sunshine",
-   "q": "summer morning sunlight nature",
-   "bright": 122,
-   "sat": 98
-  },
-  {
-   "f": "img/cards/summer/06.jpg",
-   "id": 4447345,
-   "by": "capture_gr",
-   "tags": "sun, sunrise, morning, castle, tree, landscape, sunset, nature, dawn, sky, travel, summer, water, sea, lake, evening, beach, ocean, orange, scenic, mood, haze, boat, sunlight, calm",
-   "q": "summer morning sunlight nature",
-   "bright": 127,
-   "sat": 77
   },
   {
    "f": "img/cards/summer/07.jpg",
@@ -700,15 +574,6 @@
    "sat": 95
   },
   {
-   "f": "img/cards/summer/12.jpg",
-   "id": 1867636,
-   "by": "Pexels",
-   "tags": "water, ipad wallpaper, pool, phone wallpaper, mobile wallpaper 4k, turquoise, background, clean, clear, swimming pool, water surface, texture, mobile wallpaper, underwater, wallpaper, beautiful wallpaper, wet, lock screen wallpaper, nature, samsung wallpaper, iphone wallpaper",
-   "q": "summer morning sunlight nature",
-   "bright": 163,
-   "sat": 196
-  },
-  {
    "f": "img/cards/summer/13.jpg",
    "id": 7353447,
    "by": "andriish22",
@@ -725,24 +590,6 @@
    "q": "summer morning sunlight nature",
    "bright": 122,
    "sat": 127
-  },
-  {
-   "f": "img/cards/summer/15.jpg",
-   "id": 9248762,
-   "by": "Mollyroselee",
-   "tags": "cloudscape, stratus, cumulus, cirrostratus, altostratus, morning sky, nature, sunrise, sunlight",
-   "q": "summer morning sunlight nature",
-   "bright": 159,
-   "sat": 89
-  },
-  {
-   "f": "img/cards/summer/16.jpg",
-   "id": 9248778,
-   "by": "Mollyroselee",
-   "tags": "cloudscape, stratus, nature, cumulus, cirrostratus, altostratus, morning sky, sunrise, sunlight",
-   "q": "summer morning sunlight nature",
-   "bright": 164,
-   "sat": 69
   }
  ],
  "fun": [
@@ -837,33 +684,6 @@
    "sat": 49
   },
   {
-   "f": "img/cards/fun/11.jpg",
-   "id": 10247508,
-   "by": "Couleur",
-   "tags": "shih-tzu, dog, muzzle, portrait, outside, grass, fluffy, small, animal, pet, fur, black, white flowers, cute, pose, day, light, nature, summer",
-   "q": "cute puppy",
-   "bright": 161,
-   "sat": 73
-  },
-  {
-   "f": "img/cards/fun/12.jpg",
-   "id": 5723334,
-   "by": "Printeboek",
-   "tags": "dog, puppy, canine, white dog, fur, furry, white fur, japanese striker, purebred, nature, pet, muzzle, adorable, mammal, cute, portrait, dog portrait, animal, dog, dog, dog, dog, dog, puppy",
-   "q": "cute puppy",
-   "bright": 148,
-   "sat": 68
-  },
-  {
-   "f": "img/cards/fun/13.jpg",
-   "id": 8096885,
-   "by": "HFGVDCSS",
-   "tags": "pomeranian, nature, dog, puppy, mammal, animal, pet, domestic dog, brown dog, cute, portrait",
-   "q": "cute puppy",
-   "bright": 171,
-   "sat": 51
-  },
-  {
    "f": "img/cards/fun/14.jpg",
    "id": 4698266,
    "by": "adilla_lala97",
@@ -871,24 +691,6 @@
    "q": "funny cat",
    "bright": 166,
    "sat": 83
-  },
-  {
-   "f": "img/cards/fun/15.jpg",
-   "id": 4695100,
-   "by": "johnbreton13",
-   "tags": "golden, retriever, nature, dog, puppy, animal, pet, animals, cute, brown puppy",
-   "q": "cute puppy",
-   "bright": 150,
-   "sat": 188
-  },
-  {
-   "f": "img/cards/fun/16.jpg",
-   "id": 8647857,
-   "by": "Edyttka1388",
-   "tags": "shih tzu, dog, animal, mammal, canine, pet, domestic, nature, portrait, puppy, cute, fur",
-   "q": "cute puppy",
-   "bright": 153,
-   "sat": 46
   }
  ]
 }
