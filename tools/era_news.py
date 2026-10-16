@@ -8,6 +8,7 @@ import os, sys, json, re, time, datetime, html, urllib.request, urllib.error, ur
 sys.path.insert(0, os.path.dirname(__file__))
 from gen_daily import gemini, list_models, parse_json, firestore, KST
 
+DBG = []
 FIELDS = ["정치", "경제", "사회", "문화", "연예", "생활", "스포츠"]
 UA = {"User-Agent": "Mozilla/5.0 (omaju.kr era-news; +https://omaju.kr)"}
 NL = lambda y, m, d, o: f"https://newslibrary.naver.com/viewer/index.naver?publishDate={y}-{m:02d}-{d:02d}&officeId={o}"
@@ -15,13 +16,14 @@ NL = lambda y, m, d, o: f"https://newslibrary.naver.com/viewer/index.naver?publi
 def fetch(url, timeout=20):
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
-            if r.status != 200: return None
+            if r.status != 200: DBG.append(f"fetch {r.status} {url[:80]}"); return None
             raw = r.read(600_000)
         for enc in ("utf-8", "euc-kr", "cp949"):
             try: return raw.decode(enc)
             except Exception: pass
         return raw.decode("utf-8", "ignore")
-    except Exception:
+    except Exception as e:
+        if len(DBG) < 40: DBG.append(f"fetch 실패 {url[:80]} {str(e)[:60]}")
         return None
 
 def strip_html(s):
@@ -51,6 +53,7 @@ def crawl_seoul_1990s(y, m, d):
     """서울신문 1990년대 지면: /news/YYYY/MM/DD/YYYYMMDD<면2><번호3>"""
     urls = [f"https://www.seoul.co.kr/news/{y}/{m:02d}/{d:02d}/{y}{m:02d}{d:02d}{p:02d}{n:03d}" for p in range(1, 33) for n in range(1, 6)]
     out = []
+    h0 = fetch(urls[0]); DBG.append(f"서울신문90 probe {urls[0][-14:]} → {'없음' if not h0 else str(len(h0)) + 'B title=' + page_title(h0)[:40] + ' desc=' + str(len(page_desc(h0)))}")
     def one(u):
         h = fetch(u)
         if not h or "seoul.co.kr" not in h: return None
@@ -102,6 +105,7 @@ newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"fi
     except Exception as e:
         print(f"[search] {y} 실패 {str(e)[:100]}", file=sys.stderr); return []
     items = j if isinstance(j, list) else j.get("items", []) if isinstance(j, dict) else []
+    DBG.append(f"검색 {y}: Gemini 후보 {len(items)}개 " + "; ".join(str(it.get("url",""))[:60] for it in items[:6]))
     out = []
     def one(it):
         u = str(it.get("url", "")).strip()
@@ -110,7 +114,7 @@ newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"fi
         if not h: return None
         text = strip_html(h)[:200_000]
         ok = has_date(text, y, m, d) or has_date(text, y, m, d - 1) or has_date(h, y, m, d)
-        if not ok: return None
+        if not ok: DBG.append(f"날짜 없음 {u[:70]}"); return None
         return {"title": page_title(h) or str(it.get("title", "")), "snippet": page_desc(h)[:400], "url": u, "source": re.sub(r"^www\.", "", urllib.parse.urlparse(u).netloc), "date": f"{y}-{m:02d}-{d:02d}", "field_hint": it.get("field", "")}
     with cf.ThreadPoolExecutor(6) as ex:
         for r in ex.map(one, items[:30]):
@@ -206,7 +210,7 @@ def main():
         json.dump(full, open(p, "w"), ensure_ascii=False, indent=1, default=str)
     else:
         json.dump({"era": era}, open(f"/tmp/era-{date}.json", "w"), ensure_ascii=False, indent=1)
-    open(os.path.join(os.path.dirname(__file__), "last-era-news.log"), "w").write(f"{date}\n" + "\n".join(log) + "\n")
+    open(os.path.join(os.path.dirname(__file__), "last-era-news.log"), "w").write(f"{date}\n" + "\n".join(log) + "\n--- 자세히 ---\n" + "\n".join(DBG[:120]) + "\n")
 
 if __name__ == "__main__":
     main()
