@@ -49,3 +49,39 @@ fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101908002 HTTP Error 40
 검색 1996 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
 검색 2006 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
 검색 2016 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
+--- 실행 로그(마지막 200줄) 2026-10-16T20:15:11Z ---
+[models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
+[gather] 1976: 직접 훑은 후보 0
+Traceback (most recent call last):
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 219, in <module>
+    main()
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 198, in main
+    cands = gather(y, d0.month, d0.day)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 138, in gather
+    cands += search_candidates(y, m, d, need)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 122, in search_candidates
+    for r in ex.map(one, items[:30]):
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 118, in one
+    ok = has_date(text, y, m, d) or has_date(text, y, m, d - 1) or has_date(h, y, m, d)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 48, in has_date
+    pats = [rf"{y}[.\-/년 ]\s*0?{m}[.\-/월 ]\s*0?{d}\b", rf"{y}{m:02d}{d:02d}", rf"0?{m}월\s*0?{d}일", rf"(?:Oct|October|Nov|November|Sep|September|Dec|December|Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August)[a-z]*\.?\s+0?{d},?\s+{y}", rf"{d}\s+(?:Oct|Nov|Sep|Dec|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug)[a-z]*\.?\s+{y}"]
+                                                               ^^^^^^^
+TypeError: unsupported format string passed to re.Match.__format__
