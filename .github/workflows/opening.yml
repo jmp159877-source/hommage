@@ -1,0 +1,42 @@
+# 오늘의 오프닝 (미소·한결): 대본 → 목소리 3벌 → 받아쓰기 확인 → media 가지에 올림 (최근 5일만)
+name: 오늘의 오프닝
+on:
+  schedule:
+    - cron: '10 15 * * *'   # 00:10 KST
+    - cron: '10 19 * * *'   # 04:10 KST (빠졌으면 다시)
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '날짜 (YYYY-MM-DD, 비우면 오늘)'
+        required: false
+        default: ''
+      force:
+        description: '1이면 있어도 다시 만들기'
+        required: false
+        default: ''
+permissions:
+  contents: write
+concurrency: { group: opening, cancel-in-progress: false }
+jobs:
+  opening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: media 가지 가져오기
+        run: |
+          if git fetch -q origin media 2>/dev/null; then git worktree add -q media origin/media 2>/dev/null || (mkdir -p media && git --work-tree=media checkout origin/media -- .); else mkdir -p media/opening; fi
+          ls media/opening || true
+      - name: 준비
+        run: sudo apt-get -qq update && sudo apt-get -qq install -y ffmpeg >/dev/null && pip install -q numpy
+      - name: 만들기
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MEDIA_DIR: media
+        run: python3 tools/opening.py ${{ inputs.date }} ${{ inputs.force == '1' && '--force' || '' }}
+      - name: media 가지에 올리기 (기록 없이 새로)
+        if: always()
+        run: |
+          cd media
+          rm -rf .git 2>/dev/null; git init -q -b media; git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git add -A && git commit -qm "오프닝 $(date -u +%F)" && git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" media
