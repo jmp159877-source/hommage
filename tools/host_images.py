@@ -39,6 +39,12 @@ def gen(model, ref, prompt):
     for p in d['candidates'][0]['content']['parts']:
         if 'inlineData' in p: return base64.b64decode(p['inlineData']['data'])
     raise RuntimeError('그림 없음: ' + json.dumps(d)[:300])
+EVE2 = ('Recreate this exact photo with identical person, pose, expression, framing, desk, microphone and props. Change ONLY the time of day to evening: '
+        'orange sunset glow through the window, warm table-lamp light indoors, slightly dimmer cozy evening mood.')
+if os.environ.get('SET') == 'evening':
+    JOBS = [(f.replace('s', 'e', 1).replace('_', 'x_', 1), f, EVE2) for f in
+            ['ws3_surprise','ws4_sad','ws5_laugh','ws6_talk','ws8_secret','ws9_delight','ws10_thumb',
+             'ms3_surprise','ms4_sad','ms5_laugh','ms6_talk','ms8_secret','ms9_delight','ms10_thumb']]
 MS = models()
 for name, ref, prompt in JOBS:
     if ONLY and name not in ONLY: continue

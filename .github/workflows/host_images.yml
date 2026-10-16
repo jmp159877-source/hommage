@@ -6,6 +6,10 @@ on:
         description: '다시 만들 사진 이름 (쉼표로)'
         required: false
         default: ''
+      set:
+        description: 'evening 이면 저녁판'
+        required: false
+        default: ''
 permissions:
   contents: write
 jobs:
@@ -21,6 +25,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ONLY: ${{ inputs.only }}
+          SET: ${{ inputs.set }}
         run: python3 /tmp/host_images.py
       - name: 결과 올리기
         if: always()
