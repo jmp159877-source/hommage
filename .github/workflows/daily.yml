@@ -42,6 +42,12 @@ jobs:
           timeout 45m python -u tools/gen_daily.py $ARGS --only=$ONLY 2>&1 | tee /tmp/daily.log; rc=${PIPESTATUS[0]}
           mkdir -p daily; sed -E 's/key=[A-Za-z0-9_\-]+/key=[키]/g' /tmp/daily.log | tail -300 > daily/last-run.log
           exit $rc
+      - name: 그해 오늘 사진 빠진 것 채우기
+        if: always()
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python tools/era_photos.py "${{ github.event.inputs.date || '' }}$( [ -z "${{ github.event.inputs.date }}" ] && TZ=Asia/Seoul date +%F )" || true
       - name: 만든 내용을 저장소에 기록
         if: always()
         run: |

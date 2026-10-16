@@ -197,8 +197,8 @@ def gen_era(d):
             if not isinstance(f, (list, tuple)) or len(f) < 2 or not str(f[1]).strip(): continue
             item = [str(f[0]).strip(), str(f[1]).strip()]
             ref = str(f[2]).strip() if len(f) > 2 else ""
-            im = wiki_image(ref) if re.match(r"^(ko|en):.+", ref) else None
-            if im: item.append(im["thumb"])  # 그 소식의 대표 사진 (위키백과)
+            im = era_photo(item[0], ref, yr)
+            if im: item.append(im["thumb"])  # 그 소식의 대표 사진 (위키백과, 없으면 제목으로 찾기)
             facts.append(item)
         assert j.get("mood") and facts, f"{yr} 그해 오늘 비어 있음"
         used += [f[0] for f in facts]
@@ -386,6 +386,27 @@ def wiki_image(ref):
     except Exception as e:
         print(f"[culture] 그림 사진 실패 {ref}: {e}", file=sys.stderr)
     return None
+
+
+def wiki_find(q, year=None):
+    """위키백과에서 검색어로 문서를 찾아 대표 사진을 가져온다(한국어 → 영어). 사진이 있는 첫 문서."""
+    for lang in ("ko", "en"):
+        for query in ([f"{q} {year}", q] if year else [q]):
+            try:
+                u = f"https://{lang}.wikipedia.org/w/api.php?" + urllib.parse.urlencode({"action": "query", "list": "search", "srsearch": query, "srlimit": 4, "format": "json"})
+                hits = get_json(u).get("query", {}).get("search", [])
+            except Exception as e:
+                print(f"[era] 위키 검색 실패 {query}: {str(e)[:60]}", file=sys.stderr); hits = []
+            for h in hits:
+                im = wiki_image(f"{lang}:{h['title']}")
+                if im: return im
+    return None
+
+
+def era_photo(title, ref, year):
+    """그해 오늘 소식 사진: AI가 준 위키 문서 → 없거나 사진이 없으면 제목으로 위키 검색"""
+    im = wiki_image(ref) if re.match(r"^(ko|en):.+", ref or "") else None
+    return im or wiki_find(re.sub(r"\s*(개막|종영|소식|열기|시작|인수|출시)$", "", title), year)
 
 
 def gen_culture(d):
