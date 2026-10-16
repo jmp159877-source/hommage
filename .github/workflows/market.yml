@@ -22,4 +22,4 @@ jobs:
       - if: github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
-          git add tools/last-market.json && git commit -m "시세 점검 기록 [skip ci]" && for i in 1 2 3 4 5; do git pull -q --rebase origin main && git push && break; sleep 5; done || true
+          (git add tools/last-market.json && git commit -m "시세 점검 기록 [skip ci]" && for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push && break; git rebase --abort 2>/dev/null; sleep 5; done) || true
