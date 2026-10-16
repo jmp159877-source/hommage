@@ -14,13 +14,31 @@ def get(url, timeout=20):
 
 
 def yahoo(sym):
-    """야후 금융: 현재가와 전일 종가"""
-    # range=1d: chartPreviousClose 가 '전날 종가' (5d 로 하면 5일 전 종가가 되어 등락이 틀어짐)
-    j = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.request.quote(sym)}?range=1d&interval=5m")
-    m = j["chart"]["result"][0]["meta"]
-    price = m.get("regularMarketPrice")
-    prev = m.get("previousClose") or m.get("chartPreviousClose")
-    return float(price), (float(prev) if prev else None)
+    """야후 금융: 현재가와 '전날 종가'.
+    야후가 주는 previousClose 는 가끔 그저께 값이 들어 있어(코스닥 2026-10-16) 믿지 않고,
+    일봉(하루 막대)에서 '오늘이 아닌 가장 최근 날'의 종가를 직접 고른다."""
+    j = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.request.quote(sym)}?range=10d&interval=1d")
+    r = j["chart"]["result"][0]; m = r["meta"]
+    price = float(m["regularMarketPrice"])
+    tz = datetime.timezone(datetime.timedelta(seconds=m.get("gmtoffset", 0)))
+    today = datetime.datetime.fromtimestamp(m["regularMarketTime"], tz).date()
+    closes = r["indicators"]["quote"][0]["close"]
+    prev = None
+    for ts, c in zip(r.get("timestamp", []), closes):
+        if c is not None and datetime.datetime.fromtimestamp(ts, tz).date() < today:
+            prev = float(c)
+    return price, prev
+
+
+def naver_index(code):
+    """네이버 증권 지수(코스피 KOSPI / 코스닥 KOSDAQ): 현재가와 전날 대비 → 전날 종가"""
+    j = get(f"https://m.stock.naver.com/api/index/{code}/basic")
+    num = lambda x: float(str(x).replace(",", ""))
+    price = num(j["closePrice"]); diff = num(j["compareToPreviousClosePrice"])
+    # 내림이면 diff 가 음수로 오지만, 부호 없이 오는 경우를 대비해 등락 구분 값을 본다
+    kind = str((j.get("compareToPreviousPrice") or {}).get("name", "")).upper()
+    if kind in ("FALLING", "LOWER_LIMIT") and diff > 0: diff = -diff
+    return price, price - diff
 
 
 def item(label, value, prev, unit, digits=0, note=""):
@@ -50,11 +68,19 @@ def main():
         except Exception as e2:
             errors.append(f"환율: {e2}")
     # 2) 코스피·코스닥
-    for sym, label in (("^KS11", "코스피"), ("^KQ11", "코스닥")):
+    # 네이버 증권(우리가 늘 보는 숫자)을 먼저, 안 되면 야후
+    for code, sym, label in (("KOSPI", "^KS11", "코스피"), ("KOSDAQ", "^KQ11", "코스닥")):
         try:
-            p, prev = yahoo(sym); out.append(item(label, p, prev, "", 2))
+            p, prev = naver_index(code)
         except Exception as e:
-            errors.append(f"{label}: {e}")
+            errors.append(f"{label}(네이버): {e}")
+            try:
+                p, prev = yahoo(sym)
+            except Exception as e2:
+                errors.append(f"{label}: {e2}"); continue
+        # 하루에 ±15% 넘게 움직였다고 나오면 잘못 받은 값 → 등락은 비워 둠
+        if prev and abs(p - prev) / prev > 0.15: prev = None
+        out.append(item(label, p, prev, "", 2))
     # 3) 금·은 (국제 시세를 원/돈으로 환산. 1돈 = 3.75g, 1온스 = 31.1035g)
     if usd:
         for sym, label in (("GC=F", "금 1돈"), ("SI=F", "은 1돈")):

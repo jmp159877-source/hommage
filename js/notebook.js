@@ -82,14 +82,16 @@ function listen(onText) {
     $('nb-done').onclick = () => { done = true; try { rec && rec.stop(); } catch (e) {} finish(); };
     $('nb-stop').onclick = () => { done = true; try { rec && rec.abort(); } catch (e) {} closeModal(); };
   });
-  const show = () => { const el = $('nb-live'); if (el) el.innerHTML = (finalText + ' ' + live).trim() ? `${(finalText).replace(/</g, '&lt;')}<span class="itm">${live.replace(/</g, '&lt;')}</span>` : '<span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span>'; };
+  const show = () => { const el = $('nb-live'); if (el) el.innerHTML = (finalText + ' ' + live).trim() ? `${(finalText).replace(/</g, '&lt;')}${finalText && live ? ' ' : ''}<span class="itm">${live.replace(/</g, '&lt;')}</span>` : '<span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span>'; };
   const finish = () => { const t = (finalText + ' ' + live).replace(/\s+/g, ' ').trim(); closeModal(); if (t) onText(t); else toast('말씀이 들리지 않았습니다. 다시 눌러 말씀해 주세요.'); };
   const start = () => {
     // 안드로이드 크롬은 '계속 듣기'에서 중간 글자를 잘 안 보내고 같은 말을 겹쳐 보낸다 → 한 마디씩 듣고 저절로 이어 듣기
     const android = /android/i.test(navigator.userAgent);
     rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = true; rec.continuous = !android; rec.maxAlternatives = 1;
     let base = finalText;
-    rec.onresult = e => {
+    // PC: 어제까지 잘 되던 방식 그대로
+    if (!android) rec.onresult = e => { live = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finalText += (finalText ? ' ' : '') + r[0].transcript.trim(); else live += r[0].transcript; } show(); };
+    else rec.onresult = e => {
       let fin = '', mid = '';
       for (let i = 0; i < e.results.length; i++) { const r = e.results[i], t = r[0].transcript.trim(); if (!t) continue; if (r.isFinal) { if (!fin.endsWith(t)) fin += (fin ? ' ' : '') + t; } else mid = t; }
       finalText = (base + ' ' + fin).trim(); live = mid; show();
