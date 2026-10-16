@@ -313,12 +313,26 @@ document.addEventListener('click', e => {
 
 // ── 그해 오늘 · 노래 ──
 let ago = store.get('ago', 40);
+// 그날의 신문: 날짜 → 한 줄 → 지면 링크 → 분야별 헤드라인(확인된 분야만) → 그해 그곳 사진
+const ERA_FIELDS = ['정치', '경제', '사회', '문화', '연예', '생활', '스포츠'];
+function eraNewsHtml(yr, e) {
+  const dow = WD[new Date(yr, M, D).getDay()];
+  let h = `<div class="paper-head"><div class="date"><span class="nw">${yr}년 ${M + 1}월 ${D}일</span> <span class="nw">${dow}요일</span><small>그날의 신문에서</small></div>${e.mood ? `<p class="mood">${esc(e.mood)}</p>` : ''}${e.papers && e.papers.length ? `<p class="papers">그날 지면 보기 · ${e.papers.map(p => `<a href="${esc(p[1])}" target="_blank" rel="noopener">${esc(p[0])}</a>`).join(' · ')}</p>` : ''}</div><div class="rule"></div>`;
+  for (const f of ERA_FIELDS) {
+    const items = e.news.filter(i => i.field === f); if (!items.length) continue;
+    h += `<section class="field"><h2 class="f-name">${f}</h2>` + items.map(i => `<article class="hl"><h3>${esc(i.headline)}</h3><p>${esc(i.summary)}</p><div class="src"><b>${esc(i.source_name || '')}</b>${i.source_url ? `<a href="${esc(i.source_url)}" target="_blank" rel="noopener">원문</a>` : ''}</div></article>`).join('') + '</section>';
+  }
+  h += '<p class="foot">제목과 요약은 오마주가 정리한 글입니다. 기사 원문은 출처 링크에서 보실 수 있습니다.</p>';
+  const ph = e.photo;
+  if (ph && ph.img) h += `<section class="place"><h2 class="f-name">그해, 그곳${ph.area ? ' · ' + esc(ph.area) : ''}</h2><figure class="ph"><img src="${esc(ph.img)}" alt="${esc(ph.place || '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.place').hidden=true"><figcaption><b>${esc(ph.year || '')}${ph.place ? ' · ' + esc(ph.place) : ''}</b>${ph.caption ? `<span>${esc(ph.caption)}</span>` : ''}<small>사진 ${esc(ph.src || '')}${ph.url ? ` · <a href="${esc(ph.url)}" target="_blank" rel="noopener">원본</a>` : ''}</small></figcaption></figure></section>`;
+  return h;
+}
 function renderEra() {
   if (!C.era[ago]) ago = [40, 30, 20, 10, 50].find(n => C.era[n]) || ago;
   const tabs = [50, 40, 30, 20, 10].filter(n => C.era[n]).map(n => `<button type="button" data-ago="${n}" aria-pressed="${ago === n}">${n}년 전</button>`).join('');
   $('tabs').innerHTML = tabs; $('tabs2').innerHTML = tabs;
   const yr = Y - ago, e = C.era[ago], memo = store.get('memo' + ago, ''); $('cat-year').textContent = yr;
-  let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => f[2] ? `<figure class="era-fig"><img src="${esc(f[2])}" alt="${esc(f[0])}" loading="lazy" referrerpolicy="no-referrer" onerror="eraImgFail(this)"><figcaption><b>${esc(f[0])}</b><span>${esc(f[1])}</span></figcaption></figure>` : `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
+  let h = e.news && e.news.length ? eraNewsHtml(yr, e) : `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => f[2] ? `<figure class="era-fig"><img src="${esc(f[2])}" alt="${esc(f[0])}" loading="lazy" referrerpolicy="no-referrer" onerror="eraImgFail(this)"><figcaption><b>${esc(f[0])}</b><span>${esc(f[1])}</span></figcaption></figure>` : `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
   // 적어 둔 '나는 그때'는 고치거나 지울 수 있게
   const editing = renderEra.edit === ago; renderEra.edit = null;
   h += '<h3 class="subhead">나는 그때</h3>' + (memo && !editing ? `<div class="mine-wrap"><p class="mine">${esc(memo)}</p><div class="mine-acts"><button type="button" class="linkbtn" data-mine="edit">고치기</button><button type="button" class="linkbtn" data-mine="del">지우기</button></div></div>` : `<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="그해의 나는?" value="${esc(memo)}"><button type="submit" class="btn green">${memo ? '고친 내용 저장' : '남기기'}</button></form>`);
