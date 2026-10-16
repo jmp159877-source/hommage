@@ -1,0 +1,69 @@
+{
+ "items": [
+  {
+   "label": "미국 달러",
+   "value": 1342.8,
+   "unit": "원",
+   "change": 0.12,
+   "note": ""
+  },
+  {
+   "label": "일본 엔 (100엔)",
+   "value": 848.3,
+   "unit": "원",
+   "change": 0.19,
+   "note": ""
+  },
+  {
+   "label": "유로",
+   "value": 1508.1,
+   "unit": "원",
+   "change": 0.28,
+   "note": ""
+  },
+  {
+   "label": "코스피",
+   "value": 5729.46,
+   "unit": "",
+   "change": 3.16,
+   "note": ""
+  },
+  {
+   "label": "코스닥",
+   "value": 795.95,
+   "unit": "",
+   "change": -3.39,
+   "note": ""
+  },
+  {
+   "label": "금 1돈",
+   "value": 680756.0,
+   "unit": "원",
+   "change": 0.83,
+   "note": "국제 시세 환산"
+  },
+  {
+   "label": "은 1돈",
+   "value": 9398.0,
+   "unit": "원",
+   "change": 1.56,
+   "note": "국제 시세 환산"
+  },
+  {
+   "label": "비트코인",
+   "value": 110732000.0,
+   "unit": "원",
+   "change": -0.14,
+   "note": ""
+  },
+  {
+   "label": "이더리움",
+   "value": 3292000.0,
+   "unit": "원",
+   "change": -0.15,
+   "note": ""
+  }
+ ],
+ "updatedAt": "2026-10-16T13:08:11.762248+09:00",
+ "errors": []
+}
