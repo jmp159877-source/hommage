@@ -26,7 +26,9 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
         run: |
           D="${DATE:-$(TZ=Asia/Seoul date +%F)}"
-          python -u tools/era_news.py "$D" $( [ "$FORCE" = "yes" ] && echo --force ) 2>&1 | tail -80
+          python -u tools/era_news.py "$D" $( [ "$FORCE" = "yes" ] && echo --force ) > /tmp/run.log 2>&1 || true
+          tail -80 /tmp/run.log
+          { echo "--- 실행 로그(마지막 200줄) $(date -u +%FT%TZ) ---"; tail -200 /tmp/run.log; } >> tools/last-era-news.log
       - name: 기록 올리기
         if: always()
         run: |
