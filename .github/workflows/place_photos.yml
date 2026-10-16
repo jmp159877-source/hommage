@@ -1,0 +1,44 @@
+name: 그해 그곳 사진 받기
+# 공개 라이선스 사진(위키미디어 공용·공공누리)을 받아 크기를 줄여 place-photos 가지에 둔다.
+on:
+  workflow_dispatch:
+    inputs:
+      items:
+        description: 'JSON 배열 [{"name":"jongno-1976","url":"https://..."}]'
+        required: true
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q pillow
+      - name: 받아서 줄이기
+        env:
+          ITEMS: ${{ inputs.items }}
+        run: |
+          mkdir -p /tmp/out
+          python3 - <<'EOF'
+          import json, os, io, urllib.request
+          from PIL import Image, ImageOps
+          log = []
+          for it in json.loads(os.environ['ITEMS']):
+              try:
+                  req = urllib.request.Request(it['url'], headers={'User-Agent': 'omaju.kr place-photos/1.0 (contact: omaju.kr)'})
+                  raw = urllib.request.urlopen(req, timeout=60).read()
+                  im = ImageOps.exif_transpose(Image.open(io.BytesIO(raw))).convert('RGB')
+                  im.thumbnail((1400, 1400))
+                  im.save(f"/tmp/out/{it['name']}.jpg", 'JPEG', quality=82, optimize=True)
+                  log.append(f"받음 {it['name']} {im.size} {len(raw)//1024}KB")
+              except Exception as e:
+                  log.append(f"실패 {it['name']} {e}")
+          open('/tmp/out/last-fetch.log', 'w').write('\n'.join(log) + '\n'); print('\n'.join(log))
+          EOF
+      - name: 가지에 올리기
+        run: |
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          if git ls-remote --exit-code --heads origin place-photos >/dev/null; then git fetch -q origin place-photos && git checkout -q place-photos; else git checkout -q --orphan place-photos && git rm -rfq . && git clean -fdq; fi
+          mkdir -p out && cp /tmp/out/* out/ && git add out && git commit -qm "그해 그곳 사진" && git push -q origin place-photos || true
