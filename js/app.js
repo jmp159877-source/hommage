@@ -5,7 +5,7 @@ import { drawCard, photoFor } from './cards.js';
 import * as MM from './malmoi.js';
 import * as PLAY from './play.js';
 const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future2'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
-let modalPushed = false, skipPop = false, exitOpen = false;
+let modalPushed = false, skipPop = false, exitOpen = false, reopenAfterPop = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -454,7 +454,7 @@ $('share-btn').onclick = async () => {
 };
 
 // ── 모달 ──
-function modal(html, onReady) { const r = $('modal-root'); if (!modalPushed && !r.innerHTML) { history.pushState({ m: 1 }, '', location.href); modalPushed = true; } exitOpen = false; r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><button type="button" class="x" id="modal-x" aria-label="닫기">×</button>${html}</div></div>`; $('modal-x').onclick = closeModal; $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); }; if (onReady) onReady(); }
+function modal(html, onReady) { const r = $('modal-root'); if (!modalPushed && !r.innerHTML) { if (skipPop) reopenAfterPop = true; else history.pushState({ m: 1 }, '', location.href); modalPushed = true; } /* 창을 닫자마자 새 창을 열면 '뒤로'가 끝난 뒤에 다시 한 칸 쌓는다 */ exitOpen = false; r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><button type="button" class="x" id="modal-x" aria-label="닫기">×</button>${html}</div></div>`; $('modal-x').onclick = closeModal; $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); }; if (onReady) onReady(); }
 function closeModal() { $('modal-root').innerHTML = ''; exitOpen = false; if (modalPushed) { modalPushed = false; skipPop = true; history.back(); } }
 
 // ── 휴대폰 뒤로 가기: 창이 떠 있으면 창만 닫고, 첫 화면에서 나갈 땐 한 번 묻기 ──
@@ -463,7 +463,7 @@ function closeModal() { $('modal-root').innerHTML = ''; exitOpen = false; if (mo
   history.replaceState({ root: 1 }, '', here);
   history.pushState({ guard: 1 }, '', here + location.hash);
   window.addEventListener('popstate', e => {
-    if (skipPop) { skipPop = false; return; }
+    if (skipPop) { skipPop = false; if (reopenAfterPop) { reopenAfterPop = false; history.pushState({ m: 1 }, '', location.href); } return; }
     const r = $('modal-root');
     if (r.innerHTML && modalPushed) { modalPushed = false; r.innerHTML = ''; return; }
     if (e.state && e.state.root && !location.hash) {

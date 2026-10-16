@@ -83,7 +83,7 @@ function listen(onText) {
     $('nb-stop').onclick = () => { done = true; try { rec && rec.abort(); } catch (e) {} closeModal(); };
   });
   const show = () => { const el = $('nb-live'); if (el) el.innerHTML = (finalText + ' ' + live).trim() ? `${(finalText).replace(/</g, '&lt;')}${finalText && live ? ' ' : ''}<span class="itm">${live.replace(/</g, '&lt;')}</span>` : '<span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span>'; };
-  const finish = () => { const t = (finalText + ' ' + live).replace(/\s+/g, ' ').trim(); closeModal(); if (t) onText(t); else toast('말씀이 들리지 않았습니다. 다시 눌러 말씀해 주세요.'); };
+  const finish = () => { const t = (finalText + ' ' + live).replace(/\s+/g, ' ').trim(); if (t) onText(t); /* 같은 창 자리에 바로 확인 화면 → 수첩에 그대로 머묾 */ else { closeModal(); toast('말씀이 들리지 않았습니다. 다시 눌러 말씀해 주세요.'); } };
   const start = () => {
     // 안드로이드 크롬은 '계속 듣기'에서 중간 글자를 잘 안 보내고 같은 말을 겹쳐 보낸다 → 한 마디씩 듣고 저절로 이어 듣기
     const android = /android/i.test(navigator.userAgent);
