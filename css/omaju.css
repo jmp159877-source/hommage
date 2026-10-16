@@ -1340,3 +1340,7 @@ html.big .dsec[data-k="history"] .row { flex-direction: column; gap: 4px; }
 html.big .dsec[data-k="history"] .row b { width: auto; }
 /* 회화 발음: 붙여 쓴 글자도 칠할 수 있게 여백 없이 */
 .ph-read span { padding: 0; }
+/* 장 이동 작은 단추: 낱말 중간에서 끊기지 않게(돌아보/기 방지), 글자는 화면 폭 기준 */
+.tabs3.compact button b { word-break: keep-all; overflow-wrap: normal; font-size: min(0.88rem, 3.6vw) !important; }
+.tabs-mini button { font-size: min(0.86rem, 3.5vw) !important; }
+.tabs-mini button span { word-break: keep-all; overflow-wrap: normal; }
