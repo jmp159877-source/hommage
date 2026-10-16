@@ -3,6 +3,14 @@ import os, json, base64, urllib.request, wave, time
 KEY = os.environ['GEMINI_API_KEY']
 MODELS = ['gemini-3.1-flash-tts-preview']
 ONLY = set(filter(None, os.environ.get('ONLY', '').split(',')))
+PROFILE_ANCHOR = {
+ 'miso': '[목소리 설정] 45세 한국 여성 아나운서. 반듯하고 품위 있는 진행자, 교양 프로그램 진행 경력. 안정된 중음, 따뜻하지만 가볍지 않고, 발음이 또렷하며 말끝이 단정하게 내려앉는다. 들뜬 톤·애교·과장된 웃음 금지.',
+ 'hangyeol': '[목소리 설정] 46세 한국 남성 아나운서. 반듯하고 신뢰감 있는 진행자. 낮고 안정된 중저음, 여유 있고 차분하지만 따뜻하다. 까부는 톤·과장된 리액션·들뜬 말투 금지.',
+}
+AUDITION = {
+ 'miso': (['Gacrux', 'Kore', 'Callirrhoe'], '좋은 아침입니다, 미소입니다. 금요일이에요. 벌써 한 주의 반은 이긴 셈이죠. 오늘 사연은 쉰다섯 정희 씨의 이야기입니다. 몇 달째 밤 열한 시만 되면, 윗집에서 쿵, 쿵, 소리가 났대요. 오늘 하루도 좋은 하루 보내세요.'),
+ 'hangyeol': (['Charon', 'Orus', 'Sadaltager'], '오늘 하루도 수고 많으셨습니다, 한결입니다. 토요일 저녁이네요. 오늘 사연은 마흔아홉 지훈 씨의 이야기입니다. 중고거래 앱에 이십 년 묵은 통기타를 올렸대요. 편안한 저녁 보내십시오.'),
+}
 PROFILE = {
  'miso': '[목소리 설정] 45세 한국 여성 진행자. 세련되고 생기 있는 사람. 맑고 탄력 있는 중음, 웃음이 잘 묻어남. 차분한 낭독조·나이 든 말투 금지.',
  'hangyeol': '[목소리 설정] 46세 한국 남성 진행자. 유쾌하고 센스 있는 사람. 따뜻한 중저음이지만 무겁지 않고 경쾌함. 느린 설명조·아저씨 말투 금지.',
@@ -39,6 +47,17 @@ def tts(model, voice, text):
                                  data=json.dumps(body).encode(), headers={'Content-Type': 'application/json'})
     with urllib.request.urlopen(req, timeout=180) as r: d = json.load(r)
     return base64.b64decode(d['candidates'][0]['content']['parts'][0]['inlineData']['data'])
+if os.environ.get('AUDITION'):
+    for who, (vs, line) in AUDITION.items():
+        for v in vs:
+            time.sleep(7)
+            prompt = '[아래 설정과 연출은 소리 내어 읽지 말 것]\n' + PROFILE_ANCHOR[who] + '\n[연출] 아침·저녁 정보 프로그램을 여는 아나운서처럼 단정하고 따뜻하게. 보통 말 빠르기.\n\n[읽을 대본 — 이 부분만 읽기]\n' + line
+            for attempt in range(4):
+                try: pcm = tts(MODELS[0], v, prompt)
+                except Exception as e: say('실패', who, v, str(e)[:100]); time.sleep(20); continue
+                with wave.open(f'out_voice/{who}_{v}.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
+                say('완료', who, v, round(len(pcm) / 48000, 1)); break
+    SEG = {}
 for who, segs in SEG.items():
     for n, (kind, line) in enumerate(segs):
         if ONLY and f'{who}_{n}' not in ONLY: continue
