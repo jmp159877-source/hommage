@@ -130,15 +130,16 @@ cardsEl.onclick = async e => {
 
 // ── 앞으로 나아가기: 따라하기 · 회화 · 나들이 ──
 const FOLLOW_ORDER = ['gym', 'meditate', 'sing', 'dance', 'golf', 'park'];
+const cleanT = t => unent(t).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F\u200D▶►★☆♥❤|#]/gu, ' ').replace(/\((?:[^)]*(?:이벤트|구독|무료|광고)[^)]*)\)/g, '').replace(/\[ENG\]|\[ENG SUB\]/gi, '').replace(/\s{2,}/g, ' ').replace(/\s*[\/·-]\s*$/, '').trim();
 const unent = t => String(t || '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 function renderFollow() {
   const f = C.follow; if (!f) { $('follow-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 영상이 준비되지 않았습니다. 내일 다시 들러 주세요.</p>'; return; }
-  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<button type="button" class="fl-thumb" data-fl="${k}" aria-label="${esc(it.name)} 영상 보기"><img loading="lazy" src="https://i.ytimg.com/vi/${esc(it.videoId)}/hqdefault.jpg" alt=""><span class="fl-play">▶</span></button><p class="fl-cap">${esc(unent(it.title))}${it.channel ? ' · ' + esc(unent(it.channel)) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
+  $('follow-body').innerHTML = '<div class="fl-list">' + FOLLOW_ORDER.filter(k => f[k]).map(k => { const it = f[k];     return `<div class="fl-item"><div class="fl-head"><b>${esc(it.name)}</b><span>${esc(it.say || '')}</span></div>${it.videoId ? `<button type="button" class="fl-thumb" data-fl="${k}" aria-label="${esc(it.name)} 영상 보기"><img loading="lazy" src="https://i.ytimg.com/vi/${esc(it.videoId)}/hqdefault.jpg" alt=""><span class="fl-play">▶</span></button><p class="fl-cap">${esc(cleanT(it.title))}${it.channel ? ' · ' + esc(unent(it.channel)) : ''}</p>` : ''}${it.videoId ? '' : `<p class="note" style="margin:10px 0 0">오늘 영상을 준비하는 중입니다. 잠시 뒤에 다시 들러 주세요.</p>`}</div>`; }).join('') + '</div>';
 }
 const LANG = { en: ['영어', 'en-US'], ja: ['일본어', 'ja-JP'], zh: ['중국어', 'zh-CN'] };
 function renderPhrase() {
   const p = C.phrase; if (!p) { $('phrase-body').innerHTML = '<p class="note" style="margin-top:30px">오늘 문장이 준비되지 않았습니다.</p>'; return; }
-  $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read" id="ph-read-${k}">${String(x.reading || '').split(/\s+/).filter(Boolean).map(w => `<span>${esc(w)}</span>`).join(' ')}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
+  $('phrase-body').innerHTML = `<p class="lead" style="margin-top:26px">오늘의 상황: <b>${esc(p.topic || '')}</b>. 듣고, 소리 내어 따라 말해 보세요.</p>` + Object.keys(LANG).filter(k => p[k]).map(k => { const x = p[k]; return `<div class="ph-card"><div class="ph-lang">${LANG[k][0]}</div><p class="ph-text">${esc(x.text)}</p><p class="ph-read" id="ph-read-${k}">${(ws => ws.length > 3 && ws.every(w => w.length === 1) ? ws.map(w => `<span>${esc(w)}</span>`).join('') : ws.map(w => `<span>${esc(w)}</span>`).join(' '))(String(x.reading || '').split(/\s+/).filter(Boolean))}</p><p class="ph-mean">${esc(x.meaning || '')}</p>${x.tip ? `<p class="ph-tip">${esc(x.tip)}</p>` : ''}<div class="ph-actions"><button type="button" class="btn green" data-say="${k}" data-rate="0.9">듣기</button><button type="button" class="btn line" data-say="${k}" data-rate="0.6">천천히 듣기</button></div></div>`; }).join('');
   if (C.phrase.topic) $('phrase-title').textContent = '오늘의 상황: ' + C.phrase.topic;
 }
 document.addEventListener('click', e => {
@@ -159,7 +160,7 @@ function renderOuting() {
   const o = C.outing; if (!o || !Object.keys(o).length) { $('outing-tabs').innerHTML = ''; $('outing-body').innerHTML = '<p class="note" style="margin-top:30px">이번 주 소식이 준비되지 않았습니다.</p>'; return; }
   const regions = Object.keys(REGION_XY).filter(r => o[r]); if (!o[outRegion]) outRegion = regions[0];
   $('outing-tabs').innerHTML = regions.map(r => `<button type="button" data-region="${r}" aria-pressed="${r === outRegion}">${r}</button>`).join('');
-  $('outing-body').innerHTML = '<div class="rows" style="margin-top:20px">' + o[outRegion].map(it => `<div class="row ot-row"><span class="ot-kind">${esc(it.kind || '나들이')}</span><b>${esc(it.title)}</b><p class="ot-meta">${esc(it.where || '')}${it.when ? ' · ' + esc(it.when) : ''}</p><p>${esc(it.why || '')}</p><a class="linkbtn" href="https://map.naver.com/p/search/${encodeURIComponent(it.where || it.title)}" target="_blank" rel="noopener">지도에서 보기</a></div>`).join('') + '</div><p class="note">내용은 매일 아침 새로 찾아 넣습니다. 가기 전에 날짜와 시간을 한 번 더 확인해 주세요.</p>';
+  $('outing-body').innerHTML = '<div class="rows" style="margin-top:20px">' + o[outRegion].map(it => `<div class="row ot-row"><span class="ot-kind">${esc(it.kind || '나들이')}</span><b>${esc(it.title)}</b><p class="ot-meta">${esc(it.where || '')}${it.when ? ' <span class="nw">· ' + esc(it.when) + '</span>' : ''}</p><p>${esc(it.why || '')}</p><a class="linkbtn" href="https://map.naver.com/p/search/${encodeURIComponent(it.where || it.title)}" target="_blank" rel="noopener">지도에서 보기</a></div>`).join('') + '</div><p class="note">내용은 매일 아침 새로 찾아 넣습니다. 가기 전에 날짜와 시간을 한 번 더 확인해 주세요.</p>';
   $('outing-title').textContent = `${outRegion} · 이번 주말 가볼 만한 곳`;
 }
 $('outing-tabs').onclick = e => { const b = e.target.closest('[data-region]'); if (!b) return; outRegion = b.dataset.region; store.set('outRegion', outRegion); renderOuting(); };
@@ -267,7 +268,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-song
 
 // ── 코너별 한마디 (운세·한 끼·시사 상식·문화) ──
 const CBOX = { fortune: '오늘의 운세', food: '오늘의 한 끼', quiz: '오늘의 시사 상식', culture: '오늘의 문화' };
-Object.keys(CBOX).forEach(k => { const sec = document.querySelector(`.dsec[data-k="${k}"]`); if (!sec) return; const d = document.createElement('div'); d.className = 'cbox'; d.dataset.cbox = k; d.innerHTML = `<p class="is-sub" style="margin-top:34px">한마디 나누기</p><form class="cmt-form" data-cform="${k}"><input type="text" maxlength="200" placeholder="${CBOX[k]}에 대한 한마디"><button type="submit" class="btn green">남기기</button></form><div class="cmts" data-clist="${k}"></div>`; sec.appendChild(d); });
+Object.keys(CBOX).forEach(k => { const sec = document.querySelector(`.dsec[data-k="${k}"]`); if (!sec) return; const d = document.createElement('div'); d.className = 'cbox'; d.dataset.cbox = k; d.innerHTML = `<p class="is-sub" style="margin-top:34px">한마디 나누기</p><form class="cmt-form" data-cform="${k}"><input type="text" maxlength="200" placeholder="한마디 적기"><button type="submit" class="btn green">남기기</button></form><div class="cmts" data-clist="${k}"></div>`; sec.appendChild(d); });
 async function renderCbox(k) {
   const el = document.querySelector(`[data-clist="${k}"]`); if (!el) return;
   const list = await DB.listComments(TODAY, k), me = DB.currentUser();
@@ -287,12 +288,12 @@ NB.init({ toast, modal, closeModal, openGate });
   const fmt = (v, u) => { if (u === '') return v.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); const n = Math.round(v); if (n >= 100000000) { const eok = Math.floor(n / 100000000), man = Math.round((n % 100000000) / 10000); return `${eok}억${man ? ' ' + man.toLocaleString('ko-KR') + '만' : ''}${u}`; } if (n >= 10000000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만' + u; return n.toLocaleString('ko-KR') + u; };
   const ORDER = ['코스피', '코스닥', '미국 달러', '일본 엔 (100엔)', '유로', '금 1돈', '은 1돈', '비트코인', '이더리움']; const items = [...m.items].sort((a, b) => (ORDER.indexOf(a.label) + 99) % 99 - (ORDER.indexOf(b.label) + 99) % 99);
   $('mk-grid').innerHTML = items.map(i => `<div class="mk-item"><span class="mk-l">${esc(i.label)}</span><b class="mk-v">${fmt(i.value, i.unit)}</b>${i.change == null ? '' : `<span class="mk-c ${i.change > 0 ? 'up' : i.change < 0 ? 'down' : ''}">${i.change > 0 ? '▲' : i.change < 0 ? '▼' : '－'} ${Math.abs(i.change).toFixed(2)}%</span>`}</div>`).join('');
-  const t = new Date(m.updatedAt); $('mk-foot').textContent = `${t.getMonth() + 1}월 ${t.getDate()}일 ${t.getHours()}시 기준 · 금·은은 국제 시세 환산(1돈)`;
+  const t = new Date(m.updatedAt); $('mk-foot').textContent = `${t.getMonth() + 1}월 ${t.getDate()}일 ${t.getHours()}시 기준 · 금은 한국거래소, 은은 국제 시세 환산(1돈)`;
   $('mk-sec').hidden = false;
 })();
 
 // ── 운세 ──
-const ZO = Object.keys(C.fortune);
+const ZO = ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지'].filter(z => C.fortune && C.fortune[z]); // 자축인묘 순서
 let myZ = store.get('zodiac', null);
 function renderZ() { $('zodiac').innerHTML = ZO.map(z => `<button type="button" data-z="${z}" aria-pressed="${myZ === z}">${z}</button>`).join(''); const f = myZ ? C.fortune[myZ] : null; if (!f) { $('fortune').textContent = '띠를 고르면 오늘의 운세가 나옵니다.'; return; }
   if (typeof f === 'string') { $('fortune').textContent = f; return; }
@@ -329,7 +330,7 @@ $('meal').innerHTML = `<p class="lead">${esc(C.meal.lead)}</p><ul class="ing">${
 $('story-title').textContent = C.story.title; $('story-sub').textContent = C.story.sub;
 $('story-body').innerHTML = C.story.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('') + `<p class="note">— ${esc(C.story.by || '오마주 편집실')}</p>`;
 
-const DET = { play: ['detail_malmoi', '오늘 PLAY', () => '하루 한 판,<br>오늘의 순위'], malmoi: ['', '말모이', () => ''], shisen: ['', '사천성', () => ''], num50: ['', '1 to 50', () => ''], sudoku: ['', '스도쿠', () => ''], history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해 사랑받은 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => esc('오늘의 한 문장' + (C.phrase && C.phrase.topic ? ' · ' + C.phrase.topic : ''))], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
+const DET = { play: ['detail_malmoi', '오늘 PLAY', () => '하루 한 판,<br>오늘의 순위'], malmoi: ['', '말모이', () => ''], shisen: ['', '사천성', () => ''], num50: ['', '1 to 50', () => ''], sudoku: ['', '스도쿠', () => ''], history: ['detail_history', '그해 오늘', () => `${Y - ago}년,<br>그해 오늘`], music: ['detail_music', '그 시절 노래', () => `${Y - ago}년,<br>그해의 노래`], food: ['detail_food', '오늘의 한 끼', () => esc(C.meal.title)], story: ['detail_story', '그날의 사연', () => esc(C.story.title)], fortune: ['fortune', '오늘의 운세', () => '열두 띠 운세'], culture: ['culture_detail', '오늘의 문화', () => '시 한 편,<br>그림 한 점'], follow: ['detail_follow', '오늘의 따라하기', () => '오늘, 몸을 깨우는 시간'], phrase: ['detail_phrase', '오늘의 회화', () => '오늘의 한 문장' + (C.phrase && C.phrase.topic ? '<br>' + esc(C.phrase.topic) : '')], outing: ['detail_outing', '오늘의 나들이', () => '이번 주말, 어디로 갈까'], quiz: ['issue_detail', '오늘의 시사 상식', () => esc(C.quiz.term || '오늘의 시사 상식')] };
 let cur = null;
 function setTitle() { $('d-title').innerHTML = DET[cur][2](); }
 // ── 아침 알림 받기 (원하는 사람만, 시간은 직접 고르기) ──

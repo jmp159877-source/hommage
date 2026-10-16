@@ -1324,3 +1324,19 @@ body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: lin
 .era-fig figcaption { padding: 12px 2px 0; }
 .era-fig figcaption b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 1.15rem; color: var(--dark-green); margin-bottom: 4px; }
 .era-fig figcaption span { font-size: 1.02rem; line-height: 1.75; color: #333; }
+
+/* ── 2026-10-16 전수 점검 손질 ── */
+.nw { white-space: nowrap; }
+/* 첫 화면 '앱 아이콘 설치하기'도 따뜻한 연노랑 (초록 단추 없애기) */
+.ghost.go { background: #F9E9A8; color: #3A2E00; border: 1px solid #E8D58A; box-shadow: none; }
+.ghost.go:hover { background: #F5DF86; }
+/* 오늘의 음악 장르: 칸 테두리 대신 글자 메뉴 + 금빛 밑줄, 큰 글씨에서 줄바꿈 */
+.genre.mu-genre { display: flex !important; flex-wrap: wrap; justify-content: center; gap: 4px 18px; border: 0; border-radius: 0; overflow: visible; margin: 18px 0 6px; }
+.genre.mu-genre button { background: none !important; border: 0 !important; padding: 6px 2px; font-size: 1rem; color: #8a8173; font-weight: 600; min-width: 0; border-bottom: 2px solid transparent !important; border-radius: 0; }
+.genre.mu-genre button + button { border-left: 0 !important; }
+.genre.mu-genre button[aria-pressed="true"] { color: #2a2418; border-bottom-color: #C9A24A !important; }
+/* 그해 오늘: 큰 글씨에서는 제목 위, 설명 아래 (좁은 두 칸으로 갈라지지 않게) */
+html.big .dsec[data-k="history"] .row { flex-direction: column; gap: 4px; }
+html.big .dsec[data-k="history"] .row b { width: auto; }
+/* 회화 발음: 붙여 쓴 글자도 칠할 수 있게 여백 없이 */
+.ph-read span { padding: 0; }

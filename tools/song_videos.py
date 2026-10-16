@@ -36,7 +36,7 @@ for y in sorted([k for k in songs if not k.startswith("_")], key=prio):
     for t, a in songs[y]:
         if not have.get(f"{t}|{a}") and (t, a) not in seen: seen.add((t, a)); todo.append((t, a))
 print("남은 노래", len(todo))
-bad = re.compile(r"커버|cover|노래방|karaoke|반주|\bmr\b|\binst\b|lesson|강좌|리액션|reaction|shorts|배우기", re.I)
+bad = re.compile(r"커버|cover|노래방|karaoke|반주|\bmr\b|\binst\b|lesson|강좌|리액션|reaction|shorts|배우기|실버|시니어|어르신|노인", re.I)
 def score(it):
     sn = it["snippet"]; ti = sn["title"].lower(); s = 0
     if norm(t) in norm(ti) or norm(en(t)) in norm(ti): s += 3

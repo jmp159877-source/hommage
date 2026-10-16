@@ -218,12 +218,13 @@ def gen_quiz(d):
     """오늘의 시사 상식: 최근 뉴스에 자주 나오는 말 하나를 골라 풀어 주고, 확인 문제 하나."""
     prompt = f"""오늘은 {d.year}년 {d.month}월 {d.day}일. 최근 일주일 한국 뉴스·방송·인터넷에서 자주 나오는 시사 용어 하나를 구글 검색으로 골라라.
 경제·기술·생활·문화·건강·사회 현상 중에서. 정치인 이름·정당 논쟁·사건사고·특정 기업 홍보는 피한다. 40~60대 교양 있는 독자가 "아, 요즘 이걸 이렇게 부르는구나" 하고 배울 만한 말.
+'디지털 디톡스·워라밸·MZ·소확행·번아웃'처럼 이미 몇 년째 누구나 아는 말은 피하고, 최근 1~2년 사이 새로 자주 쓰이는 말을 고른다. 모임에서 꺼내면 대화가 되는 수준.
 형식(JSON만):
 {{"quiz": {{"kind":"시사 상식", "term":"용어(15자 이내)", "meaning":"한 줄 뜻(30자 이내)",
  "explain":"쉬운 풀이 세 문장(120~200자). 영어·줄임말이면 원래 말과 뜻을 함께.",
  "why":"요즘 왜 자주 들리는지 한두 문장(60~110자). 확인된 사실만.",
  "example":"이 말을 실제로 쓰는 예문 한 문장(대화체, 40자 이내)",
- "question":"이 용어의 뜻을 묻는 확인 문제", "options":["보기1","보기2","보기3","보기4"], "answer":0}}}}
+ "question":"확인 문제. 화면에 용어와 뜻이 이미 나오므로 '뜻이 무엇인가' '이 뜻의 용어는?'처럼 답이 보이는 문제는 금지. 대신 '다음 중 이 말의 사례로 알맞은 것은?' 처럼 이해해야 풀 수 있게. 보기 네 개 모두 그럴듯하게", "options":["보기1","보기2","보기3","보기4"], "answer":0}}}}
 정답 번호(answer)는 0~3 중 무작위."""
     try:
         j = gemini(prompt, json_mode=True, search=True)
@@ -233,6 +234,7 @@ def gen_quiz(d):
     q = j["quiz"]
     assert q.get("term") and len(q.get("options", [])) == 4 and 0 <= int(q.get("answer", -1)) <= 3, "시사 상식 형식 오류"
     q["answer"] = int(q["answer"]); q["kind"] = "시사 상식"
+    assert q["options"][q["answer"]].replace(" ", "") != q["term"].replace(" ", ""), "답이 용어 그대로인 문제"
     return q
 
 def gen_story(d):
@@ -257,13 +259,20 @@ FOLLOW = [("gym", "요가", "10~20분 안팎의 쉬운 아침 요가. 초보도 
 REGIONS = ["서울", "경기", "인천", "부산", "대구", "광주", "대전", "울산", "세종", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"]
 
 
+# 잡지에 어울리지 않는 영상 거르기: 나이 딱지(실버·시니어·어르신·노인·치매), 쇼츠, 광고·이벤트, 짧은 맛보기
+YT_BAD = re.compile(r"실버|시니어|어르신|노인|치매|요양|shorts|#shorts|이벤트|구독|광고|협찬|리액션|먹방", re.I)
+def yt_ok(items):
+    good = [it for it in items if not YT_BAD.search(it["snippet"]["title"] + " " + it["snippet"].get("channelTitle", ""))]
+    return good or []
+
+
 def youtube_pick(query):
     """유튜브에서 영상 하나 고르기. 키가 안 되면 None (검색 링크로 대체)."""
     key = os.environ.get("YOUTUBE_API_KEY") or GEMINI_KEY
     try:
         q = urllib.parse.urlencode({"part": "snippet", "q": query, "type": "video", "videoEmbeddable": "true", "videoDuration": "medium", "relevanceLanguage": "ko", "regionCode": "KR", "maxResults": 8, "order": "relevance", "key": key})
         j = get_json(f"https://www.googleapis.com/youtube/v3/search?{q}")
-        items = j.get("items", [])
+        items = yt_ok(j.get("items", []))
         if not items:
             return None
         pick = items[datetime.date.today().toordinal() % len(items)]
@@ -274,7 +283,7 @@ def youtube_pick(query):
         try:
             sys.path.insert(0, HERE)
             from yt_scrape import scrape
-            items = scrape(query)
+            items = yt_ok(scrape(query))
             if items:
                 pick = items[datetime.date.today().toordinal() % min(4, len(items))]
                 return {"videoId": pick["id"]["videoId"], "title": pick["snippet"]["title"], "channel": pick["snippet"]["channelTitle"], "thumb": f"https://i.ytimg.com/vi/{pick['id']['videoId']}/mqdefault.jpg"}
@@ -317,7 +326,7 @@ def _gen_follow_ai(d):
 
 def gen_phrase(d):
     j = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일. '오늘의 회화' — 영어·일본어·중국어 각 한 문장. 여행·식당·인사·쇼핑·길 묻기 등 실제로 쓸 상황 하나를 정해 세 언어가 같은 뜻이 되게.
-각 언어: text(원문), reading(한국어로 적은 발음, 띄어쓰기로 음절 구분), meaning(우리말 뜻), tip(쓰는 상황이나 한 가지 요령, 30자 이내).
+각 언어: text(원문), reading(한국어로 적은 발음. 원문의 낱말(어절) 단위로 띄어 쓴다. 예: "체크 플리즈", "오카이케이오 오네가이시마스", "마이단 셰셰". 한 글자씩 띄우지 말 것), meaning(우리말 뜻), tip(쓰는 상황이나 한 가지 요령, 30자 이내).
 중국어는 간체와 함께 reading에 성조 없이 한국어 발음만. 일본어는 한자 포함 원문.
 형식: {{"phrase": {{"topic":"상황(6자 이내)", "en": {{"text":"...","reading":"...","meaning":"...","tip":"..."}}, "ja": {{...}}, "zh": {{...}}}}}}""")
     p = j["phrase"]
