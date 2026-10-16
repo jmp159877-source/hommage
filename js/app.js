@@ -467,11 +467,12 @@ function closeModal() { $('modal-root').innerHTML = ''; exitOpen = false; if (mo
     const r = $('modal-root');
     if (r.innerHTML && modalPushed) { modalPushed = false; r.innerHTML = ''; return; }
     if (e.state && e.state.root && !location.hash) {
-      r.innerHTML = `<div class="modal" id="modal"><div class="modal-box"><h2>오마주를 나가시겠습니까?</h2><p style="font-size:1.1rem">내일 아침에 또 만나요.</p><div class="modal-actions"><button type="button" class="btn green" id="exit-stay">계속 보기</button><button type="button" class="btn line" id="exit-go">나가기</button></div></div></div>`;
+      // 설치한 앱은 화면이 스스로 앱을 닫을 수 없다 → '한 번 더 누르면 나감' 방식.
+      // 지금 이 자리(맨 처음 칸)에서 한 번 더 뒤로 가면 휴대폰이 앱을 닫는다. 잠시 뒤 안 누르면 다시 막아 둔다.
       exitOpen = true;
-      const stay = () => { r.innerHTML = ''; exitOpen = false; history.pushState({ guard: 1 }, '', here); };
-      $('exit-stay').onclick = stay; $('modal').onclick = ev => { if (ev.target.id === 'modal') stay(); };
-      $('exit-go').onclick = () => { r.innerHTML = ''; history.back(); };
+      toast('뒤로 가기를 한 번 더 누르면 오마주를 나갑니다.');
+      clearTimeout(window.__exitT);
+      window.__exitT = setTimeout(() => { if (exitOpen && history.state && history.state.root) history.pushState({ guard: 1 }, '', here); exitOpen = false; }, 2500);
     }
   });
 })();
