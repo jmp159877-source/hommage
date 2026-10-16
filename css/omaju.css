@@ -1312,7 +1312,7 @@ i.ev { background: #3E8A63; } i.mm { background: #9C9488; } i.an { background: #
 .tabs3 button.soon[data-soon="g6"] { background-position: 70% 25% !important; }
 /* 준비 중: 흐리고 차분하게(아직 열리지 않은 느낌) */
 .tabs3 button.soon { filter: grayscale(0.65) brightness(0.88) !important; }
-.tabs3 button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.7) 0%, rgba(30,28,24,0.42) 55%, rgba(30,28,24,0.35) 100%) !important; }
+.tabs3 button.soon::before, body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.7) 0%, rgba(30,28,24,0.42) 55%, rgba(30,28,24,0.35) 100%) !important; }
 .tabs3 button.soon small { display: inline-block; margin-top: 4px; padding: 3px 12px; border: 1px solid rgba(255,255,255,0.7); border-radius: 999px; font-size: min(0.9rem, 3.6vw) !important; }
 body .tabs3:not(.compact) button.soon { filter: grayscale(0.7) brightness(0.82) contrast(0.92) !important; }
 body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(30,28,24,0.72) 0%, rgba(30,28,24,0.45) 55%, rgba(30,28,24,0.38) 100%) !important; }
@@ -1437,3 +1437,27 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 .opn-m-desc { color: #5a5245; line-height: 1.65; word-break: keep-all; }
 #opn-story { width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem; line-height: 1.6; padding: 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 6px; resize: vertical; }
 @media (prefers-reduced-motion: reduce) { .opn-shot.on { animation: none; } }
+
+/* ── 장마다 색 포인트 (산호·겨자·민트·라일락) ── */
+:root { --c-g1: #E07A5F; --c-g2: #D9A42B; --c-g3: #3AA58A; --c-g4: #9C7BD3; --c-soon: #8C8C8C; }
+.tabs3 button[data-tab="g1"]::before, body:not(.in-chapter) .tabs3:not(.compact) button[data-tab="g1"]::before { background: linear-gradient(to top, rgba(224,122,95,0.92) 0%, rgba(224,122,95,0.45) 42%, rgba(20,20,20,0.06) 78%) !important; }
+.tabs3 button[data-tab="g2"]::before, body:not(.in-chapter) .tabs3:not(.compact) button[data-tab="g2"]::before { background: linear-gradient(to top, rgba(217,164,43,0.92) 0%, rgba(217,164,43,0.45) 42%, rgba(20,20,20,0.06) 78%) !important; }
+.tabs3 button[data-tab="g3"]::before, body:not(.in-chapter) .tabs3:not(.compact) button[data-tab="g3"]::before { background: linear-gradient(to top, rgba(58,165,138,0.92) 0%, rgba(58,165,138,0.45) 42%, rgba(20,20,20,0.06) 78%) !important; }
+.tabs3 button[data-tab="g4"]::before, body:not(.in-chapter) .tabs3:not(.compact) button[data-tab="g4"]::before { background: linear-gradient(to top, rgba(156,123,211,0.92) 0%, rgba(156,123,211,0.45) 42%, rgba(20,20,20,0.06) 78%) !important; }
+.tabs3 button.soon::before, body:not(.in-chapter) .tabs3:not(.compact) button.soon::before { background: linear-gradient(to top, rgba(70,70,70,0.85) 0%, rgba(70,70,70,0.5) 50%, rgba(20,20,20,0.2) 100%) !important; }
+.toc.toc-c:not(.opn-toc) { position: relative; }
+.toc.toc-c:not(.opn-toc)::after { content: ""; position: absolute; left: 50%; bottom: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--c-g1); box-shadow: 12px 0 var(--c-g2), 24px 0 var(--c-g3), 36px 0 var(--c-g4); transform: translateX(-21px); }
+body[data-ch="g1"] { --acc: var(--c-g1); } body[data-ch="g2"] { --acc: var(--c-g2); } body[data-ch="g3"] { --acc: var(--c-g3); } body[data-ch="g4"] { --acc: var(--c-g4); }
+body[data-ch^="g"] .ch-k { display: inline-block; background: var(--acc); color: #fff; opacity: 1; padding: 5px 12px 4px; border-radius: 999px; margin-bottom: 10px; }
+body[data-ch^="g"] .label { border-bottom-color: var(--acc) !important; }
+body[data-ch^="g"] .label .lb-ic { background: color-mix(in srgb, var(--acc) 14%, transparent); border-radius: 50%; padding: 3px; box-sizing: border-box; }
+body[data-ch^="g"] .banner.photo .b-text > span { border-bottom-color: var(--acc); border-bottom-width: 2px; }
+.tabs-mini button[aria-pressed="true"] { opacity: 1; }
+.tabs-mini button[data-tab="g1"][aria-pressed="true"] { box-shadow: 0 0 0 2px var(--c-g1); }
+.tabs-mini button[data-tab="g2"][aria-pressed="true"] { box-shadow: 0 0 0 2px var(--c-g2); }
+.tabs-mini button[data-tab="g3"][aria-pressed="true"] { box-shadow: 0 0 0 2px var(--c-g3); }
+.tabs-mini button[data-tab="g4"][aria-pressed="true"] { box-shadow: 0 0 0 2px var(--c-g4); }
+
+body.in-chapter #opening { display: none !important; }
+.b-text h3 span, .b-text p span { border: 0 !important; padding: 0 !important; color: inherit !important; font: inherit !important; }
+.b-text h3 { text-wrap: pretty; word-break: keep-all; }

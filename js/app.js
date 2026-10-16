@@ -608,6 +608,7 @@ DB.onUser((u, p) => {
 // 네 칸을 누르면 그 장(章) 안으로 들어간다: 사진이 화면 가득 커지며 넘어가고, 맨 위에 그 장의 표지
 function setChapter(g) {
   document.body.classList.toggle('in-chapter', !!g);
+  document.body.dataset.ch = g || '';
   const tabG = g || 'g1';
   document.querySelectorAll('#tabs3 button').forEach(x => x.setAttribute('aria-pressed', x.dataset.tab === g));
   document.querySelectorAll('.tabsec').forEach(s => s.classList.toggle('on', s.dataset.g === tabG));
