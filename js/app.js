@@ -20,7 +20,7 @@ const TODAY = DB.todayKey(now);
 $('date').textContent = `${Y}년 ${M + 1}월 ${D}일 ${WD[now.getDay()]}요일`;
 try { const p = new Intl.DateTimeFormat('ko-KR-u-ca-dangi', { month: 'numeric', day: 'numeric' }).formatToParts(now); const m = p.find(x => x.type === 'month'), d = p.find(x => x.type === 'day'); if (m && d) $('lunar').textContent = `음력 ${m.value}월 ${d.value}일`; } catch (e) {}
 const SEASON = M < 2 || M === 11 ? 'winter' : M < 5 ? 'spring' : M < 8 ? 'summer' : 'autumn';
-$('wx-card').style.backgroundImage = `url('img/${SEASON}.jpg')`;
+$('wx-card').style.backgroundImage = `url('img/wx-${SEASON}.jpg')`;
 
 // ── 글자 크기 ──
 function applySize(b) { document.documentElement.classList.toggle('big', b); $('sizer').textContent = b ? '글자 보통' : '글자 크게'; }
