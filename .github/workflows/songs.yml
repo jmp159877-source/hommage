@@ -22,5 +22,5 @@ jobs:
         run: python tools/song_videos.py
       - run: |
           git config user.name omaju-bot; git config user.email bot@omaju.kr
-          git pull -q --rebase origin main || true
-          cp tools/songs.json data/songs.json; git add data/song_videos.json data/songs.json; git diff --cached --quiet || (git commit -m "노래 영상 목록 [skip ci]" && git push)
+          cp tools/songs.json data/songs.json; git add data/song_videos.json data/songs.json; git diff --cached --quiet || git commit -m "노래 영상 목록 [skip ci]"
+          for i in 1 2 3 4 5; do git pull -q --rebase origin main && git push && break; sleep 5; done

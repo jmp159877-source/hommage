@@ -33,4 +33,4 @@ jobs:
           git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
           git add data/outing.json daily/last-outing.log || true
           git diff --cached --quiet || git commit -m "이번 주말 나들이 [skip ci]"
-          git pull -q --rebase origin main && git push
+          for i in 1 2 3 4 5; do git pull -q --rebase origin main && git push && break; sleep 5; done

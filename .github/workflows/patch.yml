@@ -22,4 +22,4 @@ jobs:
           python tools/patch_daily.py
           git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
           git add daily; git commit -m "하루 콘텐츠 손봄 $DATE" || true
-          git pull --rebase origin main && git push
+          for i in 1 2 3 4 5; do git pull -q --rebase origin main && git push && break; sleep 5; done
