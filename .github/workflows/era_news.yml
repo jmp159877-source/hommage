@@ -1,0 +1,35 @@
+name: 그해 오늘 신문
+# 매일 00:40 KST(15:40 UTC) — daily.yml 뒤에 그날의 신문(분야별 헤드라인)을 채운다. 손으로 돌릴 때는 날짜 입력.
+on:
+  schedule:
+    - cron: '40 15 * * *'
+  workflow_dispatch:
+    inputs:
+      date: { description: '날짜 YYYY-MM-DD (비우면 오늘)', required: false, default: '' }
+      force: { description: 'yes 면 이미 있어도 다시', required: false, default: '' }
+permissions:
+  contents: write
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q google-cloud-firestore
+      - name: 그날의 신문 만들기
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DATE: ${{ github.event.inputs.date }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: |
+          D="${DATE:-$(TZ=Asia/Seoul date +%F)}"
+          python -u tools/era_news.py "$D" $( [ "$FORCE" = "yes" ] && echo --force ) 2>&1 | tail -80
+      - name: 기록 올리기
+        if: always()
+        run: |
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git add daily tools/last-era-news.log; git commit -qm "그날의 신문 [skip ci]" || exit 0
+          for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q && break; git rebase --abort 2>/dev/null; sleep 5; done
