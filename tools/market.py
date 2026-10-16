@@ -15,10 +15,11 @@ def get(url, timeout=20):
 
 def yahoo(sym):
     """야후 금융: 현재가와 전일 종가"""
-    j = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.request.quote(sym)}?range=5d&interval=1d")
+    # range=1d: chartPreviousClose 가 '전날 종가' (5d 로 하면 5일 전 종가가 되어 등락이 틀어짐)
+    j = get(f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.request.quote(sym)}?range=1d&interval=5m")
     m = j["chart"]["result"][0]["meta"]
     price = m.get("regularMarketPrice")
-    prev = m.get("chartPreviousClose") or m.get("previousClose")
+    prev = m.get("previousClose") or m.get("chartPreviousClose")
     return float(price), (float(prev) if prev else None)
 
 
@@ -30,15 +31,24 @@ def item(label, value, prev, unit, digits=0, note=""):
 def main():
     out, errors = [], []
     usd = None
-    # 1) 환율 (달러 기준 공개 API, 하루 한 번 갱신)
+    # 1) 환율: 실시간에 가까운 시장 환율(야후). 실패하면 하루 한 번 갱신되는 공개 환율로
     try:
-        fx = get("https://open.er-api.com/v6/latest/USD")["rates"]
-        usd = fx["KRW"]
-        out.append(item("미국 달러", usd, None, "원", 1))
-        out.append(item("일본 엔 (100엔)", usd / fx["JPY"] * 100, None, "원", 1))
-        out.append(item("유로", usd / fx["EUR"], None, "원", 1))
+        usd, usd0 = yahoo("KRW=X")
+        jpy, jpy0 = yahoo("JPYKRW=X")
+        eur, eur0 = yahoo("EURKRW=X")
+        out.append(item("미국 달러", usd, usd0, "원", 1))
+        out.append(item("일본 엔 (100엔)", jpy * 100, (jpy0 * 100) if jpy0 else None, "원", 1))
+        out.append(item("유로", eur, eur0, "원", 1))
     except Exception as e:
-        errors.append(f"환율: {e}")
+        errors.append(f"환율(야후): {e}")
+        try:
+            fx = get("https://open.er-api.com/v6/latest/USD")["rates"]
+            usd = fx["KRW"]
+            out.append(item("미국 달러", usd, None, "원", 1))
+            out.append(item("일본 엔 (100엔)", usd / fx["JPY"] * 100, None, "원", 1))
+            out.append(item("유로", usd / fx["EUR"], None, "원", 1))
+        except Exception as e2:
+            errors.append(f"환율: {e2}")
     # 2) 코스피·코스닥
     for sym, label in (("^KS11", "코스피"), ("^KQ11", "코스닥")):
         try:
@@ -74,6 +84,8 @@ def main():
     info = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT"])
     db = fs.Client(project=info["project_id"], credentials=service_account.Credentials.from_service_account_info(info))
     db.collection("settings").document("market").set(doc)
+    if os.environ.get("SAVE_LOG"):
+        json.dump(doc, open(os.path.join(HERE, "last-market.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("저장 완료", doc["updatedAt"])
 
 

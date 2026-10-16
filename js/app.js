@@ -54,8 +54,11 @@ function wxIcon(c) {
 }
 async function loadWx(lat, lon, label) {
   try {
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=auto`);
-    const d = await r.json(); const c = d.current; if (!c) throw 0;
+    // 기상청(KMA) 예보 모델을 먼저 써서 네이버·기상청 날씨와 맞춘다. 안 되면 기본 모델로.
+    const q = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&timezone=Asia%2FSeoul`;
+    let d = null; try { d = await (await fetch(q + '&models=kma_seamless')).json(); } catch (e) {}
+    if (!d || !d.current || d.current.temperature_2m == null || d.current.weather_code == null) d = await (await fetch(q)).json();
+    const c = d.current; if (!c) throw 0;
     const t = Math.round(c.temperature_2m), desc = WMO[c.weather_code] || '';
     $('wx-temp').textContent = t + '°'; $('wx-desc').textContent = desc;
     $('wx-sub').textContent = `${label} · 체감 ${Math.round(c.apparent_temperature)}° · 습도 ${Math.round(c.relative_humidity_2m)}%`;

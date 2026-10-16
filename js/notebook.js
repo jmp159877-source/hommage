@@ -85,8 +85,15 @@ function listen(onText) {
   const show = () => { const el = $('nb-live'); if (el) el.innerHTML = (finalText + ' ' + live).trim() ? `${(finalText).replace(/</g, '&lt;')}<span class="itm">${live.replace(/</g, '&lt;')}</span>` : '<span class="ph">여기에 말씀하신 내용이 글로 나옵니다…</span>'; };
   const finish = () => { const t = (finalText + ' ' + live).replace(/\s+/g, ' ').trim(); closeModal(); if (t) onText(t); else toast('말씀이 들리지 않았습니다. 다시 눌러 말씀해 주세요.'); };
   const start = () => {
-    rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
-    rec.onresult = e => { live = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finalText += (finalText ? ' ' : '') + r[0].transcript.trim(); else live += r[0].transcript; } show(); };
+    // 안드로이드 크롬은 '계속 듣기'에서 중간 글자를 잘 안 보내고 같은 말을 겹쳐 보낸다 → 한 마디씩 듣고 저절로 이어 듣기
+    const android = /android/i.test(navigator.userAgent);
+    rec = new SR(); rec.lang = 'ko-KR'; rec.interimResults = true; rec.continuous = !android; rec.maxAlternatives = 1;
+    let base = finalText;
+    rec.onresult = e => {
+      let fin = '', mid = '';
+      for (let i = 0; i < e.results.length; i++) { const r = e.results[i], t = r[0].transcript.trim(); if (!t) continue; if (r.isFinal) { if (!fin.endsWith(t)) fin += (fin ? ' ' : '') + t; } else mid = t; }
+      finalText = (base + ' ' + fin).trim(); live = mid; show();
+    };
     rec.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { done = true; closeModal(); toast('마이크 사용을 허용해 주세요.'); } };
     rec.onend = () => { if (done || !$('nb-done')) return; if (live) { finalText += (finalText ? ' ' : '') + live.trim(); live = ''; } if (restarts++ < 40) setTimeout(() => { if (!done && $('nb-done')) try { start(); } catch (e) {} }, 150); else finish(); };
     try { rec.start(); } catch (e) { done = true; closeModal(); toast('마이크를 켤 수 없습니다.'); }

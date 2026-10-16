@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '10 21-23,0-14 * * *'   # UTC 21~14시 = KST 06~23시
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -15,4 +17,9 @@ jobs:
       - run: pip install -q google-cloud-firestore
       - env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SAVE_LOG: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: python tools/market.py
+      - if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "omaju-bot"; git config user.email "bot@omaju.kr"
+          git add tools/last-market.json && git commit -m "시세 점검 기록 [skip ci]" && git pull -q --rebase origin main && git push || true

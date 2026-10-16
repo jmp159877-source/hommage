@@ -270,7 +270,16 @@ def youtube_pick(query):
         import html
         return {"videoId": pick["id"]["videoId"], "title": html.unescape(pick["snippet"]["title"]), "channel": html.unescape(pick["snippet"]["channelTitle"]), "thumb": pick["snippet"]["thumbnails"].get("medium", {}).get("url", "")}
     except Exception as e:
-        print(f"[youtube] 사용 불가: {str(e)[:120]}", file=sys.stderr)
+        print(f"[youtube] 한도 바닥 → 검색 페이지로: {str(e)[:80]}", file=sys.stderr)
+        try:
+            sys.path.insert(0, HERE)
+            from yt_scrape import scrape
+            items = scrape(query)
+            if items:
+                pick = items[datetime.date.today().toordinal() % min(4, len(items))]
+                return {"videoId": pick["id"]["videoId"], "title": pick["snippet"]["title"], "channel": pick["snippet"]["channelTitle"], "thumb": f"https://i.ytimg.com/vi/{pick['id']['videoId']}/mqdefault.jpg"}
+        except Exception as e2:
+            print(f"[youtube] 검색 페이지도 실패: {str(e2)[:80]}", file=sys.stderr)
         return None
 
 

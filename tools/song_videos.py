@@ -10,6 +10,9 @@ def search(q):
     with urllib.request.urlopen(f"https://www.googleapis.com/youtube/v3/search?{p}", timeout=30) as r:
         return json.load(r).get("items", [])
 
+sys.path.insert(0, HERE)
+from yt_scrape import scrape
+
 def norm(s): return re.sub(r"[\s\W_]+", "", s or "").lower()
 
 songs = json.load(open(os.path.join(HERE, "songs.json"), encoding="utf-8"))
@@ -25,11 +28,19 @@ for y in sorted([k for k in songs if not k.startswith("_")], key=prio):
     for t, a in songs[y]:
         if f"{t}|{a}" not in have and (t, a) not in seen: seen.add((t, a)); todo.append((t, a))
 print("남은 노래", len(todo))
-for t, a in todo[:80]:
-    try:
-        items = search(f"{a} {t}")
-    except Exception as e:
-        print("검색 실패", t, e); break
+api_ok = True
+for t, a in todo[:400]:
+    items = None
+    if api_ok:
+        try:
+            items = search(f"{a} {t}")
+        except Exception as e:
+            print("유튜브 한도 바닥 → 검색 페이지로 계속:", str(e)[:80]); api_ok = False
+    if items is None:
+        try:
+            items = scrape(f"{a} {t}")
+        except Exception as e:
+            print("검색 실패", t, e); continue
     bad = ("커버", "cover", "노래방", "karaoke", "반주", "mr", "inst", "lesson", "강좌", "리액션", "reaction", "shorts")
     def score(it):
         sn = it["snippet"]; ti = sn["title"].lower(); s = 0
