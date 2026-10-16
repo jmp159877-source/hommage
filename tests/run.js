@@ -57,7 +57,20 @@ srv.listen(0, '127.0.0.1', async () => {
       await p.evaluate(() => { const m = document.getElementById('modal-root'); if (m) m.innerHTML = ''; }); await p.evaluate(() => window.omajuNav('g4')); await wait(p, 800);
       let stay = true; for (let k = 0; k < 2; k++) { await p.evaluate(() => document.querySelector('.nb-mic').click()); await wait(p, 900); await p.evaluate(() => document.getElementById('nb-done').click()); await wait(p, 700);
         await p.evaluate(() => { const s = document.getElementById('nb-save'); s && s.click(); }); await wait(p, 1200); stay = stay && (await p.evaluate(() => location.hash)) === '#g4'; }
-      ok(`수첩 말로 메모 저장 뒤 머묾 (${ua ? '안드로이드' : 'PC'})`, stay && !errs.length, errs.join(' / ')); await c.close();
+      ok(`수첩 말로 메모 저장 뒤 머묾 (${ua ? '안드로이드' : 'PC'})`, stay && !errs.length, errs.join(' / '));
+      if (!ua) { // 적어 둔 것 고치기 → 지우기 (실제로 눌러서)
+        const r = await p.evaluate(async () => { const W = ms => new Promise(r => setTimeout(r, ms)); const out = {};
+          const it = document.querySelector('#nb-memo .nb-item'); out.label = !!(it && it.querySelector('.nb-edit')) && !!document.querySelector('#nb-memo .nb-tip');
+          it.click(); await W(500); out.editTitle = (document.querySelector('#modal h2') || {}).textContent || '';
+          document.getElementById('nb-text').value = '고친 메모 내용'; document.getElementById('nb-save').click(); await W(1000);
+          out.edited = [...document.querySelectorAll('#nb-memo .nb-txt')].some(x => x.textContent === '고친 메모 내용'); out.hashAfterEdit = location.hash;
+          const before = document.querySelectorAll('#nb-memo .nb-item').length;
+          [...document.querySelectorAll('#nb-memo .nb-item')].find(x => x.textContent.includes('고친 메모 내용')).click(); await W(500);
+          document.getElementById('nb-del').click(); await W(200); out.ask = !!document.getElementById('nb-del-yes'); document.getElementById('nb-del-yes').click(); await W(1000);
+          out.deleted = document.querySelectorAll('#nb-memo .nb-item').length === before - 1 && ![...document.querySelectorAll('#nb-memo .nb-txt')].some(x => x.textContent === '고친 메모 내용'); out.hashAfterDel = location.hash; return out; });
+        ok('수첩 고치기·지우기', r.label && /고치기/.test(r.editTitle) && r.edited && r.ask && r.deleted && r.hashAfterEdit === '#g4' && r.hashAfterDel === '#g4', JSON.stringify(r));
+      }
+      await c.close();
     }
     // 5) 인사 카드: 하루 4장 서로 다른 디자인 + 보내기 그림 6가지
     { const c = await ctx(false); const p = await c.newPage(); await p.goto(base + '/index.html#g1'); await wait(p, 1500);

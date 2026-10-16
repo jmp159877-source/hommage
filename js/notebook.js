@@ -121,7 +121,7 @@ function editor(kind, n = {}, id = null) {
       if (!data.text) return msg('내용을 적어 주세요.');
       try { if (isNew) await DB.addNote(data); else await DB.updateNote(id, data); closeModal(); toast(isNew ? '적어 두었습니다.' : '고쳤습니다.'); await refresh(); } catch (e) { msg(e.message); }
     };
-    if (!isNew) $('nb-del').onclick = async () => { if (!confirm('정말 지울까요?')) return; await DB.deleteNote(id); closeModal(); toast('지웠습니다.'); await refresh(); };
+    if (!isNew) $('nb-del').onclick = () => { const acts = $('nb-del').parentElement; acts.innerHTML = '<p class="nb-ask">정말 지울까요? 지우면 되돌릴 수 없습니다.</p><button type="button" class="btn line danger" id="nb-del-yes">지우기</button><button type="button" class="btn green" id="nb-del-no">그만두기</button>'; $('nb-del-no').onclick = () => { closeModal(); editor(kind, n, id); }; $('nb-del-yes').onclick = async () => { try { await DB.deleteNote(id); closeModal(); toast('지웠습니다.'); await refresh(); } catch (e) { msg(e.message); } }; };
     $('nb-text').focus();
   });
   const msg = t => { $('nb-msg').textContent = t; };
@@ -152,7 +152,7 @@ function renderCal() {
   const EN = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   el.innerHTML = `<div class="cal-head"><button type="button" class="cal-nav" data-calm="-1" aria-label="지난달">‹</button><div class="cal-title"><b>${calM + 1}</b><span><em>${EN[calM]}</em><small>${calY}</small></span></div><button type="button" class="cal-nav" data-calm="1" aria-label="다음 달">›</button></div>
     <div class="cal-wk">${WD.map((w, i) => `<span class="${i === 0 ? 'sun' : i === 6 ? 'sat' : ''}">${w}</span>`).join('')}</div><div class="cal-grid">${cells}</div>
-    <div class="cal-day"><p class="cal-day-h">${fmtDate(calSel)}${calSel === today ? ' · 오늘' : ''}</p>${list.length ? list.map(({ n, t, c }) => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when"><i class="cal-tag">${t}</i>${n.time ? ' · ' + fmtTime(n.time) : ''}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '<p class="nb-empty">이날 적어 둔 것이 없습니다.</p>'}</div>`;
+    <div class="cal-day"><p class="cal-day-h">${fmtDate(calSel)}${calSel === today ? ' · 오늘' : ''}</p>${list.length ? list.map(({ n, t, c }) => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when"><i class="cal-tag">${t}</i>${n.time ? ' · ' + fmtTime(n.time) : ''}</span><span class="nb-txt">${esc(n.text)}</span><span class="nb-edit" aria-hidden="true">고치기</span></button>`).join('') : '<p class="nb-empty">이날 적어 둔 것이 없습니다.</p>'}</div>`;
 }
 window.addEventListener('hashchange', () => { if (location.hash === '#g4' && DB.currentUser()) refresh(); });
 document.addEventListener('click', e => {
@@ -165,13 +165,15 @@ document.addEventListener('click', e => {
 function render() {
   renderCal();
   const by = k => notes.filter(n => n.kind === k);
-  const memo = by('memo'); $('nb-memo').innerHTML = memo.length ? memo.map(n => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when">${fmtDate(todayKey(new Date(n.createdAt || Date.now())))}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '<p class="nb-empty">아직 메모가 없습니다. 위의 "말로 적기"를 눌러 보세요.</p>';
+  const memo = by('memo'); $('nb-memo').innerHTML = memo.length ? memo.map(n => `<button type="button" class="nb-item" data-id="${n.id}"><span class="nb-when">${fmtDate(todayKey(new Date(n.createdAt || Date.now())))}</span><span class="nb-txt">${esc(n.text)}</span><span class="nb-edit" aria-hidden="true">고치기</span></button>`).join('') : '<p class="nb-empty">아직 메모가 없습니다. 위의 "말로 적기"를 눌러 보세요.</p>';
   const ev = by('event').filter(n => n.date >= todayKey()).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
   const past = by('event').filter(n => n.date < todayKey()).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
-  $('nb-event').innerHTML = (ev.length ? ev.map(n => `<button type="button" class="nb-item ${n.date === todayKey() ? 'today' : ''}" data-id="${n.id}"><span class="nb-when">${n.date === todayKey() ? '오늘' : fmtDate(n.date)}${n.time ? ' · ' + fmtTime(n.time) : ''}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '<p class="nb-empty">다가오는 일정이 없습니다.</p>')
-    + (past.length ? `<p class="nb-sub">지난 일정</p>` + past.map(n => `<button type="button" class="nb-item past" data-id="${n.id}"><span class="nb-when">${fmtDate(n.date)}</span><span class="nb-txt">${esc(n.text)}</span></button>`).join('') : '');
+  $('nb-event').innerHTML = (ev.length ? ev.map(n => `<button type="button" class="nb-item ${n.date === todayKey() ? 'today' : ''}" data-id="${n.id}"><span class="nb-when">${n.date === todayKey() ? '오늘' : fmtDate(n.date)}${n.time ? ' · ' + fmtTime(n.time) : ''}</span><span class="nb-txt">${esc(n.text)}</span><span class="nb-edit" aria-hidden="true">고치기</span></button>`).join('') : '<p class="nb-empty">다가오는 일정이 없습니다.</p>')
+    + (past.length ? `<p class="nb-sub">지난 일정</p>` + past.map(n => `<button type="button" class="nb-item past" data-id="${n.id}"><span class="nb-when">${fmtDate(n.date)}</span><span class="nb-txt">${esc(n.text)}</span><span class="nb-edit" aria-hidden="true">고치기</span></button>`).join('') : '');
   const an = by('anniv').map(n => ({ n, d: nextDate(n) })).filter(x => x.d).sort((a, b) => a.d - b.d);
-  $('nb-anniv').innerHTML = an.length ? an.map(({ n, d }) => { const left = daysUntil(d); return `<button type="button" class="nb-item ${left === 0 ? 'today' : ''}" data-id="${n.id}"><span class="nb-when">${n.lunar ? '음력 ' : ''}${n.month}월 ${n.day}일 → ${d.getMonth() + 1}월 ${d.getDate()}일 (${WD[d.getDay()]})${left === 0 ? ' · 오늘' : left === 1 ? ' · 내일' : ` · ${left}일 남음`}</span><span class="nb-txt">${esc(n.text)}</span></button>`; }).join('') : '<p class="nb-empty">아직 없습니다. 가족 생일부터 하나 적어 보세요.</p>';
+  $('nb-anniv').innerHTML = an.length ? an.map(({ n, d }) => { const left = daysUntil(d); return `<button type="button" class="nb-item ${left === 0 ? 'today' : ''}" data-id="${n.id}"><span class="nb-when">${n.lunar ? '음력 ' : ''}${n.month}월 ${n.day}일 → ${d.getMonth() + 1}월 ${d.getDate()}일 (${WD[d.getDay()]})${left === 0 ? ' · 오늘' : left === 1 ? ' · 내일' : ` · ${left}일 남음`}</span><span class="nb-txt">${esc(n.text)}</span><span class="nb-edit" aria-hidden="true">고치기</span></button>`; }).join('') : '<p class="nb-empty">아직 없습니다. 가족 생일부터 하나 적어 보세요.</p>';
+  // 적어 둔 것이 있으면 '누르면 고치거나 지울 수 있어요' 한 줄
+  ['nb-memo', 'nb-event', 'nb-anniv'].forEach(k => { const el = $(k); if (el && el.querySelector('.nb-item')) el.insertAdjacentHTML('afterbegin', '<p class="nb-tip">적어 둔 것을 누르면 고치거나 지울 수 있어요.</p>'); });
   // 첫 화면 오늘 줄
   const tl = $('today-line'); if (!tl) return;
   const todays = [...ev.filter(n => n.date === todayKey()).map(n => (n.time ? fmtTime(n.time) + ' ' : '') + n.text), ...an.filter(x => daysUntil(x.d) === 0).map(x => x.n.text), ...an.filter(x => daysUntil(x.d) === 1).map(x => '내일 ' + x.n.text)];

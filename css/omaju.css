@@ -1388,3 +1388,12 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 .gcard.paper > q, .gcard.paper > .gp-leaf, .gcard.paper > .gp-rule, .gcard.paper > .gp-brush, .gcard.paper > .gp-foil { top: auto !important; left: auto !important; right: auto !important; bottom: auto !important; }
 .gcard.paper q { color: inherit !important; font-size: min(1.2rem, 5.2vw) !important; line-height: 1.75 !important; }
 .gcard.paper .gp-leaf { width: 44px !important; }
+/* 수첩: 줄마다 '고치기' 표시 + 안내 한 줄 + 창 안 지우기 확인 */
+.nb-item { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: center; }
+.nb-item .nb-when, .nb-item .nb-txt { grid-column: 1; min-width: 0; }
+.nb-item .nb-edit { grid-column: 2; grid-row: 1 / span 2; font-size: min(0.86rem, 3.6vw); color: #8A6D2C; white-space: nowrap; border-bottom: 1px solid rgba(201,162,74,0.6); padding-bottom: 1px; }
+.nb-tip { margin: 2px 0 6px; font-size: 0.86rem; color: #8a8173; }
+.nb-ask { width: 100%; margin: 0 0 10px; font-size: 1.02rem; color: #3a2e2a; text-align: center; }
+/* 큰 글씨: '말로 적기'·'손으로 적기'가 두 줄로 갈라지지 않게, 짧은 안내창도 한 줄로 */
+.nb-mic, .nb-hand { white-space: nowrap; min-width: 0; font-size: min(1.1rem, 4.6vw) !important; padding-left: 10px !important; padding-right: 10px !important; }
+.toast { width: max-content; max-width: 88vw; font-size: min(0.95rem, 4.2vw) !important; word-break: keep-all; text-align: center; }
