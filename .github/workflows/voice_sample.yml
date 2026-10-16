@@ -1,5 +1,7 @@
 name: 오프닝 목소리 견본
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   voice:
     runs-on: ubuntu-latest
@@ -9,7 +11,9 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 tools/voice_sample.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: voice
-          path: out_voice/
+      - name: 견본 가지에 올리기
+        if: always()
+        run: |
+          mkdir -p /tmp/v && cp -r out_voice/* /tmp/v/ || true
+          git config user.name omaju-bot; git config user.email bot@omaju.kr
+          git checkout --orphan voice-samples && git rm -rqf . && cp /tmp/v/* . && git add -A && git commit -qm "목소리 견본" && git push -f origin voice-samples

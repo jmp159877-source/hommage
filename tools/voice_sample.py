@@ -11,6 +11,8 @@ SCRIPT = {
 }
 VOICES = {'miso': ['Sulafat', 'Aoede', 'Achernar'], 'hangyeol': ['Achird', 'Algieba', 'Charon']}
 os.makedirs('out_voice', exist_ok=True)
+LOG = open('out_voice/log.txt', 'w')
+def say(*a): print(*a); LOG.write(' '.join(map(str, a)) + '\n'); LOG.flush()
 def tts(model, voice, text):
     body = {'contents': [{'parts': [{'text': STYLE + '\n\n' + text}]}],
             'generationConfig': {'responseModalities': ['AUDIO'], 'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}
@@ -23,9 +25,11 @@ for who, vs in VOICES.items():
     for v in vs:
         for m in MODELS:
             try: pcm = tts(m, v, SCRIPT[who])
-            except Exception as e: print('실패', m, v, str(e)[:200]); continue
+            except Exception as e:
+                det = e.read().decode()[:300] if hasattr(e, 'read') else ''
+                say('실패', m, v, str(e)[:200], det); continue
             fn = f'out_voice/{who}_{v}'
             with wave.open(fn + '.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
             subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', fn + '.wav', '-b:a', '96k', fn + '.mp3'], check=True); os.remove(fn + '.wav')
-            print('완료', who, v, m, round(len(pcm) / 48000, 1), '초'); ok += 1; break
-sys.exit(0 if ok else 1)
+            say('완료', who, v, m, round(len(pcm) / 48000, 1), '초'); ok += 1; break
+say('합계', ok)
