@@ -17,10 +17,12 @@ async function loadDay(k) {
 
 export async function init({ modal, closeModal, toast, DB }) {
   const sec = $('opening'); if (!sec) return;
-  const now = new Date(); let data = null;
-  for (let back = 0; back < 3 && !data; back++) { const d = new Date(now); d.setDate(d.getDate() - back); data = await loadDay(key(d)); }
+  // 하루는 새벽 5시에 바뀐다: 자정~5시는 아직 '어제 저녁'이므로 어제 날짜의 저녁 인사를 튼다.
+  const now = new Date(); const h = now.getHours(); const base = new Date(now); if (h < 5) base.setDate(base.getDate() - 1);
+  let data = null;
+  for (let back = 0; back < 3 && !data; back++) { const d = new Date(base); d.setDate(d.getDate() - back); data = await loadDay(key(d)); }
   if (!data || !data.slots) return;
-  const h = now.getHours(); const slot = h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 17 ? 'noon' : 'evening';
+  const slot = h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 17 ? 'noon' : 'evening';
   const S = data.slots[slot] || data.slots.morning; if (!S || !S.segs || !S.segs.length) return;
   const period = slot === 'evening' ? 'eve' : 'mor';
   const host = data.host === 'hangyeol' ? 'hangyeol' : 'miso';

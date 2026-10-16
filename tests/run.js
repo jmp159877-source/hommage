@@ -181,6 +181,14 @@ srv.listen(0, '127.0.0.1', async () => {
       const fb = await p2.evaluate(() => { const a = window.omajuOpening.audio; return { playing: !a.paused, src: a.currentSrc, toast: document.getElementById('toast').textContent }; });
       ok('오프닝: 첫 곳에서 파일 못 받아도 한 번 눌러 재생', fb.playing && /jsdelivr/.test(fb.src) && !/다시 눌러/.test(fb.toast), JSON.stringify(fb));
       await p2.close();
+      // 자정~새벽 5시는 '어제 저녁' 오프닝 (토요일 0시 30분이면 금요일 저녁 인사)
+      const p3 = await c.newPage(); const asked = [];
+      await p3.addInitScript(() => { const R = Date; const F = new R(2026, 9, 17, 0, 30, 0).getTime(); const D = function (...a) { return a.length ? new R(...a) : new R(F); }; D.now = () => F; D.parse = R.parse; D.UTC = R.UTC; D.prototype = R.prototype; window.Date = D; });
+      p3.on('request', r => { if (/opening\/.*\.json/.test(r.url())) asked.push(r.url()); });
+      await p3.goto(base + '/index.html'); await wait(p3, 2000);
+      const mid = await p3.evaluate(() => ({ who: document.getElementById('opn-who').textContent, date: document.getElementById('opn-date').textContent }));
+      ok('오프닝: 자정 넘어 새벽 5시 전엔 어제 저녁 인사', /2026-10-16\.json/.test(asked[0] || '') && /저녁/.test(mid.who), JSON.stringify({ asked: asked[0], mid }));
+      await p3.close();
       await c.close(); }
   } catch (e) { ok('시험 실행', false, e.message); }
   await b.close(); srv.close();
