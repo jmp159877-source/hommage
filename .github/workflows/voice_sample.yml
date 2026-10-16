@@ -1,0 +1,15 @@
+name: 오프닝 목소리 견본
+on: workflow_dispatch
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 목소리 만들기
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 tools/voice_sample.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice
+          path: out_voice/
