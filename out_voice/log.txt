@@ -1,0 +1,3 @@
+전체 miso gemini-3.1-flash-tts-preview 102.2 일치 0.99 통과 좋은 아침입니다, 미소입니다. 금요일이에요. 벌써 한 주의 반은 이긴 셈이죠. 오늘은 어깨 한번 쫙 펴고 시
+실패 hangyeol gemini-3.1-flash-tts-preview 'content'
+전체 hangyeol gemini-2.5-pro-preview-tts 87.4 일치 1.0 통과 오늘 하루도 수고 많으셨습니다. 한결입니다. 토요일 저녁이네요. 오늘은 나한테 좋은 거 하나 해주기로 해요.
