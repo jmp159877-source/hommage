@@ -6,6 +6,7 @@ on:
     - cron: '0 16 * * *'   # 01:00 KST (보강)
     - cron: '0 18 * * *'   # 03:00 KST (보강)
     - cron: '0 21 * * *'   # 06:00 KST (보강)
+    - cron: '40 7 * * *'   # 16:40 KST (AI 하루 한도가 풀린 뒤 빠진 것 채우기)
   workflow_dispatch:
     inputs:
       date:

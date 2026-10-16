@@ -7,5 +7,9 @@ date, patch = os.environ["DATE"], json.loads(os.environ["PATCH"])
 firestore().collection("daily").document(date).set(patch, merge=True)
 p = f"daily/{date}.json"
 d = json.load(open(p)) if os.path.exists(p) else {}
-d.update(patch); json.dump(d, open(p, "w"), ensure_ascii=False, indent=1)
+def deep(a, b):
+    for k, v in b.items():
+        if isinstance(v, dict) and isinstance(a.get(k), dict): deep(a[k], v)
+        else: a[k] = v
+deep(d, patch); json.dump(d, open(p, "w"), ensure_ascii=False, indent=1)
 print("고침", date, list(patch))

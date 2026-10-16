@@ -397,23 +397,33 @@ def gen_culture(d):
 [한 문장] "{quote["text"]}" — {quote["who"]}
 - quote_note: 출처 이야기 한 문장과 오늘 하루에 어떻게 쓸지 한 문장.
 형식: {{"poem_bg":"...","poem_words":[["",""]],"poem_note":"...","painting_about":"...","painting_points":["","",""],"painting_artist":"...","quote_note":"..."}}""")
-    b = gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일, {season}.
+    try:
+        b = _gen_culture_b(d, season, bible, dharma)
+    except Exception as e:
+        print(f"[culture] 에세이·유머 생성 실패 (다음 실행에서 다시): {str(e)[:80]}", file=sys.stderr); b = {}
+    return _culture_out(d, n, data, poem, quote, bible, dharma, paint, a, b)
+
+
+def _gen_culture_b(d, season, bible, dharma):
+    return gemini(f"""오늘은 {d.year}년 {d.month}월 {d.day}일, {season}.
 1) essay: '오늘의 에세이' 한 편. 잡지 칼럼처럼 결이 있는 문장으로, 흔한 계절 찬가나 교훈 대신 작고 구체적인 장면 하나에서 시작할 것. 지금 계절의 풍경·소리·냄새로 시작하는 1인칭 수필, 세 문단(각 120~180자), 제목 12자 이내. 교훈·설교 금지. 담백하고 따뜻하게.
 2) bible_note: 다음 성경 구절에 대한 짧은 묵상 두 문장(70~120자). 특정 교파 주장 없이 부드럽게. 구절: {bible["ref"]} "{bible["text"]}"
 3) dharma_note: 다음 불교 가르침에 대한 쉬운 풀이 두 문장(70~120자). 출처: {dharma["src"]} "{dharma["text"]}"
 4) humor: '오늘의 유머' 하나. 40~60대 어른이 피식 웃을 만한 재치 있는 짧은 이야기(3~5문장)와 마지막 반전 한마디. 부부·직장·명절·단톡방·건강검진·운동·스마트폰·손주 등 생활 속 장면에서 끌어낼 것. 어린이용 말장난·넌센스 퀴즈(예: '아몬드가 죽으면')는 금지. 늙음·외모·성별·지역 비하, 정치, 야한 이야기 금지. 남의 책·방송 대사를 그대로 옮기지 말 것. kind는 "짧은 이야기".
 형식: {{"essay": {{"title":"...","paras":["...","...","..."]}}, "bible_note":"...", "dharma_note":"...", "humor": {{"kind":"넌센스 퀴즈 또는 짧은 이야기","title":"이야기면 제목(8자 이내), 퀴즈면 빈 문자열","text":"문제 또는 이야기(줄바꿈 \\n)","punch":"정답 또는 마지막 한마디"}}}}""")
+
+
+def _culture_out(d, n, data, poem, quote, bible, dharma, paint, a, b):
     out = {
         "poem": {**poem, "bg": a.get("poem_bg", "").strip(), "words": [w for w in a.get("poem_words", []) if isinstance(w, list) and len(w) == 2 and w[0]], "note": a.get("poem_note", "").strip()},
         "quote": {**quote, "note": a.get("quote_note", "").strip()},
-        "bible": {**bible, "note": b.get("bible_note", "").strip()},
-        "dharma": {**dharma, "note": b.get("dharma_note", "").strip()},
     }
+    if b.get("bible_note"): out["bible"] = {**bible, "note": b["bible_note"].strip()}
+    if b.get("dharma_note"): out["dharma"] = {**dharma, "note": b["dharma_note"].strip()}
     h = b.get("humor") or {}
     if h.get("text") and h.get("punch"):
         out["humor"] = {k: str(h.get(k, "")).strip() for k in ("kind", "title", "text", "punch")}
-    else:
-        out["humor"] = data["humor"][(n * 11) % len(data["humor"])]
+    # AI 유머가 없으면 비워 둠 → 다음 실행에서 다시 만들고, 그동안 화면은 엄선 목록에서 보여 줌
     e = b.get("essay") or {}
     if e.get("title") and len(e.get("paras", [])) >= 2:
         out["essay"] = {"title": e["title"].strip(), "paras": [x.strip() for x in e["paras"]], "by": "오마주 편집실"}
@@ -432,6 +442,17 @@ def firestore():
     info = json.loads(raw)
     cred = service_account.Credentials.from_service_account_info(info)
     return fs.Client(project=info["project_id"], credentials=cred)
+
+
+# 코너마다 꼭 있어야 하는 부분 — 하나라도 없으면 '덜 됨'으로 보고 다시 만든다
+NEED = {"culture": ("essay", "humor", "bible", "dharma", "poem"), "fortune": ("total",), "follow": tuple(k for k, _, _ in FOLLOW)}
+def complete(name, v):
+    if not v: return False
+    if name == "follow":
+        return all(isinstance(v.get(k), dict) and v[k].get("videoId") for k in NEED["follow"])
+    if name == "fortune":
+        return isinstance(v, dict) and all(isinstance(x, dict) and x.get("total") for x in v.values()) if isinstance(v, dict) else bool(v)
+    return all(v.get(k) for k in NEED.get(name, ())) if isinstance(v, dict) else bool(v)
 
 
 def main():
@@ -457,7 +478,7 @@ def main():
     for name, fn in [("greetings", gen_greetings), ("fortune", gen_fortune), ("era", gen_era), ("meal", gen_meal), ("quiz", gen_quiz), ("story", gen_story), ("follow", gen_follow), ("phrase", gen_phrase), ("culture", gen_culture), ("outing", gen_outing)]:
         if only and name not in only:
             continue
-        if not force and have.get(name):  # 이미 만든 코너는 다시 만들지 않음 (AI 한도 아끼기). 실패한 코너만 다음 실행에서 채움
+        if not force and complete(name, have.get(name)):  # 다 갖춘 코너는 다시 만들지 않음 (AI 한도 아끼기). 빠지거나 덜 된 코너만 다음 실행에서 채움
             print(f"[skip] {name} 이미 있음"); continue
         try:
             out[name] = fn(d)
