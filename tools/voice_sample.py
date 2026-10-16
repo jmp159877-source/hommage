@@ -14,7 +14,7 @@ os.makedirs('out_voice', exist_ok=True)
 LOG = open('out_voice/log.txt', 'w')
 def say(*a): print(*a); LOG.write(' '.join(map(str, a)) + '\n'); LOG.flush()
 def tts(model, voice, text):
-    body = {'contents': [{'parts': [{'text': STYLE + '\n\n' + text}]}],
+    body = {'contents': [{'parts': [{'text': '[연출 지시 — 소리 내어 읽지 말 것] ' + STYLE + '\n\n[읽을 대본 — 이 부분만 읽기]\n' + text}]}],
             'generationConfig': {'responseModalities': ['AUDIO'], 'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}
     req = urllib.request.Request(f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={KEY}',
                                  data=json.dumps(body).encode(), headers={'Content-Type': 'application/json'})
@@ -30,5 +30,7 @@ for who, vs in VOICES.items():
                 say('실패', m, v, str(e)[:200], det); continue
             fn = f'out_voice/{who}_{v}'
             with wave.open(fn + '.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
-            say('완료', who, v, m, round(len(pcm) / 48000, 1), '초'); ok += 1; break
+            sec = round(len(pcm) / 48000, 1)
+            if sec > 40: say('지시문까지 읽음', who, v, sec); continue
+            say('완료', who, v, m, sec, '초'); ok += 1; break
 say('합계', ok)
