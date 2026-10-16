@@ -400,7 +400,7 @@ def _norm(t):
     return re.sub(r"[\s·'\"「」『』]", "", re.sub(r"\s*\(.*?\)", "", t or ""))
 
 
-def wiki_find(q, year=None, text=""):
+def wiki_find(q, year=None, text="", title_hint=""):
     """위키백과 검색으로 사진 있는 문서 찾기. 단, 문서 이름이 소식 글(text) 안에 실제로 나오는 것만 — 엉뚱한 사람·사진 막기"""
     body = _norm(text)
     for lang in ("ko", "en"):
@@ -415,20 +415,30 @@ def wiki_find(q, year=None, text=""):
                 words = [w for w in re.split(r"\s+", re.sub(r"\s*\(.*?\)", "", h["title"])) if w and not re.fullmatch(r"\d+년?", w)]
                 if not words or (body and not all(_norm(w) in body for w in words)) or len(_norm(h["title"])) < 2:
                     continue
+                # 한 낱말짜리 문서('자동차' 같은 넓은 말)는 소식 제목에 그 낱말이 있을 때만
+                if len(words) == 1 and _norm(words[0]) not in _norm(title_hint or q):
+                    continue
                 time.sleep(0.4)
                 im = wiki_image(f"{lang}:{h['title']}")
-                if im: return im
+                if im and photo_ok(im): return im
             time.sleep(0.4)
     return None
+
+
+BAD_PIC = re.compile(r"logo|로고|\.svg|map|지도|flag|국기|깃발|emblem|icon|interface|screenshot|screen|diagram|chart|seal|coat_of_arms", re.I)
+def photo_ok(im):
+    """잡지에 실을 만한 사진만: 로고·지도·깃발·화면 캡처·아이콘 같은 그림은 뺀다"""
+    name = urllib.parse.unquote((im.get("thumb") or "").split("?")[0].split("/")[-1])
+    return bool(name) and not BAD_PIC.search(name)
 
 
 def era_photo(title, ref, year, desc=""):
     """그해 오늘 소식 사진: AI가 준 위키 문서 → 없거나 사진이 없으면 소식 글로 위키 검색(글에 나오는 문서만)"""
     im = wiki_image(ref) if re.match(r"^(ko|en):.+", ref or "") else None
-    if im: return im
+    if im and photo_ok(im): return im
     text = f"{title} {desc}"
     key = re.sub(r"\s*(개막|종영|소식|열기|시작|인수|출시)$", "", title)
-    return wiki_find(key, year, text) or wiki_find(re.sub(r"^\d+월 \d+일,\s*", "", desc)[:40], None, text)
+    return wiki_find(key, year, text, title) or wiki_find(re.sub(r"^\d+월 \d+일,\s*", "", desc)[:40], None, text, title)
 
 
 def gen_culture(d):
