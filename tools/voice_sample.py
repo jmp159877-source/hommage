@@ -1,4 +1,4 @@
-# 오프닝 진행자 목소리 견본 만들기 (Gemini TTS) — 결과는 out_voice/*.mp3
+# 오프닝 진행자 목소리 견본 만들기 (Gemini TTS) — 결과는 out_voice/*.wav
 import os, json, base64, urllib.request, wave, subprocess, sys
 KEY = os.environ['GEMINI_API_KEY']
 MODELS = ['gemini-3.1-flash-tts-preview', 'gemini-2.5-pro-preview-tts', 'gemini-2.5-flash-preview-tts']
@@ -30,6 +30,5 @@ for who, vs in VOICES.items():
                 say('실패', m, v, str(e)[:200], det); continue
             fn = f'out_voice/{who}_{v}'
             with wave.open(fn + '.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
-            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', fn + '.wav', '-b:a', '96k', fn + '.mp3'], check=True); os.remove(fn + '.wav')
             say('완료', who, v, m, round(len(pcm) / 48000, 1), '초'); ok += 1; break
 say('합계', ok)
