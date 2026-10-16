@@ -140,7 +140,7 @@ srv.listen(0, '127.0.0.1', async () => {
       const E = (fn, a) => p.evaluate(fn, a);
       const st = await E(() => { const s = document.getElementById('opening'); const a = document.getElementById('opn-audio');
         return { shown: !!s && !s.hidden && s.offsetHeight > 200, name: document.getElementById('opn-name').textContent, cap: document.getElementById('opn-cap').textContent, next: document.getElementById('opn-next').textContent,
-          silent: a.paused && !a.getAttribute('src'), play: !document.getElementById('opn-play').hidden, heading: (document.querySelector('.opn-toc em') || {}).textContent,
+          silent: a.paused && !a.autoplay && a.currentTime === 0, play: !document.getElementById('opn-play').hidden, heading: (document.querySelector('.opn-toc em') || {}).textContent,
           before: (() => { const o = document.getElementById('opening'), t = document.querySelector('.toc-c:not(.opn-toc)'); return !!(o && t && (o.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING)); })() }; });
       ok('오프닝: CONTENTS 위에 보임·이름표·자막·내일 예고', st.shown && st.before && /Opening/i.test(st.heading) && /미소/.test(st.name) && st.cap.length > 3 && /사연/.test(st.next), JSON.stringify(st));
       ok('오프닝: 소리 저절로 안 남', st.silent && st.play);
@@ -173,6 +173,14 @@ srv.listen(0, '127.0.0.1', async () => {
       await E(() => { document.getElementById('opn-story').value = '오십에 처음 혼자 떠난 여행에서 생긴 일입니다. 시험 사연.'; document.getElementById('opn-story-go').click(); }); await wait(p, 900);
       const sent = await E(() => /도착/.test(document.getElementById('toast').textContent) && !document.getElementById('opn-story'));
       ok('오프닝: 사연 보내기 (로그인 안내 → 적어서 보냄)', askLogin && form && sent && !errs.length, JSON.stringify({ askLogin, form, sent, errs }));
+      await p.close();
+      // 첫 곳(raw)에서 목소리 파일을 못 받아도 한 번 눌러 바로 재생되는지 (두 번째 곳으로 저절로 바꿈)
+      const p2 = await c.newPage(); await p2.route(/raw\.githubusercontent\.com\/.*\.mp3/, r => r.fulfill({ status: 404, body: 'no' }));
+      await p2.goto(base + '/index.html'); await wait(p2, 2000); await p2.evaluate(() => document.getElementById('opening').scrollIntoView({ block: 'center' })); await wait(p2, 300);
+      await p2.click('#opn-play'); await wait(p2, 1500);
+      const fb = await p2.evaluate(() => { const a = window.omajuOpening.audio; return { playing: !a.paused, src: a.currentSrc, toast: document.getElementById('toast').textContent }; });
+      ok('오프닝: 첫 곳에서 파일 못 받아도 한 번 눌러 재생', fb.playing && /jsdelivr/.test(fb.src) && !/다시 눌러/.test(fb.toast), JSON.stringify(fb));
+      await p2.close();
       await c.close(); }
   } catch (e) { ok('시험 실행', false, e.message); }
   await b.close(); srv.close();

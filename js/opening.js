@@ -57,10 +57,20 @@ export async function init({ modal, closeModal, toast, DB }) {
   syncLeaf(); addEventListener('resize', syncLeaf); if (document.fonts) document.fonts.ready.then(syncLeaf);
 
   const setCtrl = playing => { $('opn-ctrl').textContent = playing ? '잠시 멈춤' : '이어 듣기'; };
+  const playBtn = $('opn-play'), playLabel = playBtn.querySelector('span');
+  // 목소리 파일은 대본(JSON)을 준 곳(raw)에서 먼저 받는다. jsDelivr는 그날 새 파일이 몇 시간 늦게 잡혀 첫 재생이 실패하던 원인.
+  // 눌러야만 소리가 나되, 파일은 미리 받아 두어 한 번에 재생되게 한다(preload 만으로는 소리가 나지 않음).
+  const bases = [RAW, CDN]; let srcI = 0; const setSrc = () => { au.src = bases[srcI] + S.audio; };
+  au.preload = 'auto'; setSrc();
+  const onPlaying = () => { started = true; playLabel.textContent = '▶ 소리 켜고 듣기'; playBtn.hidden = true; $('opn-ctrl').hidden = false; setCtrl(true); };
+  const fail = () => { playLabel.textContent = '▶ 소리 켜고 듣기'; playBtn.disabled = false; toast && toast('소리를 켜지 못했습니다. 다시 눌러 주세요.'); };
   const play = () => {
-    if (!started) { au.src = CDN + S.audio; started = true; au.onerror = () => { if (!au.src.startsWith(RAW)) { au.src = RAW + S.audio; au.play().catch(() => {}); } }; }
     if (au.ended) au.currentTime = 0;
-    au.play().then(() => { $('opn-play').hidden = true; $('opn-ctrl').hidden = false; setCtrl(true); }).catch(() => { toast && toast('소리를 켜지 못했습니다. 다시 눌러 주세요.'); });
+    playLabel.textContent = '준비하는 중…'; playBtn.disabled = true;
+    au.play().then(onPlaying).catch(() => {
+      // 첫 곳에서 못 받으면 같은 누름 안에서 다른 곳으로 바꿔 다시 시도
+      if (srcI + 1 < bases.length) { srcI++; setSrc(); au.load(); au.play().then(onPlaying).catch(fail); } else fail();
+    }).finally(() => { playBtn.disabled = false; });
   };
   const pause = () => { if (!au.paused) au.pause(); if (started && !au.ended) setCtrl(false); };
   $('opn-play').onclick = play;
