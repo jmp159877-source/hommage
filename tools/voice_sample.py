@@ -64,6 +64,22 @@ def tts(model, voice, text):
                                  data=json.dumps(body).encode(), headers={'Content-Type': 'application/json'})
     with urllib.request.urlopen(req, timeout=180) as r: d = json.load(r)
     return base64.b64decode(d['candidates'][0]['content']['parts'][0]['inlineData']['data'])
+if os.environ.get('WHOLE'):
+    # 한 사람 대본 전체를 한 번에 녹음 (요청 수를 줄임). 문장 사이는 쉼표 대신 줄바꿈 + '(쉼)'
+    for who, segs in SEG.items():
+        if not segs: continue
+        text = '\n'.join(t for _, t in segs)
+        prompt = ('[아래 설정과 연출은 소리 내어 읽지 말 것]\n' + PROFILE_ANCHOR[who] + '\n'
+                  '[연출] 첫인사는 단정하고 밝게. 사연은 아나운서가 청취자 사연을 읽어 주듯 차분하고 따뜻하게, 웃긴 대목은 미소를 머금고 뭉클한 대목은 살짝 천천히. '
+                  '마무리는 단정하고 따뜻하게. 줄이 바뀔 때마다 반 박자 쉬기. 과장 금지.\n\n[읽을 대본 — 이 부분만 읽기]\n' + text)
+        for m in ['gemini-3.1-flash-tts-preview', 'gemini-2.5-pro-preview-tts', 'gemini-2.5-flash-preview-tts']:
+            try: pcm = tts(m, VOICE[who], prompt)
+            except Exception as e: say('실패', who, m, str(e)[:90]); time.sleep(5); continue
+            ok, heard, ratio = check(KEY, pcm, text)
+            say('전체', who, m, round(len(pcm) / 48000, 1), '일치', ratio, '통과' if ok else '불일치', heard[:60])
+            with wave.open(f'out_voice/{who}_full_{m}.wav', 'wb') as w: w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
+            if ok: break
+    SEG = {}
 if os.environ.get('AUDITION'):
     for who, (vs, line) in AUDITION.items():
         for v in vs:

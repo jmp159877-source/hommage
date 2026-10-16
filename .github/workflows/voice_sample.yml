@@ -6,6 +6,10 @@ on:
         description: '다시 만들 조각 (예: miso_5,hangyeol_1)'
         required: false
         default: ''
+      whole:
+        description: '1이면 대본 전체 한 번에'
+        required: false
+        default: ''
       audition:
         description: '1이면 목소리 오디션'
         required: false
@@ -22,6 +26,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ONLY: ${{ inputs.only }}
           AUDITION: ${{ inputs.audition }}
+          WHOLE: ${{ inputs.whole }}
           PAUSE: '30'
         run: python3 tools/voice_sample.py
       - name: 견본 가지에 올리기
