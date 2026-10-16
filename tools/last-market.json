@@ -2,74 +2,102 @@
  "items": [
   {
    "label": "미국 달러",
-   "value": 1342.4,
+   "value": 1342.8,
    "unit": "원",
-   "change": -0.01,
+   "change": 0.02,
    "note": ""
   },
   {
    "label": "일본 엔 (100엔)",
-   "value": 850.56,
+   "value": 850.71,
+   "unit": "원",
+   "change": 0.17,
+   "note": ""
+  },
+  {
+   "label": "유로",
+   "value": 1507.56,
    "unit": "원",
    "change": 0.15,
    "note": ""
   },
   {
-   "label": "유로",
-   "value": 1507.52,
-   "unit": "원",
-   "change": 0.14,
-   "note": ""
-  },
-  {
    "label": "코스피",
-   "value": 5807.66,
+   "value": 5808.29,
    "unit": "",
-   "change": 4.56,
+   "change": 4.57,
    "note": ""
   },
   {
    "label": "코스닥",
-   "value": 806.2,
+   "value": 806.03,
    "unit": "",
-   "change": 5.96,
+   "change": 5.94,
    "note": ""
   },
   {
    "label": "금 1돈",
-   "value": 676125.0,
+   "value": 676050.0,
    "unit": "원",
-   "change": 0.7,
+   "change": 0.69,
    "note": "한국거래소 기준"
   },
   {
    "label": "은 1돈",
-   "value": 9377.0,
+   "value": 9381.0,
    "unit": "원",
-   "change": 1.94,
+   "change": 1.95,
    "note": "국제 시세 환산"
   },
   {
    "label": "비트코인",
-   "value": 111022000.0,
+   "value": 111150000.0,
    "unit": "원",
-   "change": 0.13,
+   "change": 0.24,
    "note": ""
   },
   {
    "label": "이더리움",
-   "value": 3305000.0,
+   "value": 3309000.0,
    "unit": "원",
-   "change": 0.24,
+   "change": 0.36,
    "note": ""
   }
  ],
- "updatedAt": "2026-10-16T14:01:50.337160+09:00",
+ "updatedAt": "2026-10-16T14:04:40.881837+09:00",
  "errors": [],
  "wx_seoul": {
-  "now": null,
-  "code": null,
-  "max": null,
-  "min": null
+  "kma_seamless": {
+   "now": null,
+   "code": null,
+   "max": null,
+   "min": null,
+   "hourly_max": null,
+   "hourly_min": null
+  },
+  "kma_ldps": {
+   "now": null,
+   "code": null,
+   "max": null,
+   "min": null,
+   "hourly_max": null,
+   "hourly_min": null
+  },
+  "kma_gdps": {
+   "now": null,
+   "code": null,
+   "max": null,
+   "min": null,
+   "hourly_max": null,
+   "hourly_min": null
+  },
+  "기본": {
+   "now": 22.0,
+   "code": 2,
+   "max": 22.6,
+   "min": 13.5,
+   "hourly_max": 22.6,
+   "hourly_min": 13.5
+  }
  }
 }
