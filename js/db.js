@@ -185,6 +185,15 @@ export async function reportComment(id) {
   await setDoc(r, { uid: me.uid, comment: id, ts: serverTimestamp() });
   await updateDoc(doc(db, 'comments', id), { reports: increment(1) });
 }
+// 오프닝 사연 보내기: 회원만, 1000자 안. 관리자만 읽는다.
+export async function sendStory(text) {
+  if (!me || !profile) throw new Error('로그인이 필요합니다.');
+  text = String(text || '').trim();
+  if (text.length < 10) throw new Error('조금만 더 자세히 적어 주세요.');
+  if (text.length > 1000) throw new Error('1000자 안으로 적어 주세요.');
+  if (BAD.some(w => text.includes(w))) throw new Error('고운 말로 다시 적어 주세요.');
+  await addDoc(collection(db, 'stories'), { uid: me.uid, nick: profile.nick, text, ts: serverTimestamp(), status: 'new' });
+}
 export async function deleteMyComment(id) { await deleteDoc(doc(db, 'comments', id)); }
 const BAD = ['시발', '씨발', '개새', '병신', '좆', '니미', '썅'];
 

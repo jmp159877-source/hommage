@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest?v=3">
 <link rel="icon" href="leaf.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="css/omaju.css?v=10161745b">
+<link rel="stylesheet" href="css/omaju.css?v=10162250">
 </head>
 <body>
 
@@ -48,6 +48,22 @@
 
   <main class="content">
     <div class="notice" id="notice" hidden><b>공지</b><span id="notice-text"></span></div>
+
+    <section class="opn" id="opening" aria-label="오늘의 오프닝" hidden>
+      <div class="toc toc-c opn-toc"><img class="tc-leaf" src="leaf.png" alt=""><em>Opening</em><img class="tc-leaf r" src="leaf.png" alt=""></div>
+      <p class="opn-sub"><span id="opn-date"></span><small id="opn-who"></small></p>
+      <div class="opn-frame" id="opn-frame">
+        <div class="opn-stage" id="opn-stage"></div>
+        <div class="opn-name" id="opn-name"></div>
+        <div class="opn-cap"><span id="opn-cap"></span></div>
+        <div class="opn-bar"><i id="opn-bar"></i></div>
+        <button type="button" class="opn-ctrl" id="opn-ctrl" hidden>잠시 멈춤</button>
+        <button type="button" class="opn-play" id="opn-play"><span>▶ 소리 켜고 듣기</span></button>
+      </div>
+      <div class="opn-next" id="opn-nextbox"><small>내일 예고</small><p id="opn-next"></p></div>
+      <p class="opn-note">사연은 오마주가 엮은 이야기입니다. <button type="button" class="opn-send" id="opn-send">내 사연 보내기</button></p>
+      <audio id="opn-audio" preload="none"></audio>
+    </section>
 
     <div class="toc toc-c"><img class="tc-leaf" src="leaf.png" alt=""><em>Contents</em><img class="tc-leaf r" src="leaf.png" alt=""></div>
     <nav class="tabs3" id="tabs3">
@@ -192,6 +208,6 @@
 </div>
 <div id="modal-root"></div>
 <div class="toast" id="toast" hidden></div>
-<script type="module" src="js/app.js?v=10161745b"></script>
+<script type="module" src="js/app.js?v=10162250"></script>
 </body>
 </html>

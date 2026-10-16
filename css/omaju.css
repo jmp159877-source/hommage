@@ -1405,3 +1405,35 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 /* '앱 아이콘 설치하기'는 옅은 세이지(쑥색) — 친구에게 보내기의 노란색과 구분 */
 .ghost.go:not(.kakao) { background: #E3EBDF !important; color: #2F4A3C !important; border: 1px solid #C9D8C4 !important; box-shadow: none; }
 .ghost.go:not(.kakao):hover { background: #D8E4D2 !important; }
+
+/* ── 오늘의 오프닝 (미소·한결) ── */
+.opn-sub { margin: 12px 0 14px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; color: #8a8173; }
+.opn-sub span { font-size: min(0.95rem, 4vw); letter-spacing: 0.06em; }
+.opn-sub small { font-size: min(0.82rem, 3.5vw); letter-spacing: 0.12em; color: #A8823A; }
+.opn-frame { position: relative; aspect-ratio: 4 / 5; max-width: 100%; max-height: 78vh; margin: 0 auto; border-radius: 12px; overflow: hidden; background: #E4D7BF; box-shadow: 0 10px 26px rgba(70,52,22,0.14); }
+.opn-stage { position: absolute; inset: 0; }
+.opn-shot { position: absolute; inset: 0; background: center / cover no-repeat; opacity: 0; transition: opacity 0.7s ease; }
+.opn-shot.on { opacity: 1; animation: opnKen 7s ease-out both; }
+@keyframes opnKen { from { transform: scale(1.04); } to { transform: scale(1); } }
+.opn-frame::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(20,14,6,0.3)); }
+.opn-name { position: absolute; left: 0; right: 0; top: 0; z-index: 2; padding: 16px 18px 46px; color: #fff; background: linear-gradient(to bottom, rgba(38,26,10,0.55), rgba(38,26,10,0)); text-shadow: 0 1px 6px rgba(30,20,6,0.5); opacity: 0; transition: opacity 0.8s ease 0.4s; pointer-events: none; }
+.opn-name.on { opacity: 1; }
+.opn-name b { display: block; font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: min(1.7rem, 7.6vw); letter-spacing: 0.06em; line-height: 1.15; }
+.opn-name i { display: block; width: 28px; height: 1.5px; background: #E7C878; margin: 8px 0 6px; }
+.opn-name small { font-size: min(0.78rem, 3.3vw); letter-spacing: 0.08em; }
+.opn-cap { position: absolute; left: 0; right: 0; bottom: 22px; z-index: 2; display: flex; justify-content: center; padding: 0 14px; pointer-events: none; }
+.opn-cap span { max-width: 100%; background: rgba(28,22,14,0.62); color: #fff; font-weight: 700; font-size: min(1rem, 4.3vw); line-height: 1.6; text-align: center; padding: 8px 14px; border-radius: 6px; word-break: keep-all; text-wrap: balance; }
+.opn-cap span:empty { display: none; }
+.opn-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 2; background: rgba(255,255,255,0.35); }
+.opn-bar i { display: block; height: 100%; width: 0; background: #E7C878; transition: width 0.25s linear; }
+.opn-play { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; background: rgba(30,22,10,0.16); border: 0; cursor: pointer; padding: 0; }
+.opn-play span { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 6px; background: #F9E9A8; color: #3A2E00; font-weight: 700; font-size: min(1.05rem, 4.4vw); white-space: nowrap; box-shadow: 0 6px 18px rgba(40,28,8,0.25); }
+.opn-ctrl { position: absolute; top: 12px; right: 12px; z-index: 3; border: 0; border-radius: 6px; padding: 7px 12px; background: rgba(30,24,16,0.6); color: #fff; font-size: min(0.85rem, 3.6vw); white-space: nowrap; cursor: pointer; }
+.opn-next { display: grid; gap: 4px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(201,162,74,0.45); }
+.opn-next small { font-weight: 700; font-size: min(0.78rem, 3.4vw); letter-spacing: 0.12em; color: #A8823A; }
+.opn-next p { margin: 0; font-family: 'Nanum Myeongjo', serif; font-weight: 700; font-size: min(1.05rem, 4.5vw); line-height: 1.5; color: #2E2618; word-break: keep-all; }
+.opn-note { margin: 10px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: min(0.82rem, 3.5vw); color: #8a8173; word-break: keep-all; }
+.opn-send { border: 0; border-radius: 6px; padding: 6px 12px; background: #F9E9A8; color: #3A2E00; font-weight: 700; font-size: min(0.85rem, 3.6vw); white-space: nowrap; cursor: pointer; }
+.opn-m-desc { color: #5a5245; line-height: 1.65; word-break: keep-all; }
+#opn-story { width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem; line-height: 1.6; padding: 12px; border: 1px solid rgba(20,20,20,0.2); border-radius: 6px; resize: vertical; }
+@media (prefers-reduced-motion: reduce) { .opn-shot.on { animation: none; } }

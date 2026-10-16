@@ -19,6 +19,8 @@ srv.listen(0, '127.0.0.1', async () => {
     await c.route('https://www.gstatic.com/**', r => { const u = r.request().url(); const n = u.includes('firebase-app') ? 'app' : u.includes('firebase-auth') ? 'auth' : u.includes('firestore') ? 'firestore' : 'analytics'; r.fulfill({ contentType: 'application/javascript', body: n === 'firestore' ? fsStub : fs.readFileSync(path.join(STUB, n + '.js'), 'utf8') }); });
     await c.route('https://fonts.googleapis.com/**', r => r.fulfill({ contentType: 'text/css', body: "@font-face{font-family:'Nanum Myeongjo';font-weight:800;src:local('Noto Serif CJK KR Bold');}" }));
     await c.route('https://api.open-meteo.com/**', r => r.fulfill({ contentType: 'application/json', body: '{"current":{"temperature_2m":17,"apparent_temperature":16,"relative_humidity_2m":55,"weather_code":2}}' }));
+    await c.route(/raw\.githubusercontent\.com\/.*opening\/.*\.json|cdn\.jsdelivr\.net\/gh\/.*opening\/.*\.json/, r => r.fulfill({ contentType: 'application/json', body: fs.readFileSync(path.join(__dirname, 'fixtures/opening.json'), 'utf8') }));
+    await c.route(/(raw\.githubusercontent\.com|cdn\.jsdelivr\.net)\/.*\.mp3/, r => r.fulfill({ contentType: 'audio/mpeg', body: fs.readFileSync(path.join(__dirname, 'fixtures/opening.mp3')) }));
     if (big) await c.addInitScript(() => document.addEventListener('DOMContentLoaded', () => { document.documentElement.style.fontSize = '24px'; }));
     return c; };
   const wait = (p, ms) => p.waitForTimeout(ms);
@@ -132,6 +134,45 @@ srv.listen(0, '127.0.0.1', async () => {
       await step('로그아웃 → 다시 로그인', async () => { await E(() => document.getElementById('logout').click()); await W(800); await closeM(); const out = await E(() => !document.getElementById('login-btn').hidden); await E(() => document.getElementById('login-btn').click()); await W(400); await E(() => { const b = document.getElementById('g-login'); b && b.click(); }); await W(400); await p.fill('#l-id', 'use1960'); await p.fill('#l-pw', '123456'); await E(() => document.getElementById('l-go').click()); await W(1000); const back = await E(() => !!document.getElementById('user-nick').textContent); return (out && back) || `로그아웃 ${out}, 로그인 ${back}`; });
       await step('아이디·비밀번호 찾기 창', async () => { await E(() => document.getElementById('logout').click()); await W(800); await closeM(); await E(() => document.getElementById('login-btn').click()); await W(400); await E(() => { const b = document.getElementById('g-login'); b && b.click(); }); await W(400); await E(() => document.getElementById('l-forgot').click()); await W(500); const t = await modalText(); await closeM(); return /찾기|연락처|아이디/.test(t) || t.slice(0, 40); });
       ok('써 보기 중 화면 오류 없음', !errs.length, [...new Set(errs)].join(' / '));
+      await c.close(); }
+    // 8) 오늘의 오프닝: 저절로 소리 안 남, 재생·멈춤, 장면·자막 넘김, 다른 코너·앱으로 가면 멈춤, 사연 보내기
+    { const c = await ctx(false); const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); await p.goto(base + '/index.html'); await wait(p, 2000);
+      const E = (fn, a) => p.evaluate(fn, a);
+      const st = await E(() => { const s = document.getElementById('opening'); const a = document.getElementById('opn-audio');
+        return { shown: !!s && !s.hidden && s.offsetHeight > 200, name: document.getElementById('opn-name').textContent, cap: document.getElementById('opn-cap').textContent, next: document.getElementById('opn-next').textContent,
+          silent: a.paused && !a.getAttribute('src'), play: !document.getElementById('opn-play').hidden, heading: (document.querySelector('.opn-toc em') || {}).textContent,
+          before: (() => { const o = document.getElementById('opening'), t = document.querySelector('.toc-c:not(.opn-toc)'); return !!(o && t && (o.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING)); })() }; });
+      ok('오프닝: CONTENTS 위에 보임·이름표·자막·내일 예고', st.shown && st.before && /Opening/i.test(st.heading) && /미소/.test(st.name) && st.cap.length > 3 && /사연/.test(st.next), JSON.stringify(st));
+      ok('오프닝: 소리 저절로 안 남', st.silent && st.play);
+      await E(() => document.getElementById('opening').scrollIntoView({ block: 'center' })); await wait(p, 300);
+      await p.click('#opn-play'); await wait(p, 900);
+      const r1 = await E(() => { const a = window.omajuOpening.audio; return { playing: !a.paused, ctrl: !document.getElementById('opn-ctrl').hidden, btn: document.getElementById('opn-ctrl').textContent }; });
+      await p.click('#opn-ctrl'); await wait(p, 300); const r2 = await E(() => ({ paused: window.omajuOpening.audio.paused, btn: document.getElementById('opn-ctrl').textContent }));
+      await p.click('#opn-ctrl'); await wait(p, 500); const r3 = await E(() => !window.omajuOpening.audio.paused);
+      ok('오프닝: 소리 켜기 → 잠시 멈춤 → 이어 듣기', r1.playing && r1.ctrl && /멈춤/.test(r1.btn) && r2.paused && /이어/.test(r2.btn) && r3, JSON.stringify([r1, r2, r3]));
+      const flow = await E(async () => { const a = window.omajuOpening.audio; const W = ms => new Promise(r => setTimeout(r, ms)); const seen = [];
+        for (const t of [0.2, 2.5, 3.9, 4.8]) { Object.defineProperty(a, 'currentTime', { configurable: true, get: () => t, set() {} }); a.dispatchEvent(new Event('timeupdate')); await W(50);
+          seen.push([(document.querySelector('.opn-shot.on') || {}).dataset.tag, document.getElementById('opn-cap').textContent]); }
+        delete a.currentTime; return seen; });
+      ok('오프닝: 말에 맞춰 장면·자막 바뀜', flow[0][0] === 'wave' && flow[1][0] === 'read' && flow[2][0] === 'laugh' && flow[3][0] === 'moved' && new Set(flow.map(x => x[1])).size === 4, JSON.stringify(flow));
+      await E(() => { if (window.omajuOpening.audio.paused) window.omajuOpening.play(); }); await wait(p, 400);
+      await E(() => window.omajuNav('g1')); await wait(p, 600); const r4 = await E(() => window.omajuOpening.audio.paused);
+      await E(() => { history.back(); }); await wait(p, 600); await E(() => document.getElementById('opening').scrollIntoView({ block: 'center' })); await wait(p, 300);
+      await E(() => window.omajuOpening.play()); await wait(p, 400);
+      await E(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); }); await wait(p, 200); const r5 = await E(() => window.omajuOpening.audio.paused);
+      await E(() => { delete document.hidden; window.omajuOpening.play(); }); await wait(p, 400); await E(() => window.scrollTo(0, document.body.scrollHeight)); await wait(p, 800); const r6 = await E(() => window.omajuOpening.audio.paused);
+      ok('오프닝: 다른 코너·다른 앱·화면 밖이면 저절로 멈춤', r4 && r5 && r6, JSON.stringify({ 코너: r4, 앱: r5, 스크롤: r6 }));
+      await E(() => window.scrollTo(0, 0)); await wait(p, 300);
+      await E(() => document.getElementById('opn-send').click()); await wait(p, 500); const askLogin = await E(() => /로그인/.test(document.getElementById('toast').textContent));
+      await E(() => { const m = document.getElementById('modal-root'); if (m) m.innerHTML = ''; });
+      await p.click('#login-btn').catch(() => {}); await wait(p, 300); await p.click('#g-signup').catch(() => {}); await wait(p, 300);
+      await p.fill('#s-id', 'story1960'); await p.click('#s-id-chk'); await wait(p, 200); await p.fill('#s-pw', '123456'); await p.fill('#s-nick', '사연시험'); await p.click('#s-nick-chk'); await wait(p, 200);
+      await p.fill('#s-phone', '01012345672'); await p.click('#s-gender [data-g="여"]'); await p.selectOption('#s-birth', '1963'); await p.check('#s-terms'); await p.check('#s-agree'); await p.click('#s-go'); await wait(p, 900);
+      await E(() => { const x = document.getElementById('modal-x'); x && x.click(); }); await wait(p, 400);
+      await E(() => document.getElementById('opn-send').click()); await wait(p, 500); const form = await E(() => !!document.getElementById('opn-story'));
+      await E(() => { document.getElementById('opn-story').value = '오십에 처음 혼자 떠난 여행에서 생긴 일입니다. 시험 사연.'; document.getElementById('opn-story-go').click(); }); await wait(p, 900);
+      const sent = await E(() => /도착/.test(document.getElementById('toast').textContent) && !document.getElementById('opn-story'));
+      ok('오프닝: 사연 보내기 (로그인 안내 → 적어서 보냄)', askLogin && form && sent && !errs.length, JSON.stringify({ askLogin, form, sent, errs }));
       await c.close(); }
   } catch (e) { ok('시험 실행', false, e.message); }
   await b.close(); srv.close();

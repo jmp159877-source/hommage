@@ -632,3 +632,6 @@ $('tabs3').onclick = e => {
 
 // ── 서비스 워커 ──
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+// ── 오늘의 오프닝 (미소·한결) ──
+import('./opening.js?v=10162250').then(m => m.init({ modal, closeModal, toast, DB })).catch(e => console.warn('opening', e));
