@@ -318,14 +318,22 @@ function renderEra() {
   const tabs = [50, 40, 30, 20, 10].filter(n => C.era[n]).map(n => `<button type="button" data-ago="${n}" aria-pressed="${ago === n}">${n}년 전</button>`).join('');
   $('tabs').innerHTML = tabs; $('tabs2').innerHTML = tabs;
   const yr = Y - ago, e = C.era[ago], memo = store.get('memo' + ago, ''); $('cat-year').textContent = yr;
-  let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => f[2] ? `<figure class="era-fig"><img src="${esc(f[2])}" alt="${esc(f[0])}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"><figcaption><b>${esc(f[0])}</b><span>${esc(f[1])}</span></figcaption></figure>` : `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
-  h += '<h3 class="subhead">나는 그때</h3>' + (memo ? `<p class="mine">${esc(memo)}</p>` : `<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="그해의 나는?"><button type="submit" class="btn green">남기기</button></form>`);
+  let h = `<p class="lead" style="margin-top:30px">${esc(e.mood)}</p><div class="rows">` + e.facts.map(f => f[2] ? `<figure class="era-fig"><img src="${esc(f[2])}" alt="${esc(f[0])}" loading="lazy" referrerpolicy="no-referrer" onerror="eraImgFail(this)"><figcaption><b>${esc(f[0])}</b><span>${esc(f[1])}</span></figcaption></figure>` : `<div class="row"><b>${esc(f[0])}</b><p>${esc(f[1])}</p></div>`).join('') + '</div>';
+  // 적어 둔 '나는 그때'는 고치거나 지울 수 있게
+  const editing = renderEra.edit === ago; renderEra.edit = null;
+  h += '<h3 class="subhead">나는 그때</h3>' + (memo && !editing ? `<div class="mine-wrap"><p class="mine">${esc(memo)}</p><div class="mine-acts"><button type="button" class="linkbtn" data-mine="edit">고치기</button><button type="button" class="linkbtn" data-mine="del">지우기</button></div></div>` : `<form class="memo" id="memo"><input type="text" id="memo-in" maxlength="60" placeholder="그해의 나는?" value="${esc(memo)}"><button type="submit" class="btn green">${memo ? '고친 내용 저장' : '남기기'}</button></form>`);
   $('era').innerHTML = h;
   renderSongs();
   if (cur) setTitle();
 }
+// 사진을 못 불러오면 소식 글은 남기고 사진 자리만 걷어낸다
+window.eraImgFail = img => { const f = img.closest('.era-fig'); if (!f) return; const b = f.querySelector('figcaption b'), sp = f.querySelector('figcaption span'); const r = document.createElement('div'); r.className = 'row'; r.innerHTML = `<b>${b ? b.innerHTML : ''}</b><p>${sp ? sp.innerHTML : ''}</p>`; f.replaceWith(r); };
 const onTab = e => { const b = e.target.closest('[data-ago]'); if (!b) return; ago = +b.dataset.ago; store.set('ago', ago); renderEra(); };
 $('tabs').onclick = onTab; $('tabs2').onclick = onTab;
+document.addEventListener('click', e => { const m = e.target.closest('[data-mine]'); if (!m) return;
+  if (m.dataset.mine === 'edit') { renderEra.edit = ago; renderEra(); const i = $('memo-in'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } return; }
+  const acts = m.parentElement; acts.innerHTML = '<span class="mine-ask">지울까요?</span><button type="button" class="linkbtn" data-mine="del-yes">지우기</button><button type="button" class="linkbtn" data-mine="del-no">그만두기</button>'; });
+document.addEventListener('click', e => { const m = e.target.closest('[data-mine="del-yes"],[data-mine="del-no"]'); if (!m) return; if (m.dataset.mine === 'del-yes') { store.set('memo' + ago, ''); toast('지웠습니다.'); } renderEra(); });
 document.addEventListener('submit', e => { if (e.target.id !== 'memo') return; e.preventDefault(); const v = $('memo-in').value.trim(); if (!v) return; store.set('memo' + ago, v); renderEra(); });
 
 // ── 한 끼 · 사연 ──

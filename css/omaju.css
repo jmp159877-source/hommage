@@ -1397,3 +1397,8 @@ html.big .dsec[data-k="history"] .row b { width: auto; }
 /* 큰 글씨: '말로 적기'·'손으로 적기'가 두 줄로 갈라지지 않게, 짧은 안내창도 한 줄로 */
 .nb-mic, .nb-hand { white-space: nowrap; min-width: 0; font-size: min(1.1rem, 4.6vw) !important; padding-left: 10px !important; padding-right: 10px !important; }
 .toast { width: max-content; max-width: 88vw; font-size: min(0.95rem, 4.2vw) !important; word-break: keep-all; text-align: center; }
+/* 그해 오늘 '나는 그때' 고치기·지우기 */
+.mine-wrap .mine { margin-bottom: 6px; }
+.mine-acts { display: flex; gap: 18px; align-items: center; justify-content: flex-end; font-size: 0.92rem; }
+.mine-acts .linkbtn { text-decoration: none; color: #8A6D2C; border-bottom: 1px solid rgba(201,162,74,0.6); padding: 2px 0; background: none; }
+.mine-ask { color: #3a2e2a; }
