@@ -2,69 +2,69 @@
  "items": [
   {
    "label": "미국 달러",
-   "value": 1337.0,
+   "value": 1337.5,
    "unit": "원",
-   "change": -0.41,
+   "change": -0.37,
    "note": ""
   },
   {
    "label": "일본 엔 (100엔)",
-   "value": 846.28,
-   "unit": "원",
-   "change": -0.35,
-   "note": ""
-  },
-  {
-   "label": "유로",
-   "value": 1500.44,
+   "value": 846.44,
    "unit": "원",
    "change": -0.33,
    "note": ""
   },
   {
+   "label": "유로",
+   "value": 1503.28,
+   "unit": "원",
+   "change": -0.14,
+   "note": ""
+  },
+  {
    "label": "코스피",
-   "value": 5662.81,
+   "value": 5668.05,
    "unit": "",
-   "change": 1.96,
+   "change": 2.05,
    "note": ""
   },
   {
    "label": "코스닥",
-   "value": 793.9,
+   "value": 794.78,
    "unit": "",
-   "change": 4.35,
+   "change": 4.46,
    "note": ""
   },
   {
    "label": "금 1돈",
-   "value": 672638.0,
+   "value": 672000.0,
    "unit": "원",
-   "change": 0.18,
+   "change": 0.08,
    "note": "한국거래소 기준"
   },
   {
    "label": "은 1돈",
-   "value": 9309.0,
+   "value": 9213.0,
    "unit": "원",
-   "change": 1.61,
+   "change": 0.52,
    "note": "국제 시세 환산"
   },
   {
    "label": "비트코인",
-   "value": 110551000.0,
+   "value": 109880000.0,
    "unit": "원",
-   "change": -0.3,
+   "change": -0.36,
    "note": ""
   },
   {
    "label": "이더리움",
-   "value": 3290000.0,
+   "value": 3269000.0,
    "unit": "원",
-   "change": -0.21,
+   "change": -0.24,
    "note": ""
   }
  ],
- "updatedAt": "2026-10-16T15:17:28.606193+09:00",
+ "updatedAt": "2026-10-17T12:23:52.626427+09:00",
  "errors": [],
  "wx_seoul": {
   "kma_seamless": {
@@ -92,12 +92,12 @@
    "hourly_min": null
   },
   "기본": {
-   "now": 22.1,
-   "code": 2,
-   "max": 22.1,
-   "min": 13.5,
-   "hourly_max": 22.1,
-   "hourly_min": 13.5
+   "now": 22.5,
+   "code": 0,
+   "max": 24.4,
+   "min": 12.4,
+   "hourly_max": 24.4,
+   "hourly_min": 12.4
   }
  }
 }
