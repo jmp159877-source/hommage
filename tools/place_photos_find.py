@@ -30,24 +30,30 @@ def fetch(url, timeout=30):
 
 
 def probe():
-    """사이트 모양을 눈으로 보려고 HTML 일부를 찍는다."""
-    for url in [BASE + "/photo",
-                BASE + "/photo/search",
-                BASE + "/photo/search?keys=용산",
-                BASE + "/photo/collection/553",
-                BASE + "/photo/01101935Dc6000"]:
-        h = fetch(url)
-        print("\n" + "=" * 70)
-        print("URL:", url, "→", "없음" if h is None else f"{len(h)}자")
-        if not h: continue
-        body = h
-        # 눈에 띄는 것만: 사진 링크, 폼 입력칸, 선택 상자
-        links = re.findall(r'href="(/photo/[^"#?]+)"', body)
-        print("사진·목록 링크 보기:", links[:15], "…총", len(links))
-        for pat, name in [(r'<form[^>]*>', '폼'), (r'<input[^>]*>', '입력칸'), (r'<select[^>]*>.{0,400}?</select>', '선택상자')]:
-            found = re.findall(pat, body, re.S)[:6]
-            if found: print(f"-- {name}:", [re.sub(r"\s+", " ", f)[:200] for f in found])
-        print("-- 본문 앞머리:", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body))[:600])
+    """검색이 어느 주소로 도는지, 상세 페이지에서 무엇을 읽을 수 있는지 찾는다."""
+    h = fetch(BASE + "/photo/search")
+    print("=" * 70, "\n[검색 페이지] 자바스크립트가 부르는 곳")
+    if h:
+        for pat in [r'["\'](/[a-z0-9_\-/]*(?:ajax|api|json|search)[a-z0-9_\-/]*)["\']',
+                    r'(?:axios|fetch)\s*\.?\s*(?:get|post)?\s*\(\s*["\']([^"\']+)',
+                    r'url\s*:\s*["\']([^"\']+)']:
+            hits = sorted(set(re.findall(pat, h, re.I)))
+            print("  ", pat[:30], "→", hits[:25])
+        for m in re.finditer(r'<script[^>]*>(.{0,4000}?)</script>', h, re.S):
+            s = m.group(1)
+            if "gu" in s and ("options" in s or "photo" in s) and len(s) > 200:
+                print("  [스크립트 조각]", re.sub(r"\s+", " ", s)[:1200]); break
+        print("  [js 파일]", sorted(set(re.findall(r'src="([^"]*photo[^"]*\.js[^"]*)"', h)))[:10])
+
+    print("=" * 70, "\n[상세 페이지] 01101935Dc6000")
+    h2 = fetch(BASE + "/photo/01101935Dc6000")
+    if h2:
+        print("  사진 주소:", sorted(set(re.findall(r'(?:src|href)="([^"]*/photos/[^"]+)"', h2)))[:6])
+        tb = re.search(r'<(table|dl|ul)[^>]*class="[^"]*(?:info|meta|detail|photo)[^"]*".{0,3000}?</\1>', h2, re.S)
+        print("  정보칸:", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " | ", tb.group(0)))[:800] if tb else "못 찾음")
+        txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h2))
+        i = txt.find("통합코드")
+        print("  통합코드 둘레:", txt[max(0, i - 500):i + 200] if i > 0 else "없음")
 
 
 # ── 목록에서 사진 하나하나 ──
