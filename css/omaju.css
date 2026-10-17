@@ -1486,3 +1486,13 @@ body.in-chapter #opening { display: none !important; }
 .ph figcaption b { display: block; font-family: 'Nanum Myeongjo', serif; font-size: 1.1rem; color: var(--dark-green); margin-bottom: 4px; word-break: keep-all; }
 .ph figcaption span { display: block; font-size: 1.02rem; line-height: 1.75; color: #333; word-break: keep-all; }
 .ph figcaption small { display: block; margin-top: 6px; font-size: 0.88rem; color: #888; }
+
+/* 그해 그곳 사진 — 눌러서 크게 보기 */
+.ph-zoom { display: block; width: 100%; padding: 0; border: 0; background: none; position: relative; cursor: pointer; border-radius: 12px; }
+.ph-zoom .ph-zoom-i { position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 50%; background: rgba(20,16,8,0.46); color: #fff; font-size: 1.05rem; line-height: 36px; text-align: center; pointer-events: none; }
+.modal.ph-modal { background: #000; padding: 0; }
+.modal.ph-modal .modal-box { background: none; border-radius: 0; max-width: 100%; width: 100%; max-height: 100%; height: 100%; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.modal.ph-modal .modal-box .x { right: 10px; top: 6px; color: #fff; font-size: 2rem; width: 46px; height: 46px; z-index: 2; }
+.ph-full { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; width: 100%; height: 100%; padding: 56px 16px 24px; box-sizing: border-box; }
+.ph-full img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 2px; flex: 0 1 auto; min-height: 0; }
+.ph-full p { flex: 0 0 auto; margin: 0; max-width: 680px; text-align: center; color: #f0e8d8; font-family: 'Nanum Myeongjo', serif; font-size: 1.05rem; line-height: 1.6; word-break: keep-all; }

@@ -324,7 +324,7 @@ function eraNewsHtml(yr, e) {
   }
   h += '<p class="foot">제목과 요약은 오마주가 정리한 글입니다. 기사 원문은 출처 링크에서 보실 수 있습니다.</p>';
   const ph = e.photo;
-  if (ph && ph.img) h += `<section class="place"><h2 class="f-name">그해, 그곳${ph.area ? ' · ' + esc(ph.area) : ''}</h2><figure class="ph"><img src="${esc(ph.img)}" alt="${esc(ph.place || '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.place').hidden=true"><figcaption><b>${esc(ph.year || '')}${ph.place ? ' · ' + esc(ph.place) : ''}</b>${ph.caption ? `<span>${esc(ph.caption)}</span>` : ''}<small>사진 ${esc(ph.src || '')}${ph.url ? ` · <a href="${esc(ph.url)}" target="_blank" rel="noopener">원본</a>` : ''}</small></figcaption></figure></section>`;
+  if (ph && ph.img) h += `<section class="place"><h2 class="f-name">그해, 그곳${ph.area ? ' · ' + esc(ph.area) : ''}</h2><figure class="ph"><button type="button" class="ph-zoom" aria-label="사진 크게 보기"><img src="${esc(ph.img)}" alt="${esc(ph.place || '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.place').hidden=true"><span class="ph-zoom-i" aria-hidden="true">⤢</span></button><figcaption><b>${esc(ph.year || '')}${ph.place ? ' · ' + esc(ph.place) : ''}</b>${ph.caption ? `<span>${esc(ph.caption)}</span>` : ''}<small>사진 ${esc(ph.src || '')}${ph.url ? ` · <a href="${esc(ph.url)}" target="_blank" rel="noopener">원본</a>` : ''}</small></figcaption></figure></section>`;
   return h;
 }
 function renderEra() {
@@ -342,6 +342,16 @@ function renderEra() {
 }
 // 사진을 못 불러오면 소식 글은 남기고 사진 자리만 걷어낸다
 window.eraImgFail = img => { const f = img.closest('.era-fig'); if (!f) return; const b = f.querySelector('figcaption b'), sp = f.querySelector('figcaption span'); const r = document.createElement('div'); r.className = 'row'; r.innerHTML = `<b>${b ? b.innerHTML : ''}</b><p>${sp ? sp.innerHTML : ''}</p>`; f.replaceWith(r); };
+// 그해 그곳 사진 누르면 검은 바탕에 사진만 크게 (아무 데나 누르거나 뒤로 가기로 닫힘)
+$('era').addEventListener('click', e => {
+  const b = e.target.closest('.ph-zoom'); if (!b) return;
+  const img = b.querySelector('img'); if (!img || !img.getAttribute('src')) return;
+  const cap = ((b.closest('.ph') || b).querySelector('figcaption b') || {}).textContent || '';
+  modal(`<div class="ph-full"><img src="${esc(img.currentSrc || img.src)}" alt="${esc(img.alt)}" referrerpolicy="no-referrer">${cap ? `<p>${esc(cap)}</p>` : ''}</div>`, () => {
+    const m = $('modal'); m.classList.add('ph-modal');
+    m.querySelector('.modal-box').addEventListener('click', ev => { if (!ev.target.closest('.x')) closeModal(); });
+  });
+});
 const onTab = e => { const b = e.target.closest('[data-ago]'); if (!b) return; ago = +b.dataset.ago; store.set('ago', ago); renderEra(); };
 $('tabs').onclick = onTab; $('tabs2').onclick = onTab;
 document.addEventListener('click', e => { const m = e.target.closest('[data-mine]'); if (!m) return;

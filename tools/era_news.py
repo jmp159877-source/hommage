@@ -12,6 +12,16 @@ DBG = []
 FIELDS = ["정치", "경제", "사회", "문화", "연예", "생활", "스포츠"]
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.5", "Referer": "https://www.seoul.co.kr/"}
 NL = lambda y, m, d, o: f"https://newslibrary.naver.com/viewer/index.naver?publishDate={y}-{m:02d}-{d:02d}&officeId={o}"
+# 출처는 주소가 아니라 사람이 읽는 이름으로 (신문 지면에 'ko.wikipedia.org' 가 찍히지 않게)
+SRC_NAME = {"ko.wikipedia.org": "위키백과", "en.wikipedia.org": "위키백과(영문)", "ja.wikipedia.org": "위키백과(일본어)", "namu.wiki": "나무위키",
+            "donga.com": "동아일보", "news.donga.com": "동아일보", "seoul.co.kr": "서울신문", "m.seoul.co.kr": "서울신문", "osen.co.kr": "OSEN",
+            "khan.co.kr": "경향신문", "news.khan.co.kr": "경향신문", "sports.khan.co.kr": "스포츠경향", "hani.co.kr": "한겨레", "hankookilbo.com": "한국일보",
+            "mk.co.kr": "매일경제", "chosun.com": "조선일보", "joongang.co.kr": "중앙일보", "yna.co.kr": "연합뉴스", "pressian.com": "프레시안",
+            "kyeonggi.com": "경기일보", "imaeil.com": "매일신문", "newdaily.co.kr": "뉴데일리", "etoday.co.kr": "이투데이", "dailian.co.kr": "데일리안",
+            "tenasia.co.kr": "텐아시아", "kmdb.or.kr": "한국영화데이터베이스", "nobelprize.org": "노벨재단", "sports.or.kr": "대한체육회"}
+def src_name(netloc):
+    n = re.sub(r"^(?:www|m|n|v)\.", "", netloc)
+    return SRC_NAME.get(netloc) or SRC_NAME.get(n) or n
 
 def fetch(url, timeout=20):
     try:
@@ -117,7 +127,7 @@ newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"fi
         text = strip_html(h)[:200_000]
         ok = has_date(text, y, m, d) or has_date(text, y, m, d - 1) or has_date(h, y, m, d)
         if not ok: DBG.append(f"날짜 없음 {u[:70]}"); return None
-        return {"title": page_title(h) or str(it.get("title", "")), "snippet": page_desc(h)[:400], "url": u, "source": re.sub(r"^www\.", "", urllib.parse.urlparse(u).netloc), "date": f"{y}-{m:02d}-{d:02d}", "field_hint": it.get("field", "")}
+        return {"title": page_title(h) or str(it.get("title", "")), "snippet": page_desc(h)[:400], "url": u, "source": src_name(urllib.parse.urlparse(u).netloc), "date": f"{y}-{m:02d}-{d:02d}", "field_hint": it.get("field", "")}
     with cf.ThreadPoolExecutor(6) as ex:
         for r in ex.map(one, items[:30]):
             if r: out.append(r)
