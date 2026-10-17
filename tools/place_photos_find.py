@@ -1,126 +1,146 @@
 """그해 그곳 사진 후보를 한꺼번에 긁어 모은다 (Actions 안에서만 돈다 — 바깥 사이트가 열려야 함).
 
-서울연구원 경관기록사진(data.si.re.kr, 공공누리 1유형 + CC BY 4.0)에서
-구·연도별 사진 후보와 이미지 직접 주소를 모아 data/place-photos.json 으로 만든다.
+서울연구원 경관기록사진(data.si.re.kr, 공공누리 1유형 + CC BY 4.0).
+상세 페이지에 통합코드·촬영년/월·촬영장소·대상지·세부대상지가 그대로 적혀 있고,
+세부대상지에 '○○구'가 들어 있어 구를 가려낼 수 있다.
 
-사용:
-  python tools/place_photos_find.py --probe        # 사이트 모양 확인용 (HTML 일부를 찍어 본다)
-  python tools/place_photos_find.py --build        # 후보 표 만들기
+두 단계로 나눈다 (한 번에 다 하면 너무 오래 걸린다).
+  --scan 1-1200     컬렉션 목록만 훑어 data/photo-collections.json (제목 + 사진 코드 목록)
+  --build 500-700   그 가운데 고른 컬렉션의 사진 상세를 읽어 data/place-photos.json
+  --probe           사이트 모양 보기
 """
-import json, os, re, sys, time, html, urllib.request, urllib.parse, concurrent.futures as cf
+import json, os, re, sys, time, html, urllib.request, concurrent.futures as cf
 
 BASE = "https://data.si.re.kr"
-IMG = BASE + "/sites/default/files/photos/{}.jpg"
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
       "Accept": "text/html,application/xhtml+xml,*/*;q=0.8", "Accept-Language": "ko-KR,ko;q=0.9"}
 HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(HERE, "..", "data")
+COLS_PATH = os.path.join(DATA, "photo-collections.json")
+OUT_PATH = os.path.join(DATA, "place-photos.json")
+SRC_NAME = "서울연구원 경관기록사진 (공공누리 1유형 · CC BY 4.0)"
 
 
-def fetch(url, timeout=30):
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
-            raw = r.read(1_500_000)
-        for enc in ("utf-8", "euc-kr", "cp949"):
-            try: return raw.decode(enc)
-            except Exception: pass
-        return raw.decode("utf-8", "ignore")
-    except Exception as e:
-        print(f"[fetch 실패] {url[:110]} {str(e)[:80]}", file=sys.stderr)
-        return None
+def fetch(url, timeout=30, tries=2):
+    for t in range(tries):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
+                raw = r.read(1_500_000)
+            for enc in ("utf-8", "euc-kr", "cp949"):
+                try: return raw.decode(enc)
+                except Exception: pass
+            return raw.decode("utf-8", "ignore")
+        except Exception as e:
+            if t + 1 == tries: return None
+            time.sleep(1)
+    return None
 
 
-def probe():
-    """검색이 어느 주소로 도는지, 상세 페이지에서 무엇을 읽을 수 있는지 찾는다."""
-    h = fetch(BASE + "/photo/search")
-    print("=" * 70, "\n[검색 페이지] 자바스크립트가 부르는 곳")
-    if h:
-        for pat in [r'["\'](/[a-z0-9_\-/]*(?:ajax|api|json|search)[a-z0-9_\-/]*)["\']',
-                    r'(?:axios|fetch)\s*\.?\s*(?:get|post)?\s*\(\s*["\']([^"\']+)',
-                    r'url\s*:\s*["\']([^"\']+)']:
-            hits = sorted(set(re.findall(pat, h, re.I)))
-            print("  ", pat[:30], "→", hits[:25])
-        for m in re.finditer(r'<script[^>]*>(.{0,4000}?)</script>', h, re.S):
-            s = m.group(1)
-            if "gu" in s and ("options" in s or "photo" in s) and len(s) > 200:
-                print("  [스크립트 조각]", re.sub(r"\s+", " ", s)[:1200]); break
-        print("  [js 파일]", sorted(set(re.findall(r'src="([^"]*photo[^"]*\.js[^"]*)"', h)))[:10])
-
-    print("=" * 70, "\n[상세 페이지] 01101935Dc6000")
-    h2 = fetch(BASE + "/photo/01101935Dc6000")
-    if h2:
-        print("  사진 주소:", sorted(set(re.findall(r'(?:src|href)="([^"]*/photos/[^"]+)"', h2)))[:6])
-        tb = re.search(r'<(table|dl|ul)[^>]*class="[^"]*(?:info|meta|detail|photo)[^"]*".{0,3000}?</\1>', h2, re.S)
-        print("  정보칸:", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " | ", tb.group(0)))[:800] if tb else "못 찾음")
-        txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h2))
-        i = txt.find("통합코드")
-        print("  통합코드 둘레:", txt[max(0, i - 500):i + 200] if i > 0 else "없음")
+def flat(h):
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", h)))
 
 
-# ── 목록에서 사진 하나하나 ──
+# ── 1단계: 컬렉션 훑기 ──
 CODE_RE = re.compile(r'href="/photo/([0-9A-Za-z]{10,20})"')
 
 
-def parse_detail(code):
-    """사진 상세 페이지에서 연·월·장소·구를 읽는다. 통합코드의 대소문자도 여기서 확정한다."""
+def one_collection(n):
+    h = fetch(f"{BASE}/photo/collection/{n}")
+    if not h: return None
+    t = re.search(r"<title>(.*?)</title>", h, re.S)
+    title = re.sub(r"\s*\|\s*서울연구데이터서비스\s*$", "", flat(t.group(1))).strip() if t else ""
+    codes = sorted(set(CODE_RE.findall(h)))
+    if not codes or not title: return None
+    return {"id": n, "title": title, "n": len(codes), "codes": codes}
+
+
+def scan(nums, workers=8):
+    out = []
+    with cf.ThreadPoolExecutor(workers) as ex:
+        for r in ex.map(one_collection, nums):
+            if r:
+                out.append(r)
+                print(f"  [{r['id']}] {r['title'][:46]} — {r['n']}장", flush=True)
+    out.sort(key=lambda r: r["id"])
+    os.makedirs(DATA, exist_ok=True)
+    json.dump({"_설명": "data.si.re.kr 사진 컬렉션 목록 (그해 그곳 사진 후보 찾기용)",
+               "만든때": time.strftime("%Y-%m-%d %H:%M"), "컬렉션수": len(out), "컬렉션": out},
+              open(COLS_PATH, "w"), ensure_ascii=False, indent=1)
+    print(f"컬렉션 {len(out)}개, 사진 {sum(r['n'] for r in out)}장 → data/photo-collections.json")
+
+
+# ── 2단계: 사진 상세 읽기 ──
+def detail(code):
     h = fetch(f"{BASE}/photo/{code}")
     if not h: return None
-    txt = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", h)))
-    def grab(label):
-        m = re.search(label + r"\s*[:：]?\s*([^ ][^|]{0,60}?)\s{2,}", txt) or re.search(label + r"\s*[:：]?\s*(\S[^ ]{0,40})", txt)
+    t = flat(h)
+    def f(label, nxt):
+        m = re.search(label + r"\s+(.{1,80}?)\s+" + nxt, t)
         return m.group(1).strip() if m else ""
-    real = re.search(r"통합코드번호\s*[:：]?\s*([0-9A-Za-z]{10,20})", txt)
-    code2 = real.group(1) if real else code
-    ym = re.search(r"(19\d{2}|20\d{2})\s*년\s*(\d{1,2})\s*월", txt)
-    y = re.search(r"(19\d{2}|20\d{2})", txt)
-    gu = re.search(r"([가-힣]{1,4}구)\b", txt)
-    return {"code": code2, "year": int(ym.group(1)) if ym else (int(y.group(1)) if y else None),
-            "month": int(ym.group(2)) if ym else None,
-            "gu": gu.group(1) if gu else "", "place": grab("대상지"), "detail": grab("세부대상지"),
-            "page": f"{BASE}/photo/{code}", "img": IMG.format(code2)}
+    real = re.search(r"통합코드번호\s+([0-9A-Za-z]{10,20})", t)
+    ym = re.search(r"촬영년/월\s+(\d{4})\s*/\s*(\d{0,2})", t)
+    if not real or not ym: return None
+    where = f("촬영장소", "대상지")
+    target = f("대상지", "세부대상지")
+    sub = f("세부대상지", "이용목적")
+    gu = re.search(r"([가-힣]{1,5})\s*구\b", sub + " " + where + " " + target)
+    img = re.search(r'(?:src|href)="(/sites/default/files/photos/' + re.escape(real.group(1)) + r'\.jpg)"', h)
+    return {"code": real.group(1), "year": int(ym.group(1)), "month": int(ym.group(2)) if ym.group(2) else None,
+            "gu": (gu.group(1) + "구") if gu else "", "where": where, "target": target, "sub": sub,
+            "page": f"{BASE}/photo/{real.group(1)}",
+            "img": BASE + (img.group(1) if img else f"/sites/default/files/photos/{real.group(1)}.jpg")}
 
 
-def collection(num):
-    h = fetch(f"{BASE}/photo/collection/{num}")
-    if not h: return None, []
-    title = re.search(r"<title>(.*?)</title>", h, re.S)
-    return (re.sub(r"\s+", " ", html.unescape(title.group(1))).strip() if title else ""), sorted(set(CODE_RE.findall(h)))
+def build(nums, workers=8):
+    cols = json.load(open(COLS_PATH))["컬렉션"]
+    want = [c for c in cols if not nums or c["id"] in nums]
+    codes, seen = [], set()
+    for c in want:
+        for k in c["codes"]:
+            if k.lower() in seen: continue
+            seen.add(k.lower()); codes.append(k)
+    print(f"컬렉션 {len(want)}개 · 사진 {len(codes)}장 읽는 중…", flush=True)
+    rows, done = [], 0
+    with cf.ThreadPoolExecutor(workers) as ex:
+        for r in ex.map(detail, codes):
+            done += 1
+            if done % 200 == 0: print(f"  …{done}/{len(codes)}", flush=True)
+            if r: rows.append(r)
+    rows.sort(key=lambda r: (r["gu"], r["year"], r["month"] or 0))
+    old = {}
+    if os.path.exists(OUT_PATH):
+        try: old = {r["code"]: r for r in json.load(open(OUT_PATH)).get("사진", [])}
+        except Exception: old = {}
+    for r in rows: old[r["code"]] = r
+    allrows = sorted(old.values(), key=lambda r: (r["gu"], r["year"], r["month"] or 0))
+    json.dump({"_설명": "그해 그곳 사진 후보. 날짜·장소는 출처 페이지에 적힌 그대로.",
+               "출처이름": SRC_NAME, "만든때": time.strftime("%Y-%m-%d %H:%M"), "장수": len(allrows), "사진": allrows},
+              open(OUT_PATH, "w"), ensure_ascii=False, indent=1)
+    byg = {}
+    for r in allrows: byg.setdefault(r["gu"] or "(구 모름)", []).append(r["year"])
+    for g, ys in sorted(byg.items(), key=lambda x: -len(x[1])):
+        print(f"  {g}: {len(ys)}장, 해 {sorted(set(ys))}")
+    print(f"모두 {len(allrows)}장 → data/place-photos.json")
 
 
-def build(nums, out_path, workers=6):
-    rows, seen = [], set()
-    for n in nums:
-        title, codes = collection(n)
-        if not codes:
-            print(f"[컬렉션 {n}] 없음"); continue
-        codes = [c for c in codes if c.lower() not in seen]
-        print(f"[컬렉션 {n}] {title[:40]} — 사진 {len(codes)}장", flush=True)
-        with cf.ThreadPoolExecutor(workers) as ex:
-            for r in ex.map(parse_detail, codes):
-                if not r or not r.get("year"): continue
-                if r["code"].lower() in seen: continue
-                seen.add(r["code"].lower()); r["collection"] = n; r["collection_title"] = title
-                rows.append(r)
-        time.sleep(1)
-    rows.sort(key=lambda r: (r.get("gu", ""), r["year"], r.get("month") or 0))
-    json.dump({"_설명": "그해 그곳 사진 후보. 출처 서울연구원 경관기록사진(공공누리 1유형·CC BY 4.0).",
-               "출처이름": "서울연구원 경관기록사진 (공공누리 1유형 · CC BY 4.0)",
-               "만든때": time.strftime("%Y-%m-%d %H:%M"), "장수": len(rows), "사진": rows},
-              open(out_path, "w"), ensure_ascii=False, indent=1)
-    byyear = {}
-    for r in rows: byyear.setdefault(r["gu"] or "(구 모름)", set()).add(r["year"])
-    for g, ys in sorted(byyear.items()): print(f"  {g}: {len(ys)}개 해 {sorted(ys)}")
-    print(f"모두 {len(rows)}장 → {out_path}")
+def probe():
+    h = fetch(BASE + "/photo/01101935Dc6000")
+    print(flat(h)[:1500] if h else "없음")
+
+
+def rng(s):
+    out = []
+    for part in str(s).split(","):
+        part = part.strip()
+        if "-" in part:
+            a, b = part.split("-"); out += list(range(int(a), int(b) + 1))
+        elif part: out.append(int(part))
+    return out
 
 
 if __name__ == "__main__":
-    if "--probe" in sys.argv:
-        probe()
-    else:
-        a = sys.argv[sys.argv.index("--collections") + 1] if "--collections" in sys.argv else "553"
-        nums = []
-        for part in a.split(","):
-            part = part.strip()
-            if "-" in part:
-                s, e = part.split("-"); nums += list(range(int(s), int(e) + 1))
-            elif part: nums.append(int(part))
-        build(nums, os.path.join(HERE, "..", "data", "place-photos.json"))
+    a = sys.argv
+    if "--probe" in a: probe()
+    elif "--scan" in a: scan(rng(a[a.index("--scan") + 1]))
+    elif "--build" in a: build(set(rng(a[a.index("--build") + 1])) if len(a) > a.index("--build") + 1 and not a[a.index("--build") + 1].startswith("--") else None)
+    else: print(__doc__)
