@@ -1,8 +1,12 @@
 2026-10-19
-2006 후보 149 → 5건 문화/연예/스포츠
+2006 후보 137 → 7건 정치/경제/사회/문화/연예/생활/스포츠
 --- 자세히 ---
-검색 2006: Gemini 후보 11개 https://www.donga.com/news/article/all/20061019/8363112/1; https://www.donga.com/news/article/all/20061018/8362754/1; https://www.donga.com/news/article/all/20061019/8363072/1; https://www.donga.com/news/article/all/20061019/8363170/1; https://www.donga.com/news/article/all/20061019/8363139/1; https://www.donga.com/news/article/all/20061018/8362959/1
---- 실행 로그(마지막 200줄) 2026-10-17T03:01:43Z ---
+fetch 실패 https://osen.co.kr/article/G0610190045 The read operation timed out
+fetch 실패 https://osen.co.kr/article/G0610190062 The read operation timed out
+검색 2006: Gemini 후보 15개 https://www.hani.co.kr/arti/politics/politics_general/165977; https://www.donga.com/news/article/all/20061018/8362629/1; https://www.hani.co.kr/arti/science/science_general/166099.h; https://www.donga.com/news/article/all/20061019/8363170/1; https://www.donga.com/news/article/all/20061019/8363139/1; https://www.donga.com/news/article/all/20061018/8362893/1
+fetch 실패 https://www.hani.co.kr/arti/politics/politics_general/165977.html HTTP Error 404: Not Found
+fetch 실패 https://www.hani.co.kr/arti/science/science_general/166099.html HTTP Error 404: Not Found
+--- 실행 로그(마지막 200줄) 2026-10-17T03:07:14Z ---
 [models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
-[gather] 2006: 직접 훑은 후보 138
-2006 후보 149 → 5건 문화/연예/스포츠
+[gather] 2006: 직접 훑은 후보 124
+2006 후보 137 → 7건 정치/경제/사회/문화/연예/생활/스포츠
