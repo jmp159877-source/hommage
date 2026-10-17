@@ -30,7 +30,7 @@ srv.listen(0, '127.0.0.1', async () => {
   const wait = (p, ms) => p.waitForTimeout(ms);
   try {
     // 1) 화면 전부 × 보통·큰 글씨
-    const ROUTES = ['', 'g1', 'g2', 'g3', 'g4', 'culture', 'follow', 'food', 'fortune', 'history', 'music', 'outing', 'phrase', 'play', 'quiz', 'story'];
+    const ROUTES = ['', 'g1', 'g2', 'g3', 'g5', 'g4', 'culture', 'follow', 'food', 'fortune', 'history', 'music', 'outing', 'phrase', 'play', 'quiz', 'story'];
     for (const big of [false, true]) {
       const c = await ctx(big); const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
       await p.goto(base + '/index.html'); await wait(p, 1500); const bad = [];
@@ -112,7 +112,8 @@ srv.listen(0, '127.0.0.1', async () => {
       await p.fill('#s-phone', '01012345671'); await p.click('#s-gender [data-g="남"]'); await p.selectOption('#s-birth', '1961'); await p.check('#s-terms'); await p.check('#s-agree'); await p.click('#s-go'); await W(900);
       await step('회원가입 → 로그인 상태', async () => (await E(() => !document.getElementById('user-chip').hidden || !!document.getElementById('user-nick').textContent)) || 'user-chip 안 보임');
       await closeM();
-      await step('준비 중 장 누르면 안내', async () => { await E(() => document.querySelector('[data-soon]').click()); await W(300); return /준비/.test(await E(() => document.getElementById('toast').textContent)) || '안내 없음'; });
+      await step('장 다섯 개 · 차례와 표지 번호가 맞음', async () => { const want = [['g1', '오늘 즐기기', '1'], ['g2', '그때 돌아보기', '2'], ['g3', '몸과 마음', '3'], ['g5', '손과 발', '4'], ['g4', '나의 수첩', '5']]; const tabs = await E(() => [...document.querySelectorAll('#tabs3 button')].map(b => [b.dataset.tab || '', (b.querySelector('b') || {}).textContent || ''])); if (tabs.length !== 5) return `탭이 ${tabs.length}개`; for (let i = 0; i < 5; i++) if (tabs[i][0] !== want[i][0] || tabs[i][1] !== want[i][1]) return `${i + 1}번째가 ${JSON.stringify(tabs[i])}`; const bad = []; for (const [g, title, no] of want) { await E(x => window.omajuNav(x), g); await W(500); const r = await E(() => { const h = document.getElementById('ch-head'); return h ? { k: (h.querySelector('.ch-k') || {}).textContent, t: (h.querySelector('h2') || {}).textContent } : null; }); if (!r || r.t !== title || r.k !== 'CHAPTER ' + no) bad.push(`${g}:${JSON.stringify(r)}`); } await E(() => window.omajuNav('g1')); await W(300); return !bad.length || bad.join(' / '); });
+      await step('코너가 제 장에 들어 있음', async () => { const want = { g1: ['play', 'fortune', 'culture'], g2: ['history', 'music'], g3: ['follow', 'food', 'quiz'], g5: ['outing', 'phrase'], g4: ['story'] }; const got = await E(() => { const o = {}; for (const s of document.querySelectorAll('.tabsec')) o[s.dataset.g] = [...s.querySelectorAll('[data-open]')].map(b => b.dataset.open); return o; }); const bad = Object.keys(want).filter(g => (got[g] || []).join(',') !== want[g].join(',')); return !bad.length || bad.map(g => `${g}=${(got[g] || []).join(',')}`).join(' / '); });
       await step('글자 크기 바꾸기', async () => { const a = await E(() => document.documentElement.classList.contains('big')); await E(() => document.getElementById('sizer').click()); const b = await E(() => document.documentElement.classList.contains('big')); await E(() => document.getElementById('sizer').click()); return a !== b || '안 바뀜'; });
       await E(() => window.omajuNav('g1')); await W(700);
       await step('인사 카드 눌러 보내기 창', async () => { await E(() => document.querySelector('[data-copy="0"]').click()); await W(1800); const t = await modalText(); const img = await E(() => { const i = document.querySelector('#modal img'); return !!(i && i.naturalWidth > 0); }); await closeM(); return (/인사 카드가 준비/.test(t) && img) || ('창: ' + t.slice(0, 40)); });

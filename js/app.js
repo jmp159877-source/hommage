@@ -4,7 +4,8 @@ import * as NB from './notebook.js';
 import { drawCard } from './cards.js';
 import * as MM from './malmoi.js';
 import * as PLAY from './play.js';
-const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today'], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past'], g3: ['앞으로 나아가기', '지금도 젊다', 'tab-future2'], g4: ['나의 수첩', '메모와 일정', 'tab-note'] };
+// 장(章). 네 번째 값은 표지에 찍히는 번호 — 화면에 보이는 차례와 맞춘다(아이디는 그대로 둔다).
+const CH = { g1: ['오늘 즐기기', '하루를 기분 좋게', 'tab-today', 1], g2: ['그때 돌아보기', '그 시절을 꺼내다', 'tab-past', 2], g3: ['몸과 마음', '오늘의 컨디션을 챙기다', 'tab-health', 3], g5: ['손과 발', '나가서, 만들고, 기르다', 'tab-travel', 4], g4: ['나의 수첩', '메모와 일정', 'tab-note', 5] };
 let modalPushed = false, skipPop = false, exitOpen = false, reopenAfterPop = false;
 
 const $ = id => document.getElementById(id);
@@ -399,7 +400,7 @@ const gameDone = {};
 // ── 화면 이동: 잡지 넘기듯 '단계'로 쌓는다 (첫 화면 0 → 장 1 → 코너 2 → 놀이 3).
 // 같은 단계끼리 옮겨 다니면 쌓지 않고 바꿔 끼운다 → 몇 개를 열어 봐도 뒤로 가기는 한 단계씩 위로, 많아야 4번이면 나간다.
 const NAV_GAMES = new Set(['malmoi', 'shisen', 'num50', 'sudoku']);
-const LV = k => !k ? 0 : /^g[1-4]$/.test(k) ? 1 : NAV_GAMES.has(k) ? 3 : 2;
+const LV = k => !k ? 0 : /^g[1-5]$/.test(k) ? 1 : NAV_GAMES.has(k) ? 3 : 2;
 const NS = [location.hash.slice(1)]; let navOurs = false, navPending = null;
 function nav(h) {
   h = String(h || '').replace(/^#/, ''); const top = NS[NS.length - 1]; if (h === top) return;
@@ -415,11 +416,11 @@ window.addEventListener('hashchange', () => {
   if (NS.length > 1 && NS[NS.length - 2] === k) NS.pop(); else NS[NS.length - 1] = k; // 휴대폰 뒤로 가기
 });
 function route() { const k = location.hash.slice(1); cur = DET[k] ? k : null;
-  if (/^g[1-4]$/.test(k)) setChapter(k); else if (!cur) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
+  if (/^g[1-5]$/.test(k)) setChapter(k); else if (!cur) { const was = document.body.classList.contains('in-chapter'); setChapter(null); if (was) { route.y = null; const t = $('tabs3'); window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 80)); } }
   document.body.classList.toggle('game-mode', !!GAME[cur] || cur === 'play'); if (!GAME[cur]) PLAY.stopAll();
   if (cur === 'play') PLAY.hub($('play-root'));
   if (GAME[cur] && !gameDone[cur]) { gameDone[cur] = true; GAME[cur](); } document.body.classList.toggle('in-detail', !!cur); stopRead(); if (cur) { if (DET[cur][0]) $('d-bg').style.backgroundImage = `url('img/${DET[cur][0]}.jpg')`; $('d-tag').textContent = DET[cur][1]; setTitle(); document.querySelectorAll('.dsec').forEach(s => s.classList.toggle('on', s.dataset.k === cur)); window.scrollTo(0, 0); } else if (route.y != null) window.scrollTo(0, route.y); }
-$('back').onclick = () => { const up = NS.length > 1 ? NS[NS.length - 2] : null; if (up != null && LV(up) < LV(location.hash.slice(1))) history.back(); else nav(/^g[1-4]$/.test(NS[0]) ? NS[0] : ''); };
+$('back').onclick = () => { const up = NS.length > 1 ? NS[NS.length - 2] : null; if (up != null && LV(up) < LV(location.hash.slice(1))) history.back(); else nav(/^g[1-5]$/.test(NS[0]) ? NS[0] : ''); };
 window.addEventListener('hashchange', route);
 window.addEventListener('scroll', () => document.body.classList.toggle('nav-solid', document.body.classList.contains('in-detail') && window.scrollY > 160), { passive: true });
 renderEra(); route();
@@ -639,9 +640,9 @@ function setChapter(g) {
   let head = $('ch-head');
   if (g) {
     if (!head) { head = document.createElement('header'); head.id = 'ch-head'; head.className = 'ch-head'; document.querySelector('.tabsec').before(head); }
-    const [t, sub, img] = CH[g];
+    const [t, sub, img, no] = CH[g];
     head.style.backgroundImage = `url('img/${img}.jpg')`;
-    head.innerHTML = `<button type="button" class="ch-back" id="ch-back">← 처음으로</button><div class="ch-t"><span class="ch-k">CHAPTER ${g.slice(1)}</span><h2>${t}</h2><p>${sub}</p></div>`;
+    head.innerHTML = `<button type="button" class="ch-back" id="ch-back">← 처음으로</button><div class="ch-t"><span class="ch-k">CHAPTER ${no || g.slice(1)}</span><h2>${t}</h2><p>${sub}</p></div>`;
     $('ch-back').onclick = () => history.back();
   }
 }
