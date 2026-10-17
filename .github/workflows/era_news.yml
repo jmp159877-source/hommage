@@ -7,6 +7,7 @@ on:
     inputs:
       date: { description: '날짜 YYYY-MM-DD (비우면 오늘)', required: false, default: '' }
       force: { description: 'yes 면 이미 있어도 다시', required: false, default: '' }
+      ago: { description: '몇 해 전만 다시 (예: 20 또는 50,40). 비우면 다섯 해 모두', required: false, default: '' }
 permissions:
   contents: write
 jobs:
@@ -24,9 +25,10 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           DATE: ${{ github.event.inputs.date }}
           FORCE: ${{ github.event.inputs.force }}
+          AGO: ${{ github.event.inputs.ago }}
         run: |
           D="${DATE:-$(TZ=Asia/Seoul date +%F)}"
-          python -u tools/era_news.py "$D" $( [ "$FORCE" = "yes" ] && echo --force ) > /tmp/run.log 2>&1 || true
+          python -u tools/era_news.py "$D" $( [ "$FORCE" = "yes" ] && echo --force ) $( [ -n "$AGO" ] && echo --ago "$AGO" ) > /tmp/run.log 2>&1 || true
           tail -80 /tmp/run.log
           { echo "--- 실행 로그(마지막 200줄) $(date -u +%FT%TZ) ---"; tail -200 /tmp/run.log; } >> tools/last-era-news.log
       - name: 기록 올리기
