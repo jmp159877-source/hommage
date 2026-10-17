@@ -317,7 +317,7 @@ let ago = store.get('ago', 40);
 const ERA_FIELDS = ['정치', '경제', '사회', '문화', '연예', '생활', '스포츠'];
 function eraNewsHtml(yr, e) {
   const dow = WD[new Date(yr, M, D).getDay()];
-  let h = `<div class="paper-head"><div class="date"><span class="nw">${yr}년 ${M + 1}월 ${D}일</span> <span class="nw">${dow}요일</span><small>그날의 신문에서</small></div>${e.mood ? `<p class="mood">${esc(e.mood)}</p>` : ''}${e.papers && e.papers.length ? `<p class="papers">그날 지면 보기 · ${e.papers.map(p => `<a href="${esc(p[1])}" target="_blank" rel="noopener">${esc(p[0])}</a>`).join(' · ')}</p>` : ''}</div><div class="rule"></div>`;
+  let h = `<div class="paper-head"><div class="date"><span class="nw">${yr}년 ${M + 1}월 ${D}일</span> <span class="nw">${dow}요일</span><small>그날의 신문에서</small></div>${e.mood ? `<p class="mood">${esc(e.mood)}</p>` : ''}${e.papers && e.papers.length ? `<p class="papers">그날 지면 보기 · ${e.papers.map(p => { const nm = Array.isArray(p) ? p[0] : p && p.name, u = Array.isArray(p) ? p[1] : p && p.url; return nm && u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(nm)}</a>` : ''; }).filter(Boolean).join(' · ')}</p>` : ''}</div><div class="rule"></div>`;
   for (const f of ERA_FIELDS) {
     const items = e.news.filter(i => i.field === f); if (!items.length) continue;
     h += `<section class="field"><h2 class="f-name">${f}</h2>` + items.map(i => `<article class="hl"><h3>${esc(i.headline)}</h3><p>${esc(i.summary)}</p><div class="src"><b>${esc(i.source_name || '')}</b>${i.source_url ? `<a href="${esc(i.source_url)}" target="_blank" rel="noopener">원문</a>` : ''}</div></article>`).join('') + '</section>';

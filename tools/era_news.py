@@ -195,24 +195,37 @@ def main():
         y = d0.year - ago
         if era.get(str(ago), {}).get("news") and "--force" not in sys.argv:
             log.append(f"{y} 이미 있음"); continue
-        cands = gather(y, d0.month, d0.day)
-        res = choose(y, d0.month, d0.day, cands, prev.get(str(ago), []))
+        try:
+            cands = gather(y, d0.month, d0.day)
+            res = choose(y, d0.month, d0.day, cands, prev.get(str(ago), []))
+        except Exception as ex:  # 한 해가 어긋나도 나머지 해는 만든다
+            log.append(f"{y} 만들다 막힘: {str(ex)[:120]}"); DBG.append(f"{y} 예외: {str(ex)[:300]}")
+            print(f"[year] {y} 예외 {str(ex)[:150]}", file=sys.stderr); continue
         if not res or not res["news"]:
             log.append(f"{y} 후보 {len(cands)} → 실은 것 없음"); continue
-        papers = [[n, NL(y, d0.month, d0.day, o)] for n, o in (("동아일보", "00020"), ("경향신문", "00032"), ("매일경제", "00009"), ("한겨레", "00028")) if not (n == "한겨레" and y < 1988)][:3]
-        e = dict(era.get(str(ago), {}))
-        e.update({"news": res["news"], "papers": papers})
-        if res["mood"]: e["mood"] = res["mood"]
-        era[str(ago)] = e
+        # Firestore 는 '배열 안의 배열'을 받지 않는다 → [{name,url}] 모양으로 넣는다(앱은 두 모양 다 읽음)
+        papers = [{"name": n, "url": NL(y, d0.month, d0.day, o)} for n, o in (("동아일보", "00020"), ("경향신문", "00032"), ("매일경제", "00009"), ("한겨레", "00028")) if not (n == "한겨레" and y < 1988)][:3]
+        add = {"news": res["news"], "papers": papers}
+        if res["mood"]: add["mood"] = res["mood"]
+        e = dict(era.get(str(ago), {})); e.update(add); era[str(ago)] = e
         log.append(f"{y} 후보 {len(cands)} → {len(res['news'])}건 " + "/".join(sorted(set(n['field'] for n in res['news']), key=FIELDS.index)))
-        if ref: ref.set({"era": {str(ago): e}}, merge=True)
+        # 이 도구가 만든 부분만 덮어쓴다(facts·photo·songs 는 건드리지 않음). 한 해가 실패해도 다음 해로 넘어간다.
+        if ref:
+            try: ref.set({"era": {str(ago): add}}, merge=True)
+            except Exception as ex:
+                log[-1] += " — 저장 실패"; DBG.append(f"저장 실패 {y}: {str(ex)[:200]}")
+                print(f"[save] {y} 실패 {str(ex)[:150]}", file=sys.stderr)
     print("\n".join(log))
     p = os.path.join(os.path.dirname(__file__), "..", "daily", f"{date}.json")
-    if ref:
-        full = ref.get().to_dict() or {}
-        json.dump(full, open(p, "w"), ensure_ascii=False, indent=1, default=str)
-    else:
-        json.dump({"era": era}, open(f"/tmp/era-{date}.json", "w"), ensure_ascii=False, indent=1)
+    try:
+        if ref:
+            full = ref.get().to_dict() or {}
+            json.dump(full, open(p, "w"), ensure_ascii=False, indent=1, default=str)
+        else:
+            json.dump({"era": era}, open(f"/tmp/era-{date}.json", "w"), ensure_ascii=False, indent=1)
+    except Exception as ex:
+        log.append(f"daily json 쓰기 실패: {str(ex)[:120]}"); DBG.append(f"json 실패: {str(ex)[:300]}")
+    # 로그는 무슨 일이 있어도 남긴다 (다음 사람이 여기부터 본다)
     open(os.path.join(os.path.dirname(__file__), "last-era-news.log"), "w").write(f"{date}\n" + "\n".join(log) + "\n--- 자세히 ---\n" + "\n".join(DBG[:120]) + "\n")
 
 if __name__ == "__main__":
