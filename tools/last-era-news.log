@@ -1,154 +1,59 @@
 2026-10-19
-1976 후보 0 → 실은 것 없음
-1986 후보 0 → 실은 것 없음
-1996 후보 0 → 실은 것 없음
-2006 후보 138 → 4건 연예/스포츠
-2016 후보 288 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+1976 후보 7 → 4건 사회/문화/연예/스포츠
+1986 후보 6 → 2건 정치/연예
+1996 후보 17 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+2006 이미 있음
+2016 이미 있음
 --- 자세히 ---
-검색 1976 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: The read operation timed out
-검색 1986 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
+검색 1976: Gemini 후보 14개 https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%A0%80%EC%9E%; https://ko.wikipedia.org/wiki/%EC%9C%A0%EC%97%94_%EC%B4%9D%E; https://50th.kenca.or.kr/content/02_history/01_1973.php; https://namu.wiki/w/%EB%B0%A9%EC%BD%95%EB%8C%80%EC%A4%91%EA%; https://www.doctorsnews.co.kr/news/articleView.html?idxno=15; https://v.daum.net/v/20240415174542861
+fetch 실패 https://namu.wiki/w/%EB%B0%A9%EC%BD%95%EB%8C%80%EC%A4%91%EA%B5%90%ED%86%B5%EA%B5 HTTP Error 403: Forbidden
+fetch 실패 https://ko.wikipedia.org/wiki/%EA%B2%85%EC%83%81_%EC%9E%84%EC%83%81%EC%98%A5 HTTP Error 404: Not Found
+fetch 실패 https://namu.wiki/w/%EB%91%90%EC%8B%9C%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%8A%B8%20 HTTP Error 403: Forbidden
+날짜 없음 https://www.youtube.com/watch?v=qM2h-YhI3-U
+fetch 실패 https://50th.kenca.or.kr/content/02_history/01_1973.php HTTP Error 404: Not Found
+fetch 실패 https://v.daum.net/v/20240415174542861 HTTP Error 500: Internal Server Error
+날짜 없음 https://www.doctorsnews.co.kr/news/articleView.html?idxno=155554
+검색 1986: Gemini 후보 20개 https://ko.wikipedia.org/wiki/%EC%82%AC%EB%AA%A8%EB%9D%BC_%E; http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNum; http://www.jajusibo.com/33649; https://www.hankyung.com/newspaper/19861019; https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=48; https://m.daangn.com/kr/realty/complexes/46487
+fetch 실패 https://www.hankyung.com/newspaper/19861019 HTTP Error 404: Not Found
+fetch 실패 https://m.daangn.com/kr/realty/complexes/46487 HTTP Error 404: Not Found
+fetch 실패 https://namu.wiki/w/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD/%EB%AC%B8%ED%99%94%20%E HTTP Error 403: Forbidden
+fetch 실패 https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_CD=A0002631583 HTTP Error 404: Page Not Found
+날짜 없음 http://www.jajusibo.com/33649
+날짜 없음 http://www.boeunpeople.com/news/articleView.html?idxno=6451
+날짜 없음 https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=48956961
+날짜 없음 http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNumb=20030810
+날짜 없음 http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNumb=20170710
+날짜 없음 https://encykorea.aks.ac.kr/Article/E0003786
+날짜 없음 https://archives.knou.ac.kr/site/archives/ex/bbs/View.do?cbIdx=1086&bc
+날짜 없음 https://www.ibulgyo.com/news/articleView.html?idxno=79017
+날짜 없음 https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_CD=A0002609
+날짜 없음 https://thecolumnist.kr/news/articleView.html?idxno=1055
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
 서울신문90 probe /1996101901001 → 없음
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901002 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901004 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902002 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902001 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901005 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902003 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903002 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903003 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903001 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902005 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903004 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903002 HTTP Error 404: Not Found
 fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101904002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101905005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101906004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101907005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101908002 HTTP Error 404: Not Found
+fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903004 HTTP Error 404: Not Found
 서울신문90 probe /1996102001001 → 없음
-검색 1996 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
-검색 2006 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
-검색 2016 실패: Gemini 실패: gemini-3.8-flash: The read operation timed out | gemini-3.7-flash: The read operation timed out | gemini-3.6-flash: Extra data: line 6 column 4 (char
---- 실행 로그(마지막 200줄) 2026-10-16T20:15:11Z ---
+검색 1996: Gemini 후보 21개 https://www.donga.com/news/article/all/19961019/7201235/1; https://www.donga.com/news/article/all/19961019/7201233/1; https://www.donga.com/news/article/all/19961018/7200875/1; https://www.donga.com/news/article/all/19961018/7201128/1; https://www.donga.com/news/article/all/19961019/7201265/1; https://www.donga.com/news/article/all/19961018/7200921/1
+--- 실행 로그(마지막 200줄) 2026-10-17T02:27:57Z ---
 [models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
 [gather] 1976: 직접 훑은 후보 0
-Traceback (most recent call last):
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 219, in <module>
-    main()
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 198, in main
-    cands = gather(y, d0.month, d0.day)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 138, in gather
-    cands += search_candidates(y, m, d, need)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 122, in search_candidates
-    for r in ex.map(one, items[:30]):
-             ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
-    yield _result_or_cancel(fs.pop())
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
-    return fut.result(timeout)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 456, in result
-    return self.__get_result()
-           ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
-    raise self._exception
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/concurrent/futures/thread.py", line 59, in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 118, in one
-    ok = has_date(text, y, m, d) or has_date(text, y, m, d - 1) or has_date(h, y, m, d)
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 48, in has_date
-    pats = [rf"{y}[.\-/년 ]\s*0?{m}[.\-/월 ]\s*0?{d}\b", rf"{y}{m:02d}{d:02d}", rf"0?{m}월\s*0?{d}일", rf"(?:Oct|October|Nov|November|Sep|September|Dec|December|Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August)[a-z]*\.?\s+0?{d},?\s+{y}", rf"{d}\s+(?:Oct|Nov|Sep|Dec|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug)[a-z]*\.?\s+{y}"]
-                                                               ^^^^^^^
-TypeError: unsupported format string passed to re.Match.__format__
---- 실행 로그(마지막 200줄) 2026-10-17T02:11:31Z ---
-[models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
-[gather] 1976: 직접 훑은 후보 0
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/grpc_helpers.py", line 76, in error_remapped_callable
-    return callable_(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_interceptor.py", line 276, in __call__
-    response, ignored_call = self._with_call(
-                             ^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_interceptor.py", line 331, in _with_call
-    return call.result(), call
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_channel.py", line 447, in result
-    raise self
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_interceptor.py", line 314, in continuation
-    response, call = self._thunk(new_method).with_call(
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_channel.py", line 1182, in with_call
-    return _end_unary_response_blocking(state, call, True, None)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/grpc/_channel.py", line 999, in _end_unary_response_blocking
-    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
-	status = StatusCode.INVALID_ARGUMENT
-	details = "Property era contains an invalid nested entity."
-	debug_error_string = "INVALID_ARGUMENT:Property era contains an invalid nested entity."
->
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 219, in <module>
-    main()
-  File "/home/runner/work/omaju/omaju/tools/era_news.py", line 208, in main
-    if ref: ref.set({"era": {str(ago): e}}, merge=True)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/cloud/firestore_v1/document.py", line 169, in set
-    write_results = batch.commit(**kwargs)
-                    ^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/cloud/firestore_v1/batch.py", line 63, in commit
-    commit_response = self._client._firestore_api.commit(
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/cloud/firestore_v1/services/firestore/client.py", line 1321, in commit
-    response = rpc(
-               ^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/gapic_v1/method.py", line 390, in __call__
-    result = wrapped_func(*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 295, in retry_wrapped_func
-    return retry_target(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 157, in retry_target
-    next_sleep = _retry_error_helper(
-                 ^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/retry/retry_base.py", line 215, in _retry_error_helper
-    raise final_exc from source_exc
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 148, in retry_target
-    result = target()
-             ^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/timeout.py", line 130, in func_with_timeout
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/google/api_core/grpc_helpers.py", line 78, in error_remapped_callable
-    raise exceptions.from_grpc_error(exc) from exc
-google.api_core.exceptions.InvalidArgument: 400 Property era contains an invalid nested entity.
+[gather] 1986: 직접 훑은 후보 0
+[gather] 1996: 직접 훑은 후보 0
+1976 후보 7 → 4건 사회/문화/연예/스포츠
+1986 후보 6 → 2건 정치/연예
+1996 후보 17 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+2006 이미 있음
+2016 이미 있음
