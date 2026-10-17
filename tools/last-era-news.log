@@ -1,12 +1,31 @@
 2026-10-19
-2006 후보 137 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+1986 후보 5 → 3건 사회/연예/스포츠
+1976 후보 7 → 3건 정치/문화/연예
 --- 자세히 ---
-fetch 실패 https://osen.co.kr/article/G0610190045 The read operation timed out
-fetch 실패 https://osen.co.kr/article/G0610190062 The read operation timed out
-검색 2006: Gemini 후보 15개 https://www.hani.co.kr/arti/politics/politics_general/165977; https://www.donga.com/news/article/all/20061018/8362629/1; https://www.hani.co.kr/arti/science/science_general/166099.h; https://www.donga.com/news/article/all/20061019/8363170/1; https://www.donga.com/news/article/all/20061019/8363139/1; https://www.donga.com/news/article/all/20061018/8362893/1
-fetch 실패 https://www.hani.co.kr/arti/politics/politics_general/165977.html HTTP Error 404: Not Found
-fetch 실패 https://www.hani.co.kr/arti/science/science_general/166099.html HTTP Error 404: Not Found
---- 실행 로그(마지막 200줄) 2026-10-17T03:07:14Z ---
+검색 1986: Gemini 후보 10개 https://namu.wiki/w/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD/%EB; https://ko.wikipedia.org/wiki/1986%EB%85%84_%EB%AA%A8%EC%9E%; https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_C; https://ko.wikipedia.org/wiki/%EC%B2%88%ED%98%BC%EA%B0%80; https://encykorea.aks.ac.kr/Article/E0003712; https://ko.wikipedia.org/wiki/%EC%9D%B8%ED%98%95%EC%9D%98_%E
+fetch 실패 https://namu.wiki/w/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD/%EB%AC%B8%ED%99%94%20%E HTTP Error 403: Forbidden
+fetch 실패 https://ko.wikipedia.org/wiki/%EC%9E%91%EC%9D%80_%EA%B3%A0%EC%B추 'ascii' codec can't encode character '\ucd94' in position 43
+fetch 실패 https://ko.wikipedia.org/wiki/%EC%B2%88%ED%98%BC%EA%B0%80 HTTP Error 404: Not Found
+날짜 없음 https://encykorea.aks.ac.kr/Article/E0003712
+날짜 없음 https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_CD=A0002630
+검색 1976: Gemini 후보 21개 https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%A0%80%EC%9E%; https://ko.wikipedia.org/wiki/%EC%9C%A0%EC%97%94_%EC%B4%9D%E; https://ko.wikipedia.org/wiki/%EB%A0%88%ED%93%87%EC%A6%88%EB; https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&; https://www.safetimes.co.kr/news/articleView.html?idxno=2290; https://www.pressian.com/pages/articles/2024111516082481079
+fetch 실패 https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%A0%80%EC%9E%91%EA%B5%8C%EB%B2%95 HTTP Error 404: Not Found
+fetch 실패 https://ko.wikipedia.org/wiki/%EB%A0%88%ED%93%87%EC%A6%88%EB%8B%89 HTTP Error 404: Not Found
+날짜 없음 https://www.pressian.com/pages/articles/2024111516082481079
+fetch 실패 https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&g_code=1104&p_code=D HTTP Error 404: Not Found
+fetch 실패 https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&g_code=1104&p_code=D HTTP Error 404: Not Found
+fetch 실패 https://www.koreadoctors.org/page/sub01_01.php HTTP Error 404: Not Found
+날짜 없음 https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003006240
+fetch 실패 https://namu.wiki/w/%EC%9E%A5%EC%88%98%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8 HTTP Error 403: Forbidden
+fetch 실패 https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&g_code=1104&p_code=D HTTP Error 404: Not Found
+날짜 없음 https://www.safetimes.co.kr/news/articleView.html?idxno=229045
+fetch 실패 https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&g_code=1104&p_code=D HTTP Error 404: Not Found
+fetch 실패 https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%9B%94%EB%93%9C_%EC%8B%9C%EB%A6%A HTTP Error 404: Not Found
+fetch 실패 https://www.ehistory.go.kr/page/view/pop_clip.jsp?k_code=DK&g_code=1104&p_code=D HTTP Error 404: Not Found
+fetch 실패 https://photo.chungbuk.go.kr/home/sub.do?mCode=2010100000&mode=view&bIdx=63197 HTTP Error 400: 400
+--- 실행 로그(마지막 200줄) 2026-10-17T03:11:03Z ---
 [models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
-[gather] 2006: 직접 훑은 후보 124
-2006 후보 137 → 7건 정치/경제/사회/문화/연예/생활/스포츠
+[gather] 1986: 직접 훑은 후보 0
+[gather] 1976: 직접 훑은 후보 0
+1986 후보 5 → 3건 사회/연예/스포츠
+1976 후보 7 → 3건 정치/문화/연예
