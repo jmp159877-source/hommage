@@ -1,59 +1,8 @@
 2026-10-19
-1976 후보 7 → 4건 사회/문화/연예/스포츠
-1986 후보 6 → 2건 정치/연예
-1996 후보 17 → 7건 정치/경제/사회/문화/연예/생활/스포츠
-2006 이미 있음
-2016 이미 있음
+2006 후보 149 → 5건 문화/연예/스포츠
 --- 자세히 ---
-검색 1976: Gemini 후보 14개 https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%A0%80%EC%9E%; https://ko.wikipedia.org/wiki/%EC%9C%A0%EC%97%94_%EC%B4%9D%E; https://50th.kenca.or.kr/content/02_history/01_1973.php; https://namu.wiki/w/%EB%B0%A9%EC%BD%95%EB%8C%80%EC%A4%91%EA%; https://www.doctorsnews.co.kr/news/articleView.html?idxno=15; https://v.daum.net/v/20240415174542861
-fetch 실패 https://namu.wiki/w/%EB%B0%A9%EC%BD%95%EB%8C%80%EC%A4%91%EA%B5%90%ED%86%B5%EA%B5 HTTP Error 403: Forbidden
-fetch 실패 https://ko.wikipedia.org/wiki/%EA%B2%85%EC%83%81_%EC%9E%84%EC%83%81%EC%98%A5 HTTP Error 404: Not Found
-fetch 실패 https://namu.wiki/w/%EB%91%90%EC%8B%9C%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%8A%B8%20 HTTP Error 403: Forbidden
-날짜 없음 https://www.youtube.com/watch?v=qM2h-YhI3-U
-fetch 실패 https://50th.kenca.or.kr/content/02_history/01_1973.php HTTP Error 404: Not Found
-fetch 실패 https://v.daum.net/v/20240415174542861 HTTP Error 500: Internal Server Error
-날짜 없음 https://www.doctorsnews.co.kr/news/articleView.html?idxno=155554
-검색 1986: Gemini 후보 20개 https://ko.wikipedia.org/wiki/%EC%82%AC%EB%AA%A8%EB%9D%BC_%E; http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNum; http://www.jajusibo.com/33649; https://www.hankyung.com/newspaper/19861019; https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=48; https://m.daangn.com/kr/realty/complexes/46487
-fetch 실패 https://www.hankyung.com/newspaper/19861019 HTTP Error 404: Not Found
-fetch 실패 https://m.daangn.com/kr/realty/complexes/46487 HTTP Error 404: Not Found
-fetch 실패 https://namu.wiki/w/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD/%EB%AC%B8%ED%99%94%20%E HTTP Error 403: Forbidden
-fetch 실패 https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_CD=A0002631583 HTTP Error 404: Page Not Found
-날짜 없음 http://www.jajusibo.com/33649
-날짜 없음 http://www.boeunpeople.com/news/articleView.html?idxno=6451
-날짜 없음 https://www.saramin.co.kr/zf_user/jobs/relay/view?rec_idx=48956961
-날짜 없음 http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNumb=20030810
-날짜 없음 http://monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNumb=20170710
-날짜 없음 https://encykorea.aks.ac.kr/Article/E0003786
-날짜 없음 https://archives.knou.ac.kr/site/archives/ex/bbs/View.do?cbIdx=1086&bc
-날짜 없음 https://www.ibulgyo.com/news/articleView.html?idxno=79017
-날짜 없음 https://star.ohmynews.com/NWS_Web/OhmyStar/at_pg.aspx?CNTN_CD=A0002609
-날짜 없음 https://thecolumnist.kr/news/articleView.html?idxno=1055
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
-서울신문90 probe /1996101901001 → 없음
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101901003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903003 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903001 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101902004 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903002 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903005 HTTP Error 404: Not Found
-fetch 실패 https://www.seoul.co.kr/news/1996/10/19/1996101903004 HTTP Error 404: Not Found
-서울신문90 probe /1996102001001 → 없음
-검색 1996: Gemini 후보 21개 https://www.donga.com/news/article/all/19961019/7201235/1; https://www.donga.com/news/article/all/19961019/7201233/1; https://www.donga.com/news/article/all/19961018/7200875/1; https://www.donga.com/news/article/all/19961018/7201128/1; https://www.donga.com/news/article/all/19961019/7201265/1; https://www.donga.com/news/article/all/19961018/7200921/1
---- 실행 로그(마지막 200줄) 2026-10-17T02:27:57Z ---
+검색 2006: Gemini 후보 11개 https://www.donga.com/news/article/all/20061019/8363112/1; https://www.donga.com/news/article/all/20061018/8362754/1; https://www.donga.com/news/article/all/20061019/8363072/1; https://www.donga.com/news/article/all/20061019/8363170/1; https://www.donga.com/news/article/all/20061019/8363139/1; https://www.donga.com/news/article/all/20061018/8362959/1
+--- 실행 로그(마지막 200줄) 2026-10-17T03:01:43Z ---
 [models] ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash']
-[gather] 1976: 직접 훑은 후보 0
-[gather] 1986: 직접 훑은 후보 0
-[gather] 1996: 직접 훑은 후보 0
-1976 후보 7 → 4건 사회/문화/연예/스포츠
-1986 후보 6 → 2건 정치/연예
-1996 후보 17 → 7건 정치/경제/사회/문화/연예/생활/스포츠
-2006 이미 있음
-2016 이미 있음
+[gather] 2006: 직접 훑은 후보 138
+2006 후보 149 → 5건 문화/연예/스포츠

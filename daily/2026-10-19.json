@@ -1,37 +1,7 @@
 {
  "era": {
   "20": {
-   "news": [
-    {
-     "summary": "일본 인기 그룹 아라시의 첫 내한 공연 티켓이 예매 시작 1시간 만에 모두 팔렸습니다. 국내 팬들의 높은 관심 속에 단숨에 표가 매진되며 뜨거운 인기를 증명했습니다.",
-     "source_name": "OSEN",
-     "field": "연예",
-     "source_url": "https://osen.co.kr/article/G0610190031",
-     "headline": "일본 그룹 아라시 내한 콘서트 1시간 만에 매진"
-    },
-    {
-     "summary": "기존의 통속적인 이야기에서 벗어나 완성도 높은 작품을 선보이겠다는 포부입니다. 배우들의 탄탄한 연기력과 밀도 높은 서사를 앞세워 금요일 밤 안방극장을 공략합니다.",
-     "source_name": "OSEN",
-     "field": "연예",
-     "source_url": "https://osen.co.kr/article/G0610190074",
-     "headline": "SBS 금요드라마의 변신, 명품 극본으로 승부"
-    },
-    {
-     "summary": "새 시즌 프로농구 공식 개막전에서 지난 시즌 우승팀 서울 삼성이 부산 KTF를 상대로 완승을 거두었습니다. 주전 선수들의 고른 활약 속에 산뜻하게 첫 발을 뗐습니다.",
-     "source_name": "OSEN",
-     "field": "스포츠",
-     "source_url": "https://osen.co.kr/article/G0610190121",
-     "headline": "프로농구 개막전, 서울 삼성 KTF 꺾고 첫 승"
-    },
-    {
-     "summary": "한국여자프로농구연맹이 혼혈 선수에게 별도의 귀화 절차 없이 국내 선수 자격을 주기로 결정했습니다. 리그 문호를 넓혀 코트에 새로운 활력을 불어넣을 것으로 기대됩니다.",
-     "source_name": "OSEN",
-     "field": "스포츠",
-     "source_url": "https://osen.co.kr/article/G0610190080",
-     "headline": "여자프로농구, 혼혈 선수 국내 자격 부여"
-    }
-   ],
-   "mood": "겨울 프로농구가 힘차게 문을 열고 새로운 시즌의 열기가 코트를 가득 채웁니다.",
+   "mood": "새로운 계절을 여는 코트의 열기와 극장가의 따뜻한 입소문이 가을날의 일상을 한층 풍성하게 채워주는 하루입니다.",
    "papers": [
     {
      "name": "동아일보",
@@ -45,60 +15,93 @@
      "name": "매일경제",
      "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=2006-10-19&officeId=00009"
     }
+   ],
+   "news": [
+    {
+     "headline": "린킨 파크 조셉 한 \"미국 진출 열쇠는 독창성\"",
+     "field": "문화",
+     "source_name": "OSEN",
+     "summary": "세계적인 록 밴드 린킨 파크의 조셉 한이 19일 서울을 찾아 기자들과 만났습니다. 그는 해외 무대에 서려면 남들과 확연히 구별되는 독창성과 탄탄한 실력을 갖춰야 한다고 강조했습니다.",
+     "source_url": "https://osen.co.kr/article/G0610190083"
+    },
+    {
+     "headline": "영화 \"라디오 스타\" 입소문 타고 흥행 뒷심",
+     "field": "연예",
+     "source_name": "OSEN",
+     "summary": "관객들의 자발적인 입소문이 번지며 영화 라디오 스타가 극장가에서 꾸준한 저력을 보이고 있습니다. 젊은 층까지 폭넓게 극장으로 끌어들이며 잔잔한 감동과 인간미를 전하고 있습니다.",
+     "source_url": "https://osen.co.kr/article/G0610190017"
+    },
+    {
+     "headline": "일본 그룹 아라시, 첫 내한 콘서트 1시간 만에 매진",
+     "field": "연예",
+     "source_name": "OSEN",
+     "summary": "일본의 인기 그룹 아라시의 첫 국내 콘서트 입장권이 예매 시작 1시간 만에 모두 매진되었습니다. 18일 저녁 예매가 시작되자마자 수많은 음악 팬들이 몰리며 뜨거운 관심을 입증했습니다.",
+     "source_url": "https://osen.co.kr/article/G0610190031"
+    },
+    {
+     "headline": "프로농구 개막, 챔피언 서울 삼성의 산뜻한 첫 승",
+     "field": "스포츠",
+     "source_name": "OSEN",
+     "summary": "19일 잠실체육관에서 막을 올린 새 시즌 프로농구 공식 개막전에서 서울 삼성이 부산 KTF를 꺾었습니다. 지난 시즌 우승팀 삼성은 안정된 호흡을 뽐내며 2년 연속 정상을 향해 출발했습니다.",
+     "source_url": "https://osen.co.kr/article/G0610190121"
+    },
+    {
+     "headline": "사상 첫 투수 출신 감독들의 한국시리즈 맞대결",
+     "field": "스포츠",
+     "source_name": "OSEN",
+     "summary": "프로야구 사상 처음으로 투수 출신 사령탑들이 한국시리즈 무대에서 맞붙게 되었습니다. 투수진 운용의 대가들답게 한층 치열하고 정교한 지략 싸움이 그라운드 위에서 펼쳐질 전망입니다.",
+     "source_url": "https://osen.co.kr/article/G0610190025"
+    }
+   ]
+  },
+  "50": {
+   "mood": "예술의 향기와 승부의 열기가 가을 하늘 아래 맑고 깊게 번져가는 하루입니다.",
+   "papers": [
+    {
+     "name": "동아일보",
+     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00020"
+    },
+    {
+     "name": "경향신문",
+     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00032"
+    },
+    {
+     "name": "매일경제",
+     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00009"
+    }
+   ],
+   "news": [
+    {
+     "headline": "선화예술고등학교 설립 인가",
+     "field": "사회",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/%EC%84%A0%ED%99%94%EC%98%88%EC%88%A0%EA%B3%A0%EB%93%B1%ED%95%99%EA%B5%90",
+     "summary": "미술과 음악, 무용 분야의 조기 예술 인재를 양성하기 위한 선화예술고등학교가 19일 문교부의 설립 인가를 받았습니다. 체계적인 예술 전문 교육을 선도할 터전이 마련되었습니다."
+    },
+    {
+     "headline": "좌수서의 대가 검여 유희강 타계",
+     "field": "문화",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/%EC%9C%A0%ED%9D%AC%EA%B0%95",
+     "summary": "뇌출혈로 오른손이 마비된 뒤 왼손 글씨로 새로운 경지를 연 명필 유희강 선생이 19일 세상을 떠났습니다. 불굴의 예술혼으로 남긴 좌수서 작품들은 서예계에 깊은 울림으로 남았습니다."
+    },
+    {
+     "headline": "제1회 토론토 영화제 성황리 개막",
+     "field": "연예",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/1976%EB%85%84_%ED%86%A0%EB%A1%A0%ED%86%A0_%EA%B5%AD%EC%A0%9C_%EC%98%81%ED%99%94%EC%A0%9C",
+     "summary": "세계 각국의 주목받는 영화들을 한자리에 모은 제1회 토론토 국제 영화제가 막을 올렸습니다. 상업성과 예술성을 아우르는 다채로운 프로그램으로 영화 팬들의 큰 기대를 모으고 있습니다."
+    },
+    {
+     "headline": "신시내티, 월드시리즈 3차전 승리",
+     "field": "스포츠",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%9B%94%EB%93%9C_%EC%8B%9C%EB%A6%AC%EC%A6%88",
+     "summary": "신시내티 레즈가 뉴욕 양키스와의 월드시리즈 3차전에서 투타의 조화를 앞세워 6대 2로 이겼습니다. 파죽의 3연승을 달리며 2년 연속 우승 고지까지 단 1승만을 남겨두게 되었습니다."
+    }
    ]
   },
   "30": {
-   "news": [
-    {
-     "summary": "새정치국민회의 김대중 총재가 중국 방문 일정을 마치고 돌아왔습니다. 이번 방중을 통해 동북아 정세와 남북 관계를 둘러싼 다양한 의견을 나눴습니다.",
-     "source_name": "동아일보",
-     "field": "정치",
-     "source_url": "https://www.donga.com/news/article/all/19961019/7201233/1",
-     "headline": "김대중 국민회의 총재, 방중 마치고 귀국"
-    },
-    {
-     "summary": "재정경제원 국정감사 자료에 따르면 올해 경상수지 적자가 190억 달러에 달할 전망입니다. 수출 부진과 수입 증가세가 이어지며 적자 폭이 크게 늘었습니다.",
-     "source_name": "동아일보",
-     "field": "경제",
-     "source_url": "https://www.donga.com/news/article/all/19961018/7201128/1",
-     "headline": "올해 경상적자 190억 달러 이를 듯"
-    },
-    {
-     "summary": "대법원이 음주운전에 관대한 판결을 내린 하급심을 잇달아 파기하며 엄벌 기조를 세웠습니다. 음주운전으로 인한 사회적 폐해를 엄단하겠다는 뜻으로 풀이됩니다.",
-     "source_name": "동아일보",
-     "field": "사회",
-     "source_url": "https://www.donga.com/news/article/all/19961018/7201080/1",
-     "headline": "대법원, 음주운전 처벌 기준 엄격 적용"
-    },
-    {
-     "summary": "스페인에서 300년 동안 보관되어 온 희귀 와인이 한국에 들어왔습니다. 긴 세월의 품격을 담은 유물급 명주가 소개되며 많은 관심을 모았습니다.",
-     "source_name": "동아일보",
-     "field": "문화",
-     "source_url": "https://www.donga.com/news/article/all/19961019/7201245/1",
-     "headline": "300년 된 스페인 희귀 와인 국내 첫선"
-    },
-    {
-     "summary": "주말을 맞아 방송사들이 다채로운 볼거리를 담은 프로그램을 선보입니다. 교양과 오락을 아우르는 알찬 구성으로 시청자의 눈길을 사로잡을 예정입니다.",
-     "source_name": "동아일보",
-     "field": "연예",
-     "source_url": "https://www.donga.com/news/article/all/19961018/7200957/1",
-     "headline": "주말 안방극장, 다채로운 방송 편성"
-    },
-    {
-     "summary": "찬 바람이 불기 시작하며 실내를 따뜻하게 꾸미려는 발길이 동대문으로 이어집니다. 백화점 정기 세일보다 알뜰한 가격에 품질 좋은 제품을 찾을 수 있습니다.",
-     "source_name": "동아일보",
-     "field": "생활",
-     "source_url": "https://www.donga.com/news/article/all/19961018/7200962/1",
-     "headline": "쌀쌀해진 날씨, 동대문 카펫 상가 북적"
-    },
-    {
-     "summary": "이창호 9단이 국제기전 정상에 오르며 한 해 세계 대회 사상 첫 4관왕을 달성했습니다. 세계 바둑계 최강자로서의 자리를 다시 한번 확고히 다졌습니다.",
-     "source_name": "동아일보",
-     "field": "스포츠",
-     "source_url": "https://www.donga.com/news/article/all/19961018/7201138/1",
-     "headline": "이창호, 세계대회 사상 첫 4관왕 등극"
-    }
-   ],
    "mood": "깊어가는 가을 정취 속에 차분한 일상과 다채로운 소식이 교차하는 아침입니다.",
    "papers": [
     {
@@ -113,61 +116,112 @@
      "name": "매일경제",
      "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1996-10-19&officeId=00009"
     }
+   ],
+   "news": [
+    {
+     "headline": "김대중 국민회의 총재, 방중 마치고 귀국",
+     "field": "정치",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961019/7201233/1",
+     "summary": "새정치국민회의 김대중 총재가 중국 방문 일정을 마치고 돌아왔습니다. 이번 방중을 통해 동북아 정세와 남북 관계를 둘러싼 다양한 의견을 나눴습니다."
+    },
+    {
+     "headline": "올해 경상적자 190억 달러 이를 듯",
+     "field": "경제",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961018/7201128/1",
+     "summary": "재정경제원 국정감사 자료에 따르면 올해 경상수지 적자가 190억 달러에 달할 전망입니다. 수출 부진과 수입 증가세가 이어지며 적자 폭이 크게 늘었습니다."
+    },
+    {
+     "headline": "대법원, 음주운전 처벌 기준 엄격 적용",
+     "field": "사회",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961018/7201080/1",
+     "summary": "대법원이 음주운전에 관대한 판결을 내린 하급심을 잇달아 파기하며 엄벌 기조를 세웠습니다. 음주운전으로 인한 사회적 폐해를 엄단하겠다는 뜻으로 풀이됩니다."
+    },
+    {
+     "headline": "300년 된 스페인 희귀 와인 국내 첫선",
+     "field": "문화",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961019/7201245/1",
+     "summary": "스페인에서 300년 동안 보관되어 온 희귀 와인이 한국에 들어왔습니다. 긴 세월의 품격을 담은 유물급 명주가 소개되며 많은 관심을 모았습니다."
+    },
+    {
+     "headline": "주말 안방극장, 다채로운 방송 편성",
+     "field": "연예",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961018/7200957/1",
+     "summary": "주말을 맞아 방송사들이 다채로운 볼거리를 담은 프로그램을 선보입니다. 교양과 오락을 아우르는 알찬 구성으로 시청자의 눈길을 사로잡을 예정입니다."
+    },
+    {
+     "headline": "쌀쌀해진 날씨, 동대문 카펫 상가 북적",
+     "field": "생활",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961018/7200962/1",
+     "summary": "찬 바람이 불기 시작하며 실내를 따뜻하게 꾸미려는 발길이 동대문으로 이어집니다. 백화점 정기 세일보다 알뜰한 가격에 품질 좋은 제품을 찾을 수 있습니다."
+    },
+    {
+     "headline": "이창호, 세계대회 사상 첫 4관왕 등극",
+     "field": "스포츠",
+     "source_name": "동아일보",
+     "source_url": "https://www.donga.com/news/article/all/19961018/7201138/1",
+     "summary": "이창호 9단이 국제기전 정상에 오르며 한 해 세계 대회 사상 첫 4관왕을 달성했습니다. 세계 바둑계 최강자로서의 자리를 다시 한번 확고히 다졌습니다."
+    }
    ]
   },
   "10": {
+   "mood": "어수선한 사회적 논란 속에서도 각자의 자리에서 새로운 내일을 준비하는 담담한 하루입니다.",
    "news": [
     {
-     "summary": "더불어민주당은 비선 실세 의혹을 받는 최순실 씨 관련 사안을 공식 명명하고 검찰의 엄정한 수사를 요구했습니다. 공익재단 자금 흐름과 각종 비리 의혹을 명명백백히 밝혀야 한다고 강조했습니다.",
-     "source_name": "서울신문",
+     "headline": "야당 \"최순실 게이트\" 규정, 검찰 즉각 수사 촉구",
      "field": "정치",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500076",
-     "headline": "야당 \"최순실 게이트\" 규정, 검찰 즉각 수사 촉구"
+     "source_name": "서울신문",
+     "summary": "더불어민주당은 비선 실세 의혹을 받는 최순실 씨 관련 사안을 공식 명명하고 검찰의 엄정한 수사를 요구했습니다. 공익재단 자금 흐름과 각종 비리 의혹을 명명백백히 밝혀야 한다고 강조했습니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500076"
     },
     {
-     "summary": "검찰이 수천억 원대 횡령과 배임 혐의로 롯데그룹 총수 일가 주요 인물들을 재판에 넘겼습니다. 재계 5위 그룹의 핵심 경영진이 한꺼번에 법정에 서면서 기업 경영에도 차질이 예상됩니다.",
-     "source_name": "서울신문",
+     "headline": "롯데 신격호·신동빈 회장 등 총수 일가 5명 기소",
      "field": "경제",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800062",
-     "headline": "롯데 신격호·신동빈 회장 등 총수 일가 5명 기소"
+     "source_name": "서울신문",
+     "summary": "검찰이 수천억 원대 횡령과 배임 혐의로 롯데그룹 총수 일가 주요 인물들을 재판에 넘겼습니다. 재계 5위 그룹의 핵심 경영진이 한꺼번에 법정에 서면서 기업 경영에도 차질이 예상됩니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800062"
     },
     {
-     "summary": "특혜 입학 의혹과 단과대 설립 논란으로 진통을 겪던 최경희 총장이 사임을 표명했습니다. 학생 본관 점거 농성이 이어진 지 80여 일 만에 학교 정상화를 위한 결정을 내렸습니다.",
-     "source_name": "서울신문",
+     "headline": "이화여대 최경희 총장 사임, 학내 분열 수습 기대",
      "field": "사회",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500139",
-     "headline": "이화여대 최경희 총장 사임, 학내 분열 수습 기대"
+     "source_name": "서울신문",
+     "summary": "특혜 입학 의혹과 단과대 설립 논란으로 진통을 겪던 최경희 총장이 사임을 표명했습니다. 학생 본관 점거 농성이 이어진 지 80여 일 만에 학교 정상화를 위한 결정을 내렸습니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500139"
     },
     {
-     "summary": "세월호 참사의 아픔이 남은 단원고 기억교실이 안산교육지원청 별관에서 복원을 마무리하고 있습니다. 다음 달 초 문을 열어 추모와 생명 안전 교육의 공간으로 운영될 예정입니다.",
-     "source_name": "서울신문",
+     "headline": "안산으로 이전한 단원고 기억교실 다음 달 일반 공개",
      "field": "문화",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800025",
-     "headline": "안산으로 이전한 단원고 기억교실 다음 달 일반 공개"
+     "source_name": "서울신문",
+     "summary": "세월호 참사의 아픔이 남은 단원고 기억교실이 안산교육지원청 별관에서 복원을 마무리하고 있습니다. 다음 달 초 문을 열어 추모와 생명 안전 교육의 공간으로 운영될 예정입니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800025"
     },
     {
-     "summary": "가수 이효리가 오랜만에 화보를 통해 소탈하고 건강한 근황을 전해왔습니다. 요가와 일상을 보내며 재충전의 시간을 가진 뒤 내년 무렵 새로운 음악으로 찾아오겠다고 밝혔습니다.",
-     "source_name": "서울신문",
+     "headline": "이효리 소박한 일상 공개, \"내년쯤 복귀 준비\"",
      "field": "연예",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500019",
-     "headline": "이효리 소박한 일상 공개, \"내년쯤 복귀 준비\""
+     "source_name": "서울신문",
+     "summary": "가수 이효리가 오랜만에 화보를 통해 소탈하고 건강한 근황을 전해왔습니다. 요가와 일상을 보내며 재충전의 시간을 가진 뒤 내년 무렵 새로운 음악으로 찾아오겠다고 밝혔습니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019500019"
     },
     {
-     "summary": "연근해 수온이 평년보다 높아지면서 산란을 마친 갈치 떼가 일찍 이동해 생산량이 크게 줄었습니다. 어획량이 작년의 3분의 1 수준으로 떨어지면서 시중 가격이 가파르게 올랐습니다.",
-     "source_name": "서울신문",
+     "headline": "여름 폭염 탓에 갈치 어획량 급감, 밥상 물가 들썩",
      "field": "생활",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800059",
-     "headline": "여름 폭염 탓에 갈치 어획량 급감, 밥상 물가 들썩"
+     "source_name": "서울신문",
+     "summary": "연근해 수온이 평년보다 높아지면서 산란을 마친 갈치 떼가 일찍 이동해 생산량이 크게 줄었습니다. 어획량이 작년의 3분의 1 수준으로 떨어지면서 시중 가격이 가파르게 올랐습니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800059"
     },
     {
-     "summary": "토트넘 손흥민이 친정팀인 독일 레버쿠젠 원정 경기에서 90분 내내 그라운드를 누볐습니다. 공격 포인트를 올리지 못한 채 0대 0으로 비겨 승점 1점을 챙기는 데 만족했습니다.",
-     "source_name": "서울신문",
+     "headline": "손흥민, 챔피언스리그 친정팀 상대 풀타임 무승부",
      "field": "스포츠",
-     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800016",
-     "headline": "손흥민, 챔피언스리그 친정팀 상대 풀타임 무승부"
+     "source_name": "서울신문",
+     "summary": "토트넘 손흥민이 친정팀인 독일 레버쿠젠 원정 경기에서 90분 내내 그라운드를 누볐습니다. 공격 포인트를 올리지 못한 채 0대 0으로 비겨 승점 1점을 챙기는 데 만족했습니다.",
+     "source_url": "https://m.seoul.co.kr/news/2016/10/19/20161019800016"
     }
    ],
-   "mood": "어수선한 사회적 논란 속에서도 각자의 자리에서 새로운 내일을 준비하는 담담한 하루입니다.",
    "papers": [
     {
      "name": "동아일보",
@@ -183,70 +237,7 @@
     }
    ]
   },
-  "50": {
-   "news": [
-    {
-     "summary": "미술과 음악, 무용 분야의 조기 예술 인재를 양성하기 위한 선화예술고등학교가 19일 문교부의 설립 인가를 받았습니다. 체계적인 예술 전문 교육을 선도할 터전이 마련되었습니다.",
-     "source_name": "위키백과",
-     "field": "사회",
-     "source_url": "https://ko.wikipedia.org/wiki/%EC%84%A0%ED%99%94%EC%98%88%EC%88%A0%EA%B3%A0%EB%93%B1%ED%95%99%EA%B5%90",
-     "headline": "선화예술고등학교 설립 인가"
-    },
-    {
-     "summary": "뇌출혈로 오른손이 마비된 뒤 왼손 글씨로 새로운 경지를 연 명필 유희강 선생이 19일 세상을 떠났습니다. 불굴의 예술혼으로 남긴 좌수서 작품들은 서예계에 깊은 울림으로 남았습니다.",
-     "source_name": "위키백과",
-     "field": "문화",
-     "source_url": "https://ko.wikipedia.org/wiki/%EC%9C%A0%ED%9D%AC%EA%B0%95",
-     "headline": "좌수서의 대가 검여 유희강 타계"
-    },
-    {
-     "summary": "세계 각국의 주목받는 영화들을 한자리에 모은 제1회 토론토 국제 영화제가 막을 올렸습니다. 상업성과 예술성을 아우르는 다채로운 프로그램으로 영화 팬들의 큰 기대를 모으고 있습니다.",
-     "source_name": "위키백과",
-     "field": "연예",
-     "source_url": "https://ko.wikipedia.org/wiki/1976%EB%85%84_%ED%86%A0%EB%A1%A0%ED%86%A0_%EA%B5%AD%EC%A0%9C_%EC%98%81%ED%99%94%EC%A0%9C",
-     "headline": "제1회 토론토 영화제 성황리 개막"
-    },
-    {
-     "summary": "신시내티 레즈가 뉴욕 양키스와의 월드시리즈 3차전에서 투타의 조화를 앞세워 6대 2로 이겼습니다. 파죽의 3연승을 달리며 2년 연속 우승 고지까지 단 1승만을 남겨두게 되었습니다.",
-     "source_name": "위키백과",
-     "field": "스포츠",
-     "source_url": "https://ko.wikipedia.org/wiki/1976%EB%85%84_%EC%9B%94%EB%93%9C_%EC%8B%9C%EB%A6%AC%EC%A6%88",
-     "headline": "신시내티, 월드시리즈 3차전 승리"
-    }
-   ],
-   "mood": "예술의 향기와 승부의 열기가 가을 하늘 아래 맑고 깊게 번져가는 하루입니다.",
-   "papers": [
-    {
-     "name": "동아일보",
-     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00020"
-    },
-    {
-     "name": "경향신문",
-     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00032"
-    },
-    {
-     "name": "매일경제",
-     "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1976-10-19&officeId=00009"
-    }
-   ]
-  },
   "40": {
-   "news": [
-    {
-     "summary": "모잠비크 독립을 이끈 사모라 마셸 대통령이 비행기 추락 사고로 19일 세상을 떠났습니다. 갑작스러운 지도자의 부고 소식에 전 세계 각국이 애도의 뜻을 표하고 있습니다.",
-     "source_name": "위키백과",
-     "field": "정치",
-     "source_url": "https://ko.wikipedia.org/wiki/%EC%82%AC%EB%AA%A8%EB%9D%BC_%EB%A7%88%EC%85%B8",
-     "headline": "모잠비크 마셸 대통령, 전용기 추락으로 서거"
-    },
-    {
-     "summary": "현대인의 삶과 교실 안 풍경을 섬세하게 담아낸 단막극 '인형의 교실'이 19일 방영됩니다. 탄탄한 극본과 깊이 있는 연출이 휴일 저녁 안방극장에 묵직한 울림을 전합니다.",
-     "source_name": "위키백과",
-     "field": "연예",
-     "source_url": "https://ko.wikipedia.org/wiki/%EC%9D%B8%ED%98%95%EC%9D%98_%EA%B5%90%EC%8B%A4",
-     "headline": "MBC 베스트셀러극장, 단막극 \"인형의 교실\" 방송"
-    }
-   ],
    "mood": "깊어가는 가을밤 브라운관의 다채로운 드라마들이 따뜻한 위로를 전하는 휴일입니다.",
    "papers": [
     {
@@ -260,6 +251,22 @@
     {
      "name": "매일경제",
      "url": "https://newslibrary.naver.com/viewer/index.naver?publishDate=1986-10-19&officeId=00009"
+    }
+   ],
+   "news": [
+    {
+     "headline": "모잠비크 마셸 대통령, 전용기 추락으로 서거",
+     "field": "정치",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/%EC%82%AC%EB%AA%A8%EB%9D%BC_%EB%A7%88%EC%85%B8",
+     "summary": "모잠비크 독립을 이끈 사모라 마셸 대통령이 비행기 추락 사고로 19일 세상을 떠났습니다. 갑작스러운 지도자의 부고 소식에 전 세계 각국이 애도의 뜻을 표하고 있습니다."
+    },
+    {
+     "headline": "MBC 베스트셀러극장, 단막극 \"인형의 교실\" 방송",
+     "field": "연예",
+     "source_name": "위키백과",
+     "source_url": "https://ko.wikipedia.org/wiki/%EC%9D%B8%ED%98%95%EC%9D%98_%EA%B5%90%EC%8B%A4",
+     "summary": "현대인의 삶과 교실 안 풍경을 섬세하게 담아낸 단막극 '인형의 교실'이 19일 방영됩니다. 탄탄한 극본과 깊이 있는 연출이 휴일 저녁 안방극장에 묵직한 울림을 전합니다."
     }
    ]
   }
