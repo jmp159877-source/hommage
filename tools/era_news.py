@@ -102,8 +102,8 @@ def search_candidates(y, m, d, fields_needed):
 newslibrary.naver.com 주소는 쓰지 않는다. 형식(JSON 배열만): [{{"field":"정치","title":"...","url":"https://...","why":"페이지에 적힌 날짜 표기"}}]"""
     try:
         txt = gemini(prompt, json_mode=False, search=True, timeout=150)
-        m = re.search(r"\[\s*\{.*\}\s*\]", txt, re.S)
-        j = json.loads(m.group(0)) if m else parse_json(txt)
+        mm = re.search(r"\[\s*\{.*\}\s*\]", txt, re.S)
+        j = json.loads(mm.group(0)) if mm else parse_json(txt)
     except Exception as e:
         DBG.append(f"검색 {y} 실패: {str(e)[:160]}"); print(f"[search] {y} 실패 {str(e)[:100]}", file=sys.stderr); return []
     items = j if isinstance(j, list) else j.get("items", []) if isinstance(j, dict) else []
