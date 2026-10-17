@@ -20,6 +20,22 @@ COLS_PATH = os.path.join(DATA, "photo-collections.json")
 OUT_PATH = os.path.join(DATA, "place-photos.json")
 SRC_NAME = "서울연구원 경관기록사진 (공공누리 1유형 · CC BY 4.0)"
 
+# 컬렉션 하나가 한 곳을 찍은 묶음이라, 구는 컬렉션에서 정한다.
+# (세부대상지에서 글자로 찾으면 '지구·입구·출입구'까지 걸린다.)
+COL_GU = {
+    523: "서울 강북구", 524: "서울 관악구", 526: "서울 중구", 527: "서울 성북구", 528: "서울 종로구",
+    529: "서울 종로구", 530: "서울 종로구", 531: "서울 종로구", 532: "서울 강남구", 534: "서울 강남구",
+    536: "서울 성동구", 537: "서울 성북구", 538: "서울 강서구", 539: "서울 관악구", 541: "서울 동대문구",
+    542: "서울 동작구", 543: "서울 마포구", 544: "서울 마포구", 545: "서울 서초구", 546: "서울 송파구",
+    547: "서울 송파구", 548: "서울 송파구", 550: "서울 송파구", 551: "서울 영등포구", 553: "서울 용산구",
+    554: "서울 종로구", 557: "서울 중구", 558: "서울 중구", 560: "서울 강남구", 561: "서울 동대문구",
+    566: "서울 중구", 569: "서울 서대문구", 570: "서울 중구", 571: "서울 종로구", 572: "서울 영등포구",
+    573: "서울 강남구", 574: "서울 용산구", 576: "서울 은평구", 578: "서울 서대문구", 580: "서울 구로구",
+    583: "서울 중구", 584: "서울 중구", 585: "서울 영등포구", 586: "서울 종로구", 587: "서울 종로구",
+    588: "서울 종로구", 589: "서울 중구", 590: "서울 종로구", 591: "서울 종로구", 592: "서울 중구",
+    593: "서울 종로구", 594: "서울 종로구",
+}
+
 
 def fetch(url, timeout=30, tries=2):
     for t in range(tries):
@@ -83,10 +99,9 @@ def detail(code):
     where = f("촬영장소", "대상지")
     target = f("대상지", "세부대상지")
     sub = f("세부대상지", "이용목적")
-    gu = re.search(r"([가-힣]{1,5})\s*구\b", sub + " " + where + " " + target)
     img = re.search(r'(?:src|href)="(/sites/default/files/photos/' + re.escape(real.group(1)) + r'\.jpg)"', h)
     return {"code": real.group(1), "year": int(ym.group(1)), "month": int(ym.group(2)) if ym.group(2) else None,
-            "gu": (gu.group(1) + "구") if gu else "", "where": where, "target": target, "sub": sub,
+            "gu": "", "where": where, "target": target, "sub": sub,
             "page": f"{BASE}/photo/{real.group(1)}",
             "img": BASE + (img.group(1) if img else f"/sites/default/files/photos/{real.group(1)}.jpg")}
 
@@ -94,9 +109,10 @@ def detail(code):
 def build(nums, workers=8):
     cols = json.load(open(COLS_PATH))["컬렉션"]
     want = [c for c in cols if not nums or c["id"] in nums]
-    codes, seen = [], set()
+    codes, seen, gu_of = [], set(), {}
     for c in want:
         for k in c["codes"]:
+            gu_of.setdefault(k.lower(), (COL_GU.get(c["id"], ""), c["id"], c["title"]))
             if k.lower() in seen: continue
             seen.add(k.lower()); codes.append(k)
     print(f"컬렉션 {len(want)}개 · 사진 {len(codes)}장 읽는 중…", flush=True)
@@ -105,7 +121,10 @@ def build(nums, workers=8):
         for r in ex.map(detail, codes):
             done += 1
             if done % 200 == 0: print(f"  …{done}/{len(codes)}", flush=True)
-            if r: rows.append(r)
+            if not r: continue
+            g, cid, ctitle = gu_of.get(r["code"].lower(), ("", 0, ""))
+            r["gu"], r["collection"], r["collection_title"] = g, cid, ctitle
+            rows.append(r)
     rows.sort(key=lambda r: (r["gu"], r["year"], r["month"] or 0))
     old = {}
     if os.path.exists(OUT_PATH):
